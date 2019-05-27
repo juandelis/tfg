@@ -20,17 +20,17 @@
         <br />
 
         <p>
-          <label for="nombre">Nombre</label>
+          <label class="labelForm" for="nombre">Nombre</label>
           <input id="nombre" v-model="nombre" type="text" name="nombre" />
         </p>
 
         <p>
-          <label for="edad">Edad</label>
+          <label class="labelForm" for="edad">Edad</label>
           <input id="edad" v-model="edad" type="number" name="edad" min="0" />
         </p>
 
         <p>
-          <label for="movie">Favorite Movie</label>
+          <label class="labelForm" for="movie">Favorite Movie</label>
           <select id="movie" v-model="movie" name="movie">
             <option>Star Wars</option>
             <option>Vanilla Sky</option>
@@ -49,7 +49,7 @@
 </template>
 
 <style>
-form {
+#registerForm {
   background-color: #88a6ff;
   color: black;
 }
@@ -60,7 +60,7 @@ select {
   margin: 5px 5px 5px 5px;
 }
 
-label {
+.labelForm {
   font-weight: bold;
 }
 </style>
