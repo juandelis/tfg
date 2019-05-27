@@ -1,6 +1,6 @@
 # demo
 
-> My splendid Nuxt.js project
+> TFG of nuxt+Firebase app
 
 ## Build Setup
 
