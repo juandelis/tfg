@@ -46,6 +46,7 @@ export default {
         ],
         callbacks: {
           signInSuccessWithAuthResult() {
+            console.log('signInSuccessWithAuthResult')
             return 0
           }
         }
