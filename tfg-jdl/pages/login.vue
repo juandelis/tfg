@@ -29,6 +29,7 @@ export default {
     ...mapActions('user', ['initAuth']),
     next() {
       this.$router.push(this.afterLogin)
+      // this.$router.back() // Vuelve a la página donde estabas antes del login
     },
     showLogin() {
       this.initAuth()

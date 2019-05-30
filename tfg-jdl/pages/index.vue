@@ -70,3 +70,12 @@
     </v-flex>
   </v-layout>
 </template>
+
+<script>
+import firebase from '~/services/fireinit'
+
+export default {
+  data: () => ({}),
+  layout: firebase.auth().currentUser ? 'default_logged' : 'default'
+}
+</script>

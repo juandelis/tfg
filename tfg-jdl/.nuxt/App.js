@@ -3,9 +3,10 @@ import NuxtLoading from './components/nuxt-loading.vue'
 
 import '..\\assets\\style\\app.styl'
 
+import _50f326b6 from '..\\layouts\\default_logged.vue'
 import _6f6c098b from '..\\layouts\\default.vue'
 
-const layouts = { "_default": _6f6c098b }
+const layouts = { "_default_logged": _50f326b6,"_default": _6f6c098b }
 
 export default {
   head: {"title":"demo","meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"hid":"description","name":"description","content":"My splendid Nuxt.js project"}],"link":[{"rel":"icon","type":"image\u002Fx-icon","href":"\u002Ffavicon.ico"},{"rel":"stylesheet","href":"https:\u002F\u002Ffonts.googleapis.com\u002Fcss?family=Roboto:300,400,500,700|Material+Icons"}],"style":[],"script":[]},

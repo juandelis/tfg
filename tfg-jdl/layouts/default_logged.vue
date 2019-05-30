@@ -36,41 +36,20 @@
 
       <v-spacer />
 
-      <!--
-      <p id="demo2"></p>
+      <p id="demo"></p>
+
+      <v-btn color="red" flat nuxt onclick="logout()" to="/">
+        LOGOUT
+      </v-btn>
 
       <script>
-        import firebase from '~/services/fireinit'
+        function logout() {
+          document.getElementById('demo').innerHTML = 'Hello World'
 
-        function user() {
-          document.getElementById('demo2').innerHTML = 'Hello World'
-          var user = firebase.auth().currentUser
-          if (user) {
-            // User is signed in.
-            document.getElementById('demo2').innerHTML = 'USER'
-          } else {
-            // No user is signed in.
-            document.getElementById('demo2').innerHTML = 'NO USER'
-          }
-
-          document.getElementById('demo2').innerHTML = '2'
-          //firebase.auth().signOut()
+          firebase.auth().signOut()
           //firebase.auth().signInWithEmailAndPassword('juanlis96@hotmail.com', 'pepito')
         }
       </script>
-
-      <v-btn v-if="!userLogged()" color="red" flat nuxt @click="logout()">
-        LOGOUT
-      </v-btn>
-      -->
-
-      <v-btn color="red" flat nuxt @click="logout()">
-        LOGOUT
-      </v-btn>
-
-      <v-btn color="green" flat nuxt to="/login" @click="log_in">
-        LOGIN
-      </v-btn>
 
       <v-btn color="orange" flat nuxt to="/register">
         REGISTER
@@ -96,9 +75,6 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-// import firebase from '~/services/fireinit'
-
 export default {
   data() {
     return {
@@ -130,21 +106,6 @@ export default {
       ],
       fixed: false
     }
-  },
-  methods: {
-    ...mapActions('user', ['logout'])
-    /*,
-    log_in() {
-      // this.$store.commit('user/setAfterLogin', this.$nuxt.$route.path)
-      // this.$router.push('/login')
-      // this.$nuxt.$router.replace({ path: 'login' })
-      // this.$nuxt.$router.go('/login')
-    } ,
-    userLogged() {
-      return firebase.auth().currentUser
-      // await firebase.auth().signOut()
-      // this.$store.commit('setUser', null)
-    } */
   }
 }
 </script>
