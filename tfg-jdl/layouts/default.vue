@@ -15,6 +15,7 @@
           router
           exact
         >
+          <!-- TODO COMPROBAR SI ESTA LOGGED O NO (PARA MOSTRAR O NO LOGIN,REGISTER,etc)  -->
           <v-list-tile-action>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-tile-action>
@@ -62,17 +63,21 @@
       <v-btn v-if="!userLogged()" color="red" flat nuxt @click="logout()">
         LOGOUT
       </v-btn>
-      -->
-
-      <v-btn color="red" flat nuxt @click="logout()">
-        LOGOUT
-      </v-btn>
 
       <v-btn color="green" flat nuxt to="/login" @click="log_in">
         LOGIN
       </v-btn>
+      -->
 
-      <v-btn color="orange" flat nuxt to="/register">
+      <v-btn v-if="logged" color="red" flat nuxt @click="logout()">
+        LOGOUT
+      </v-btn>
+
+      <v-btn v-if="!logged" color="green" flat nuxt to="/login">
+        LOGIN
+      </v-btn>
+
+      <v-btn v-if="!logged" color="orange" flat nuxt to="/register">
         REGISTER
       </v-btn>
       <!-- TODO USUARIO Y LOGIN/REGISTRO -->
@@ -96,7 +101,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 // import firebase from '~/services/fireinit'
 
 export default {
@@ -131,6 +136,9 @@ export default {
       fixed: false
     }
   },
+  computed: {
+    ...mapGetters('user', ['logged'])
+  },
   methods: {
     ...mapActions('user', ['logout'])
     /*,
@@ -139,11 +147,6 @@ export default {
       // this.$router.push('/login')
       // this.$nuxt.$router.replace({ path: 'login' })
       // this.$nuxt.$router.go('/login')
-    } ,
-    userLogged() {
-      return firebase.auth().currentUser
-      // await firebase.auth().signOut()
-      // this.$store.commit('setUser', null)
     } */
   }
 }
