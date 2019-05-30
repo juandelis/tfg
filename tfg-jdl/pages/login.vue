@@ -58,7 +58,8 @@ export default {
         //  window.location.assign('<your-privacy-policy-url>')
         // }
       }
-      const ui = new firebaseui.auth.AuthUI(auth)
+      const ui =
+        firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(auth)
       // The start method will wait until the DOM is loaded.
       ui.start('#firebaseui-auth-container', uiConfig)
     }
