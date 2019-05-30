@@ -8,7 +8,7 @@ import firebase, { auth } from '~/services/fireinit'
 import * as firebaseui from 'firebaseui'
 
 export default {
-  // middleware: 'autenticado', // poner en todas las páginas que requieran autenticacin, menos esta!
+  // middleware: 'autenticado', // poner en todas las páginas que requieran autenticacion, menos esta!
   data: () => ({}),
   computed: {
     ...mapGetters('user', ['logged']),
@@ -36,7 +36,7 @@ export default {
         // signInSuccessUrl: '<url-to-redirect-to-on-success>', //En Nuxt esto sería un problema, ya que firebase-ui no usa vue-route
         signInOptions: [
           // Leave the lines as is for the providers you want to offer your users.
-          // firebase.auth.EmailAuthProvider.PROVIDER_ID,
+          firebase.auth.EmailAuthProvider.PROVIDER_ID,
           firebase.auth.GoogleAuthProvider.PROVIDER_ID
           // firebase.auth.FacebookAuthProvider.PROVIDER_ID,
           // firebase.auth.TwitterAuthProvider.PROVIDER_ID,
