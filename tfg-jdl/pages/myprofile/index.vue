@@ -1,8 +1,7 @@
 <template>
   <v-card>
-    <v-card-title>
-      Página para usuarios conectados...
-    </v-card-title>
+    <h1 align="center">MY PROFILE</h1>
+    <br />
   </v-card>
 </template>
 

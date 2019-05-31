@@ -6,7 +6,7 @@ export const state = () => ({
     uid: null, // no null si está logueado
     email: null
   },
-  afterLogin: '/logged', // donde dirigirse una vez complete el login (si accedió y no tenía permiso)
+  afterLogin: '/login/logged', // donde dirigirse una vez complete el login (si accedió y no tenía permiso)
   listeningAuth: false
 })
 

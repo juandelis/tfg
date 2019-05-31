@@ -1,8 +1,9 @@
 <template>
-  <div>
+  <v-card>
     <h1 align="center">ACCESO / REGISTRO</h1>
     <div id="firebaseui-auth-container" />
-  </div>
+    <br />
+  </v-card>
 </template>
 
 <script>

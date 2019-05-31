@@ -60,7 +60,7 @@
           <v-btn color="green" flat nuxt to="/login">
             LOGIN
           </v-btn>
-          <v-btn color="orange" flat nuxt to="/register">
+          <v-btn color="orange" flat nuxt to="/login/register">
             REGISTER
           </v-btn>
           <v-spacer />

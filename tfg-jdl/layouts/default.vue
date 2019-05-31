@@ -69,12 +69,19 @@
       </v-btn>
       -->
 
-      <v-btn v-if="logged" color="red" flat nuxt @click="logout()">
-        LOGOUT
-      </v-btn>
-      <v-btn v-else color="green" flat nuxt to="/login">
-        LOGIN / REGISTER
-      </v-btn>
+      <div v-if="logged">
+        <v-btn color="red" flat nuxt @click="logout()">
+          LOGOUT
+        </v-btn>
+        <v-btn icon flat nuxt to="/myprofile">
+          <v-icon>account_circle</v-icon>
+        </v-btn>
+      </div>
+      <div v-else>
+        <v-btn color="green" flat nuxt to="/login">
+          LOGIN / REGISTER
+        </v-btn>
+      </div>
 
       <!--
       <v-btn v-if="!logged" color="orange" flat nuxt to="/register">
