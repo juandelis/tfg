@@ -72,15 +72,15 @@
       <v-btn v-if="logged" color="red" flat nuxt @click="logout()">
         LOGOUT
       </v-btn>
-
-      <v-btn v-if="!logged" color="green" flat nuxt to="/login">
-        LOGIN
+      <v-btn v-else color="green" flat nuxt to="/login">
+        LOGIN / REGISTER
       </v-btn>
 
+      <!--
       <v-btn v-if="!logged" color="orange" flat nuxt to="/register">
         REGISTER
       </v-btn>
-      <!-- TODO USUARIO Y LOGIN/REGISTRO -->
+       TODO USUARIO Y LOGIN/REGISTRO -->
     </v-toolbar>
 
     <v-content>

@@ -4,6 +4,7 @@ import { interopDefault } from './utils'
 
 const _743269d5 = () => interopDefault(import('..\\pages\\index2.vue' /* webpackChunkName: "pages_index2" */))
 const _e12d7316 = () => interopDefault(import('..\\pages\\inspire.vue' /* webpackChunkName: "pages_inspire" */))
+const _6917acb7 = () => interopDefault(import('..\\pages\\logged.vue' /* webpackChunkName: "pages_logged" */))
 const _59c98844 = () => interopDefault(import('..\\pages\\login.vue' /* webpackChunkName: "pages_login" */))
 const _61d97a18 = () => interopDefault(import('..\\pages\\register.vue' /* webpackChunkName: "pages_register" */))
 const _16f60fbf = () => interopDefault(import('..\\pages\\users\\index.vue' /* webpackChunkName: "pages_users_index" */))
@@ -91,6 +92,10 @@ export function createRouter() {
       path: "/inspire",
       component: _e12d7316,
       name: "inspire"
+    }, {
+      path: "/logged",
+      component: _6917acb7,
+      name: "logged"
     }, {
       path: "/login",
       component: _59c98844,

@@ -7,7 +7,13 @@
         &#8220;REGISTRO&#8221;
       </blockquote>
 
-      <form id="registerForm" action="/" method="post" target="_self">
+      <form
+        id="registerForm"
+        action="/"
+        method="post"
+        target="_self"
+        @submit.prevent="signup"
+      >
         <!--
         <p v-if="errors.length">
           <b>Please correct the following error(s):</b>
@@ -84,10 +90,10 @@ const registerForm = new Vue({
       this.errors = []
 
       if (!this.nombre) {
-        this.errors.push('Name required.')
+        this.errors.push('Nombre requerido.')
       }
       if (!this.edad) {
-        this.errors.push('edad required.')
+        this.errors.push('Edad requerida.')
       }
 
       e.preventDefault()
