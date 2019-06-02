@@ -71,15 +71,15 @@
 
       <div v-if="logged">
         <v-btn color="red" flat nuxt @click="logout()">
-          LOGOUT
+          SALIR
         </v-btn>
-        <v-btn icon flat nuxt to="/myprofile">
+        <v-btn icon flat nuxt to="/account">
           <v-icon>account_circle</v-icon>
         </v-btn>
       </div>
       <div v-else>
         <v-btn color="green" flat nuxt to="/login">
-          LOGIN / REGISTER
+          ACCESO / REGISTRO
         </v-btn>
       </div>
 
@@ -121,7 +121,7 @@ export default {
       items: [
         {
           icon: 'home',
-          title: 'Welcome',
+          title: 'Inicio',
           to: '/'
         },
         {
@@ -130,14 +130,9 @@ export default {
           to: '/inspire'
         },
         {
-          icon: 'bubble_chart',
-          title: 'Login',
-          to: '/login'
-        },
-        {
-          icon: 'bubble_chart',
-          title: 'Register',
-          to: '/register'
+          icon: 'account_circle',
+          title: 'Mi perfil',
+          to: '/account'
         }
       ],
       fixed: false

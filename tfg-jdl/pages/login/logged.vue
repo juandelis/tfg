@@ -1,12 +1,19 @@
 <template>
-  <v-card>
-    <v-card-title>
-      Login realizado correctamente...
-    </v-card-title>
-    <v-btn @click="back()">
-      VOLVER
-    </v-btn>
-  </v-card>
+  <v-layout column justify-center align-center>
+    <v-card>
+      <v-card-title class="headline">
+        Login realizado correctamente...
+      </v-card-title>
+
+      <v-card-actions>
+        <v-spacer />
+        <v-btn @click="back()">
+          VOLVER
+        </v-btn>
+        <v-spacer />
+      </v-card-actions>
+    </v-card>
+  </v-layout>
 </template>
 
 <script>

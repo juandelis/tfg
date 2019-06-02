@@ -1,8 +1,8 @@
 {
-  "name": "demo",
+  "name": "tfg-jdl",
   "version": "1.0.0",
-  "description": "My splendid Nuxt.js project",
-  "author": "Miguel",
+  "description": "Nuxt+Firebase app for degree final proyect",
+  "author": "Juan de Lis",
   "private": true,
   "scripts": {
     "dev": "nuxt",

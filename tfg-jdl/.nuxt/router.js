@@ -2,12 +2,12 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import { interopDefault } from './utils'
 
+const _47e4f73a = () => interopDefault(import('..\\pages\\account\\index.vue' /* webpackChunkName: "pages_account_index" */))
 const _743269d5 = () => interopDefault(import('..\\pages\\index2.vue' /* webpackChunkName: "pages_index2" */))
 const _e12d7316 = () => interopDefault(import('..\\pages\\inspire.vue' /* webpackChunkName: "pages_inspire" */))
 const _07e09084 = () => interopDefault(import('..\\pages\\login\\index.vue' /* webpackChunkName: "pages_login_index" */))
-const _77cd0cac = () => interopDefault(import('..\\pages\\myprofile\\index.vue' /* webpackChunkName: "pages_myprofile_index" */))
+const _5453a806 = () => interopDefault(import('..\\pages\\login\\autologin.vue' /* webpackChunkName: "pages_login_autologin" */))
 const _7ae42c46 = () => interopDefault(import('..\\pages\\login\\logged.vue' /* webpackChunkName: "pages_login_logged" */))
-const _328451e7 = () => interopDefault(import('..\\pages\\login\\register.vue' /* webpackChunkName: "pages_login_register" */))
 const _dfbc35a6 = () => interopDefault(import('..\\pages\\index.vue' /* webpackChunkName: "pages_index" */))
 
 Vue.use(Router)
@@ -85,6 +85,10 @@ export function createRouter() {
     scrollBehavior,
 
     routes: [{
+      path: "/account",
+      component: _47e4f73a,
+      name: "account"
+    }, {
       path: "/index2",
       component: _743269d5,
       name: "index2"
@@ -97,17 +101,13 @@ export function createRouter() {
       component: _07e09084,
       name: "login"
     }, {
-      path: "/myprofile",
-      component: _77cd0cac,
-      name: "myprofile"
+      path: "/login/autologin",
+      component: _5453a806,
+      name: "login-autologin"
     }, {
       path: "/login/logged",
       component: _7ae42c46,
       name: "login-logged"
-    }, {
-      path: "/login/register",
-      component: _328451e7,
-      name: "login-register"
     }, {
       path: "/",
       component: _dfbc35a6,
