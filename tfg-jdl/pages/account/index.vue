@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <h1 align="center">MY PROFILE</h1>
+    <h1 align="center">MI PERFIL</h1>
     <br />
   </v-card>
 </template>
