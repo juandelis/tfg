@@ -1,7 +1,7 @@
 import { db } from '~/services/fireinit'
 
 const functions = {
-  createUserDocument(user, name) {
+  createUserDocument(user, username) {
     console.log('11')
     const docRef = db.collection('accounts').doc(user.uid)
     docRef
@@ -15,7 +15,7 @@ const functions = {
           console.log('No such document!')
           // Creamos el documento
           docRef.set({
-            username: name || user.email.split('@')[0], // use part of the email as a username
+            username: username || user.email.split('@')[0], // use part of the email as a username
             email: user.email,
             image: user.newImage || '/images/default-profile.png' // supply a default profile image for all users
           })

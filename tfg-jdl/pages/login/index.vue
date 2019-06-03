@@ -188,13 +188,16 @@ export default {
         })
     },
     signup() {
+      const username = this.name
+      // const birthdate = this.birth
       auth
         .createUserWithEmailAndPassword(this.email, this.password)
         .then(async function() {
           const user = await getCurrentUser() // Obtiene el usuario actual
           if (user) {
             console.log('1')
-            functions.createUserDocument(user, 'nombre')
+            // TODO AÑADIR RESTO DE CAMPOS DEL FORMULARIO
+            functions.createUserDocument(user, username)
             console.log('2')
           }
         })
