@@ -156,7 +156,7 @@ export default {
             console.log('Usuario logueado con Google')
             const user = await getCurrentUser() // Obtiene el usuario actual
             if (user) {
-              functions.createUserDocument(user)
+              functions.createUserDocument(user, null)
             }
           }
         }
@@ -193,7 +193,9 @@ export default {
         .then(async function() {
           const user = await getCurrentUser() // Obtiene el usuario actual
           if (user) {
-            functions.createUserDocument(user)
+            console.log('1')
+            functions.createUserDocument(user, 'nombre')
+            console.log('2')
           }
         })
         .catch(function(error) {
@@ -207,8 +209,7 @@ export default {
         })
 
       return 0
-    },
-    async createUserDocument() {}
+    }
   }
 }
 </script>
