@@ -62,6 +62,7 @@ export const actions = {
   async logout({ commit, dispatch }) {
     commit('setUser', null)
     await auth.signOut()
+    this.$router.push('/')
   },
   userCreate({ state }, account) {
     return firebase
