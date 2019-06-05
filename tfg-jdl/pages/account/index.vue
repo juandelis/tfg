@@ -7,7 +7,8 @@
 
 <script>
 export default {
-  data: () => ({})
+  data: () => ({}),
+  middleware: 'autenticado'
 }
 </script>
 
