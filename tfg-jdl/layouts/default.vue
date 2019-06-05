@@ -15,7 +15,6 @@
           router
           exact
         >
-          <!-- TODO COMPROBAR SI ESTA LOGGED O NO (PARA MOSTRAR O NO LOGIN,REGISTER,etc)  -->
           <v-list-tile-action>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-tile-action>

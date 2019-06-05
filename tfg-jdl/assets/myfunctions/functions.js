@@ -1,26 +1,25 @@
 import { db } from '~/services/fireinit'
 
 const functions = {
-  createUserDocument(user, username) {
-    console.log('11')
+  createUserDocument(user, name, birth, genre) {
     const docRef = db.collection('accounts').doc(user.uid)
     docRef
       .get()
       .then(function(doc) {
-        console.log('12')
         if (doc.exists) {
           // Ya existe el documento de este usuario
-          console.log('Document data:', doc.data())
+          console.log('Document already exists:', doc.data())
         } else {
           console.log('No such document!')
           // Creamos el documento
           docRef.set({
-            username: username || user.email.split('@')[0], // use part of the email as a username
+            birth: birth,
             email: user.email,
-            image: user.newImage || '/images/default-profile.png' // supply a default profile image for all users
+            genre: genre,
+            image: '/images/default-profile.png', // imagen por defecto editable luego
+            name: name
+            // username: user.email.split('@')[0] // parte del email como username
           })
-          // this.userCreateDocument({ user })
-          // this.$store.dispatch('userCreateDocument', { user })
         }
       })
       .catch(function(error) {
