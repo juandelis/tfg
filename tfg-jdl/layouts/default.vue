@@ -77,7 +77,7 @@
         </v-btn>
       </div>
       <div v-else>
-        <v-btn color="green" flat nuxt to="/login">
+        <v-btn color="green" flat @click="log_in()">
           ACCESO / REGISTRO
         </v-btn>
       </div>
@@ -108,7 +108,6 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-// import firebase from '~/services/fireinit'
 
 export default {
   data() {
@@ -141,14 +140,12 @@ export default {
     ...mapGetters('user', ['logged'])
   },
   methods: {
-    ...mapActions('user', ['logout'])
-    /*,
+    ...mapActions('user', ['logout']),
     log_in() {
-      // this.$store.commit('user/setAfterLogin', this.$nuxt.$route.path)
-      // this.$router.push('/login')
-      // this.$nuxt.$router.replace({ path: 'login' })
-      // this.$nuxt.$router.go('/login')
-    } */
+      // Guardamos la ruta actual para volver a ella después del login
+      this.$store.commit('user/setAfterLogin', this.$nuxt.$route.path)
+      this.$router.push('/login')
+    }
   }
 }
 </script>
