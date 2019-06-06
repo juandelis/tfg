@@ -13,7 +13,7 @@
           action="/"
           method="post"
           target="_self"
-          @submit.prevent="login(email_log, password_log)"
+          @submit.prevent="login({ email: email_log, password: password_log })"
         >
           <br />
           <p>
@@ -53,7 +53,15 @@
           action="/"
           method="post"
           target="_self"
-          @submit.prevent="signup(email, password, name, birth, genre)"
+          @submit.prevent="
+            signup({
+              email: email,
+              password: password,
+              name: name,
+              birth: birth,
+              genre: genre
+            })
+          "
         >
           <br />
 
@@ -115,7 +123,7 @@
 import { mapGetters, mapState, mapActions } from 'vuex'
 import firebase, { auth, getCurrentUser } from '~/services/fireinit'
 import * as firebaseui from 'firebaseui'
-import functions from '~/assets/myfunctions/functions'
+import functions from '~/assets/functions'
 
 export default {
   // middleware: 'autenticado', // poner en todas las páginas que requieran autenticacion, menos esta!
@@ -144,7 +152,7 @@ export default {
     this.showLogin()
   },
   methods: {
-    ...mapActions('user', ['initAuth', 'userCreateDocument']),
+    ...mapActions('user', ['initAuth', 'login', 'signup']),
     showLogin() {
       this.initAuth()
       const uiConfig = {
@@ -164,7 +172,8 @@ export default {
             console.log('Usuario logueado con Google')
             const user = await getCurrentUser() // Obtiene el usuario actual
             if (user) {
-              functions.createUserDocument(user, '', '', '')
+              // TODO Hacer el setUser con los datos del usuario registrado/logueado
+              functions.createUserDocument(user, user.displayName, '', '')
             }
           }
         }
@@ -181,41 +190,6 @@ export default {
         firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(auth)
       // The start method will wait until the DOM is loaded.
       ui.start('#firebaseui-auth-container', uiConfig)
-    },
-    login(email, password) {
-      auth.signInWithEmailAndPassword(email, password).catch(function(error) {
-        // Handle Errors here.
-        if (error.code === 'auth/wrong-password') {
-          alert('CONTRASEÑA INCORRECTA')
-        } else if (error.code === 'auth/user-not-found') {
-          alert('NO EXISTE EL USUARIO')
-        }
-        // ...
-      })
-    },
-    signup(email, password, name, birth, genre) {
-      auth
-        .createUserWithEmailAndPassword(email, password)
-        .then(async function() {
-          const user = await getCurrentUser() // Obtiene el usuario actual
-          if (user) {
-            console.log('1')
-            // TODO AÑADIR RESTO DE CAMPOS DEL FORMULARIO
-            functions.createUserDocument(user, name, birth, genre)
-            console.log('2')
-          }
-        })
-        .catch(function(error) {
-          // Handle Errors here.
-          if (error.code === 'auth/weak-password') {
-            alert('CONTRASEÑA DEMASIADO DÉBIL')
-          } else if (error.code === 'auth/email-already-in-use') {
-            console.log('EL USUARIO YA EXISTE')
-          }
-          // ...
-        })
-
-      return 0
     }
   }
 }
