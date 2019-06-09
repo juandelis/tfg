@@ -16,7 +16,8 @@ const functions = {
             birth: birth,
             email: user.email,
             genre: genre,
-            image: '/images/default-profile.png', // imagen por defecto editable luego
+            info: '', // info personal por defecto editable luego
+            image: '/images/juan.jpg', // imagen por defecto editable luego
             name: name
             // username: user.email.split('@')[0] // parte del email como username
           })

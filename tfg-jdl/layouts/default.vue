@@ -72,6 +72,9 @@
         <v-btn color="red" flat nuxt @click="logout()">
           SALIR
         </v-btn>
+        <router-link to="/account">
+          <a style="color:white"> {{ user.email }} </a>
+        </router-link>
         <v-btn icon flat nuxt to="/account">
           <v-icon>account_circle</v-icon>
         </v-btn>
@@ -107,7 +110,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default {
   data() {
@@ -137,7 +140,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('user', ['logged'])
+    ...mapGetters('user', ['logged']),
+    ...mapState('user', ['user'])
   },
   methods: {
     ...mapActions('user', ['logout']),

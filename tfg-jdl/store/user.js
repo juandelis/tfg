@@ -16,10 +16,11 @@ import functions from '~/assets/functions'
 export const state = () => ({
   user: {
     uid: null, // no null si está logueado
-    displayName: '',
+    name: '',
     email: '',
     birth: '',
-    genre: ''
+    genre: '',
+    image: ''
   },
   afterLogin: '/', // donde dirigirse una vez complete el login (por defecto el inicio)
   listeningAuth: false
@@ -30,20 +31,24 @@ export const getters = {
 }
 
 export const mutations = {
-  setUser(state, { user, name, birth, genre }) {
+  setUser(state, { user, name, birth, genre, info, image }) {
     if (user) {
       state.user.uid = user.uid
-      state.user.displayName = user.displayName || name
+      state.user.name = user.displayName || name
       state.user.email = user.email
       state.user.birth = birth
       state.user.genre = genre
+      state.user.info = info
+      state.user.image = image || '/images/default-profile.png'
     } else {
       // clearUserState
       state.user.uid = null
-      state.user.displayName = ''
+      state.user.name = ''
       state.user.email = ''
       state.user.birth = ''
       state.user.genre = ''
+      state.user.genre = ''
+      state.user.image = ''
     }
   },
   setListeningAuth(state, listening) {
@@ -51,6 +56,9 @@ export const mutations = {
   },
   setAfterLogin(state, payload) {
     state.afterLogin = payload
+  },
+  updateImage(state, image) {
+    state.user.image = image
   }
 }
 
@@ -63,7 +71,9 @@ export const actions = {
           user: user,
           name: '',
           birth: '',
-          genre: ''
+          genre: '',
+          info: '',
+          image: null
         })
         console.log('Cambio Auth state')
       })
@@ -75,7 +85,9 @@ export const actions = {
           user: user,
           name: '',
           birth: '',
-          genre: ''
+          genre: '',
+          info: '',
+          image: null
         })
     }
   },
@@ -90,25 +102,26 @@ export const actions = {
       .then(async function() {
         const user = await getCurrentUser() // Obtiene el usuario actual
         if (user) {
-          // TODO Hacer el setUser con los datos del usuario logueado (coger de firebase)
+          // Buscamos el documento del usuario logueado en firebase
           const docRef = db.collection('accounts').doc(user.uid)
           docRef
             .get()
             .then(function(doc) {
               if (doc.exists) {
-                // Ya existe el documento de este usuario
+                // Hacemos el setUser con los datos obtenidos
                 console.log('Document readed:', doc.data())
                 commit('setUser', {
                   user: user,
                   name: doc.data().name,
                   birth: doc.data().birth,
-                  genre: doc.data().genre
+                  genre: doc.data().genre,
+                  info: doc.data().info,
+                  image: doc.data().image
                 })
               }
             })
             .catch(function(error) {
               console.log('Error getting document:', error)
-              return null
             })
         }
       })
@@ -126,15 +139,25 @@ export const actions = {
     auth
       .createUserWithEmailAndPassword(payload.email, payload.password)
       .then(async function() {
+        console.log('1')
         const user = await getCurrentUser() // Obtiene el usuario actual
         if (user) {
+          // Creamos el documento en firebase del usuario registrado
           functions.createUserDocument(
             user,
             payload.name,
             payload.birth,
             payload.genre
           )
-          // TODO Hacer el setUser con los datos del usuario registrado/logueado
+          // Hacemos setUser con los datos del usuario registrado
+          commit('setUser', {
+            user: user,
+            name: payload.name,
+            birth: payload.birth,
+            genre: payload.genre,
+            info: '',
+            image: '/images/juan.jpg'
+          })
         }
       })
       .catch(function(error) {
