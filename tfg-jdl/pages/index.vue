@@ -3,7 +3,7 @@
     <v-flex xs12 sm8 md6>
       <div class="text-xs-center">
         <img
-          src="/GamersCrew.png"
+          src="/images/GamersCrew.png"
           alt="GAMER/CREW"
           class="mb-5"
           height="600"
