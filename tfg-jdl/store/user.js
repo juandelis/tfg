@@ -67,14 +67,38 @@ export const actions = {
     if (!state.listeningAuth) {
       commit('setListeningAuth', true)
       auth.onAuthStateChanged(user => {
-        commit('setUser', {
-          user: user,
-          name: '',
-          birth: '',
-          genre: '',
-          info: '',
-          image: null
-        })
+        // Buscamos el documento del usuario logueado en firebase
+        if (user) {
+          const docRef = db.collection('accounts').doc(user.uid)
+          docRef
+            .get()
+            .then(function(doc) {
+              if (doc.exists) {
+                // Hacemos el setUser con los datos obtenidos
+                console.log('Document readed:', doc.data())
+                commit('setUser', {
+                  user: user,
+                  name: doc.data().name,
+                  birth: doc.data().birth,
+                  genre: doc.data().genre,
+                  info: doc.data().info,
+                  image: doc.data().image
+                })
+              }
+            })
+            .catch(function(error) {
+              console.log('Error getting document:', error)
+            })
+        } else {
+          commit('setUser', {
+            user: user,
+            name: '',
+            birth: '',
+            genre: '',
+            info: '',
+            image: null
+          })
+        }
         console.log('Cambio Auth state')
       })
       const user = await getCurrentUser() // Obtiene el usuario si no se cerrá sesión
@@ -99,32 +123,6 @@ export const actions = {
   login({ commit, dispatch }, payload) {
     auth
       .signInWithEmailAndPassword(payload.email, payload.password)
-      .then(async function() {
-        const user = await getCurrentUser() // Obtiene el usuario actual
-        if (user) {
-          // Buscamos el documento del usuario logueado en firebase
-          const docRef = db.collection('accounts').doc(user.uid)
-          docRef
-            .get()
-            .then(function(doc) {
-              if (doc.exists) {
-                // Hacemos el setUser con los datos obtenidos
-                console.log('Document readed:', doc.data())
-                commit('setUser', {
-                  user: user,
-                  name: doc.data().name,
-                  birth: doc.data().birth,
-                  genre: doc.data().genre,
-                  info: doc.data().info,
-                  image: doc.data().image
-                })
-              }
-            })
-            .catch(function(error) {
-              console.log('Error getting document:', error)
-            })
-        }
-      })
       .catch(function(error) {
         // Handle Errors here.
         if (error.code === 'auth/wrong-password') {
@@ -139,7 +137,6 @@ export const actions = {
     auth
       .createUserWithEmailAndPassword(payload.email, payload.password)
       .then(async function() {
-        console.log('1')
         const user = await getCurrentUser() // Obtiene el usuario actual
         if (user) {
           // Creamos el documento en firebase del usuario registrado
@@ -170,6 +167,29 @@ export const actions = {
         // ...
       })
   } /*,
+  setUserWithFirebase({ commit, dispatch }, user) {
+    // Buscamos el documento del usuario logueado en firebase
+    const docRef = db.collection('accounts').doc(user.uid)
+    docRef
+      .get()
+      .then(function(doc) {
+        if (doc.exists) {
+          // Hacemos el setUser con los datos obtenidos
+          console.log('Document readed:', doc.data())
+          commit('setUser', {
+            user: user,
+            name: doc.data().name,
+            birth: doc.data().birth,
+            genre: doc.data().genre,
+            info: doc.data().info,
+            image: doc.data().image
+          })
+        }
+      })
+      .catch(function(error) {
+        console.log('Error getting document:', error)
+      })
+  } ,
   userCreate({ state }, account) {
     return auth
       .createUserWithEmailAndPassword(account.email, account.password)
