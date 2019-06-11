@@ -2,34 +2,22 @@
   <v-layout justify-center>
     <v-flex text-xs-center xs12 sm8 md6>
       <v-card>
-        <h1 align="center">MI PERFIL</h1>
         <br />
-        <h3 align="center">NOMBRE: {{ user.displayName }}</h3>
-        <h3 align="center">FECHA NACIMIENTO: {{ user.birth }}</h3>
-        <h3 align="center">GENERO: {{ user.genre }}</h3>
-        <br />
-      </v-card>
-
-      <br />
-
-      <v-card>
-        <br />
-        <h1 align="center">MI PERFIL</h1>
+        <h1 align="center">EDITAR PERFIL</h1>
         <br />
 
         <hr />
         <form
-          id="registerForm"
+          id="updateForm"
           action="/"
           method="post"
           target="_self"
           @submit.prevent="
-            signup({
-              email: email,
-              password: password,
+            updateAccount({
               name: name,
               birth: birth,
-              genre: genre
+              genre: genre,
+              info: info
             })
           "
         >
@@ -63,23 +51,23 @@
           </p>
 
           <p>
-            <label class="labelForm" for="email"> Correo electrónico </label>
-            <input v-model="email" type="email" name="email" required />
-
-            &nbsp; &nbsp; &nbsp; &nbsp;
-
-            <label class="labelForm" for="password"> Contraseña </label>
-            <input
-              v-model="password"
-              type="password"
-              name="password"
-              minlength="6"
-              required
-            />
+            <label class="labelForm" for="info">
+              Descripción personal / aficiones:
+            </label>
+            <br />
+            <textarea
+              v-model="info"
+              name="info"
+              rows="3"
+              cols="60"
+              maxlength="400"
+              style="background-color:white; color:black"
+            >
+            </textarea>
           </p>
 
           <p>
-            <input id="button_register" type="submit" value=" ACEPTAR " />
+            <input id="button_edit" type="submit" value=" ACEPTAR " />
           </p>
 
           <br />
@@ -90,21 +78,21 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 export default {
   data: () => ({
-    email_log: '',
-    password_log: '',
-    email: '',
-    password: '',
     name: '',
     birth: '',
-    genre: ''
+    genre: '',
+    info: ''
   }),
   middleware: 'autenticado',
   computed: {
     ...mapState('user', ['user'])
+  },
+  methods: {
+    ...mapActions('user', ['updateAccount'])
   }
 }
 </script>

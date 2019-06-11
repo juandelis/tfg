@@ -51,14 +51,20 @@ export const mutations = {
       state.user.image = ''
     }
   },
+  updateUser(state, { name, birth, genre, info }) {
+    state.user.name = name
+    state.user.birth = birth
+    state.user.genre = genre
+    state.user.info = info
+  },
+  updateImage(state, image) {
+    state.user.image = image
+  },
   setListeningAuth(state, listening) {
     state.listeningAuth = listening
   },
   setAfterLogin(state, payload) {
     state.afterLogin = payload
-  },
-  updateImage(state, image) {
-    state.user.image = image
   }
 }
 
@@ -166,6 +172,40 @@ export const actions = {
         }
         // ...
       })
+  },
+  async updateAccount({ commit, dispatch }, payload) {
+    const user = await getCurrentUser() // Obtiene el usuario actual
+    if (user) {
+      // Actualizamos el documento en firebase
+      const docRef = db.collection('accounts').doc(user.uid)
+      docRef
+        .get()
+        .then(function(doc) {
+          if (doc.exists) {
+            console.log('Updating document:')
+            // Actualizamos los valores del documento
+            docRef.set({
+              birth: payload.birth,
+              genre: payload.genre,
+              info: payload.info,
+              name: payload.name
+              // username: user.email.split('@')[0] // parte del email como username
+            })
+            // Hacemos setUser con los campos editados
+            commit('updateUser', {
+              name: payload.name,
+              birth: payload.birth,
+              genre: payload.genre,
+              info: payload.info
+            })
+          } else {
+            console.log('No such document!')
+          }
+        })
+        .catch(function(error) {
+          console.log('Error getting document:', error)
+        })
+    }
   } /*,
   setUserWithFirebase({ commit, dispatch }, user) {
     // Buscamos el documento del usuario logueado en firebase

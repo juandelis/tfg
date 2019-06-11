@@ -22,7 +22,7 @@
             </h3>
             <h3 align="left">&nbsp; {{ user.info }} &nbsp;</h3>
             <br />
-            <v-btn nuxt @click="edit()">
+            <v-btn nuxt to="/account/edit">
               EDITAR
             </v-btn>
             <v-btn nuxt @click="change_password()">
@@ -57,6 +57,7 @@
         <br />
 
         <hr />
+        <br />
       </v-card>
     </v-flex>
   </v-layout>
@@ -70,8 +71,7 @@ export default {
   middleware: 'autenticado',
   computed: {
     ...mapState('user', ['user'])
-  },
-  mounted: function() {}
+  }
 }
 </script>
 
