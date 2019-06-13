@@ -1,6 +1,6 @@
 <template>
   <v-layout justify-center>
-    <v-flex text-xs-center xs12 sm8 md6>
+    <v-flex text-xs-center xs12 sm9 md7>
       <v-card>
         <h1 align="center">MI PERFIL</h1>
 
@@ -8,45 +8,51 @@
         <br />
 
         <v-layout row>
-          <v-flex>
-            <h3 align="left">&nbsp; NOMBRE: &nbsp; {{ user.name }}</h3>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <v-flex grow>
+            <h3 align="left">NOMBRE: &nbsp; {{ user.name }}</h3>
+            <br />
+            <h3 align="left">FECHA NACIMIENTO: &nbsp; {{ user.birth }}</h3>
+            <br />
+            <h3 align="left">GENERO: &nbsp; {{ user.genre }}</h3>
             <br />
             <h3 align="left">
-              &nbsp; FECHA NACIMIENTO: &nbsp; {{ user.birth }}
+              DESCRIPCIÓN PERSONAL / AFICIONES: &nbsp;
             </h3>
-            <br />
-            <h3 align="left">&nbsp; GENERO: &nbsp; {{ user.genre }}</h3>
-            <br />
-            <h3 align="left">
-              &nbsp; DESCRIPCIÓN PERSONAL / AFICIONES: &nbsp;
-            </h3>
-            <h3 align="left">&nbsp; {{ user.info }} &nbsp;</h3>
+            <h3 align="left">{{ user.info }} &nbsp;</h3>
             <br />
             <v-btn nuxt to="/account/edit">
               EDITAR
             </v-btn>
             <v-btn nuxt @click="change_password()">
-              CAMBIAR CONTRASEÑA
+              RESTABLECER CONTRASEÑA
             </v-btn>
           </v-flex>
-          <v-flex>
-            <v-card>
+          <v-flex shrink>
+            <v-card min-width="220px">
               <img
                 :src="user.image"
                 alt="User profile photo"
-                width="190px"
+                width="200px"
                 height="240px"
               />
               <br />
               <v-btn nuxt @click="change_image()">
                 CAMBIAR IMAGEN PERFIL
               </v-btn>
+              <input
+                ref="fileInput"
+                type="file"
+                style="display:none"
+                accept="image/*"
+                @change="onFileChange"
+              />
             </v-card>
           </v-flex>
-          &nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         </v-layout>
 
-        <br /><br />
+        <br />
       </v-card>
 
       <br />
@@ -64,13 +70,88 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+import { storage } from '~/services/fireinit'
 
 export default {
-  data: () => ({}),
+  data: () => ({
+    name: ''
+    /* imageURL: '',
+    imageDownloadURL:
+      'https://firebasestorage.googleapis.com/v0/b/tfg-jdl.appspot.com/o/profileImages%2Fjuan.jpg?alt=media&token=5d5e7241-a753-46ed-9fc3-848627e727d1',
+    image: null */
+  }),
   middleware: 'autenticado',
   computed: {
     ...mapState('user', ['user'])
+  },
+  methods: {
+    ...mapActions('user', ['updateUserImage', 'test']),
+    change_image() {
+      this.$refs.fileInput.click()
+    },
+    updateImage(newImage) {
+      this.updateUserImage(newImage)
+    },
+    async onFileChange(event) {
+      const files = event.target.files
+      const newImage = files[0]
+
+      const filename = newImage.name
+      if (filename.lastIndexOf('.') <= 0) {
+        return alert('Invalid type file! ')
+      }
+
+      const storageRef = storage.ref('profileImages/' + filename)
+      const snapshot = await storageRef.put(newImage)
+
+      const downloadURL = await snapshot.ref.getDownloadURL()
+      console.log('File available at', downloadURL)
+
+      this.updateUserImage(downloadURL)
+
+      /* storageRef.put(newImage).then(function(uploadTask) {
+        console.log(
+          'File available att' + uploadTask.snapshot.ref.getDownloadURL()
+        )
+        uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+          console.log('File available at', downloadURL)
+          // updateImage(downloadURL)
+        })
+      })
+
+            const uploadTask = storageRef.put(newImage)
+
+      uploadTask.on(
+        'state_changed',
+        function(snapshot) {},
+        function(error) {
+          console.error(error)
+        },
+        function() {
+          uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+            console.log('File available at', downloadURL)
+            // updateImage(downloadURL)
+          })
+          this.imageURL = 'v.png'
+          console.log('image ' + this.imageURL)
+          // this.updateUserImage('v.png')
+        }
+      ) */
+
+      /* const fileReader = new FileReader()
+      fileReader.addEventListener('load', () => {
+        this.imageURL = fileReader.result
+        // this.updateImage('images/GamersCrew.png')
+        console.log('Imagen: ' + this.$store.state.user.image)
+        // this.$router.push('/')
+        // this.$store.commit('updateImage', fileReader.result)
+        // console.log('imageURL: ' + this.imageURL)
+      })
+
+      fileReader.readAsDataURL(files[0])
+      this.image = files[0] */
+    }
   }
 }
 </script>

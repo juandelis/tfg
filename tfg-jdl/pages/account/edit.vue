@@ -7,72 +7,72 @@
         <br />
 
         <hr />
-        <form
-          id="updateForm"
-          action="/"
-          method="post"
-          target="_self"
-          @submit.prevent="
-            updateAccount({
-              name: name,
-              birth: birth,
-              genre: genre,
-              info: info
-            })
-          "
-        >
+        <br />
+
+        <p>
+          <label class="labelForm" for="name">Nombre y apellidos</label>
+          <input
+            id="name"
+            ref="name"
+            type="text"
+            name="name"
+            size="40"
+            maxlength="40"
+            required
+            :value="user.name"
+          />
+        </p>
+
+        <p>
+          <label class="labelForm" for="birth">Fecha de nacimiento</label>
+          <input
+            id="birth"
+            ref="birth"
+            type="date"
+            name="birth"
+            :value="user.birth"
+          />
+
+          &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+
+          <label class="labelForm" for="genre">Género</label>
+          <select id="genre" ref="genre" name="genre" :value="user.genre">
+            <option>Masculino</option>
+            <option>Femenino</option>
+            <option>Otro</option>
+          </select>
+        </p>
+
+        <p>
+          <label class="labelForm" for="info">
+            Descripción personal / aficiones:
+          </label>
           <br />
+          <textarea
+            ref="info"
+            name="info"
+            rows="3"
+            cols="60"
+            maxlength="400"
+            style="background-color:white; color:black"
+            :value="user.info"
+          >
+          </textarea>
+        </p>
 
-          <p>
-            <label class="labelForm" for="name">Nombre y apellidos</label>
-            <input
-              id="name"
-              v-model="name"
-              type="text"
-              name="name"
-              size="40"
-              maxlength="40"
-              required
-            />
-          </p>
+        <p>
+          <v-btn nuxt @click="send_inputs()">
+            ACEPTAR
+          </v-btn>
+          <v-btn nuxt to="/account">
+            VOLVER
+          </v-btn>
+        </p>
 
-          <p>
-            <label class="labelForm" for="birth">Fecha de nacimiento</label>
-            <input id="birth" v-model="birth" type="date" name="birth" />
-
-            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-
-            <label class="labelForm" for="genre">Género</label>
-            <select id="genre" v-model="genre" name="genre">
-              <option>Masculino</option>
-              <option>Femenino</option>
-              <option>Otro</option>
-            </select>
-          </p>
-
-          <p>
-            <label class="labelForm" for="info">
-              Descripción personal / aficiones:
-            </label>
-            <br />
-            <textarea
-              v-model="info"
-              name="info"
-              rows="3"
-              cols="60"
-              maxlength="400"
-              style="background-color:white; color:black"
-            >
-            </textarea>
-          </p>
-
-          <p>
-            <input id="button_edit" type="submit" value=" ACEPTAR " />
-          </p>
-
-          <br />
-        </form>
+        <br />
       </v-card>
+
+      <br />
     </v-flex>
   </v-layout>
 </template>
@@ -92,7 +92,16 @@ export default {
     ...mapState('user', ['user'])
   },
   methods: {
-    ...mapActions('user', ['updateAccount'])
+    ...mapActions('user', ['updateAccount', 'updateUserImage']),
+    send_inputs() {
+      this.updateAccount({
+        name: this.$refs.name.value,
+        birth: this.$refs.birth.value,
+        genre: this.$refs.genre.value,
+        info: this.$refs.info.value
+      })
+      this.$router.push('/account')
+    }
   }
 }
 </script>

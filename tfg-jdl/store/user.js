@@ -39,7 +39,7 @@ export const mutations = {
       state.user.birth = birth
       state.user.genre = genre
       state.user.info = info
-      state.user.image = image || '/images/default-profile.png'
+      state.user.image = image || 'default-profile.png'
     } else {
       // clearUserState
       state.user.uid = null
@@ -69,6 +69,9 @@ export const mutations = {
 }
 
 export const actions = {
+  test() {
+    console.log('test')
+  },
   async initAuth({ state, commit, dispatch }) {
     if (!state.listeningAuth) {
       commit('setListeningAuth', true)
@@ -150,7 +153,9 @@ export const actions = {
             user,
             payload.name,
             payload.birth,
-            payload.genre
+            payload.genre,
+            null,
+            null
           )
           // Hacemos setUser con los datos del usuario registrado
           commit('setUser', {
@@ -159,7 +164,7 @@ export const actions = {
             birth: payload.birth,
             genre: payload.genre,
             info: '',
-            image: '/images/juan.jpg'
+            image: 'default-profile.png'
           })
         }
       })
@@ -184,13 +189,15 @@ export const actions = {
           if (doc.exists) {
             console.log('Updating document:')
             // Actualizamos los valores del documento
-            docRef.set({
-              birth: payload.birth,
-              genre: payload.genre,
-              info: payload.info,
-              name: payload.name
-              // username: user.email.split('@')[0] // parte del email como username
-            })
+            docRef.set(
+              {
+                birth: payload.birth,
+                genre: payload.genre,
+                info: payload.info,
+                name: payload.name
+              },
+              { merge: true }
+            )
             // Hacemos setUser con los campos editados
             commit('updateUser', {
               name: payload.name,
@@ -206,7 +213,31 @@ export const actions = {
           console.log('Error getting document:', error)
         })
     }
-  } /*,
+  },
+  async updateUserImage({ commit, dispatch }, newImage) {
+    const user = await getCurrentUser() // Obtiene el usuario actual
+    if (user) {
+      // Actualizamos el documento en firebase
+      const docRef = db.collection('accounts').doc(user.uid)
+      docRef
+        .get()
+        .then(function(doc) {
+          if (doc.exists) {
+            console.log('Updating document:')
+            // Actualizamos imagen en el documento firebase
+            docRef.set({ image: newImage }, { merge: true })
+            // Actualizamos imagen en el store
+            commit('updateImage', newImage)
+          } else {
+            console.log('No such document!')
+          }
+        })
+        .catch(function(error) {
+          console.log('Error getting document:', error)
+        })
+    }
+  }
+  /*,
   setUserWithFirebase({ commit, dispatch }, user) {
     // Buscamos el documento del usuario logueado en firebase
     const docRef = db.collection('accounts').doc(user.uid)

@@ -1,7 +1,7 @@
 import { db } from '~/services/fireinit'
 
 const functions = {
-  createUserDocument(user, name, birth, genre) {
+  createUserDocument(user, name, birth, genre, info, image) {
     const docRef = db.collection('accounts').doc(user.uid)
     docRef
       .get()
@@ -16,8 +16,8 @@ const functions = {
             birth: birth,
             email: user.email,
             genre: genre,
-            info: '', // info personal por defecto editable luego
-            image: '/images/juan.jpg', // imagen por defecto editable luego
+            info: info || '', // info personal por defecto vacía, editable luego
+            image: image || '/default-profile.png', // imagen por defecto, editable luego
             name: name
             // username: user.email.split('@')[0] // parte del email como username
           })
