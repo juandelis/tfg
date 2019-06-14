@@ -102,7 +102,7 @@ export default {
         return alert('Invalid type file! ')
       }
 
-      const storageRef = storage.ref('profileImages/' + filename)
+      const storageRef = storage.ref('profileImages/' + this.user.uid)
       const snapshot = await storageRef.put(newImage)
 
       const downloadURL = await snapshot.ref.getDownloadURL()
