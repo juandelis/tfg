@@ -187,7 +187,7 @@ export const actions = {
         .get()
         .then(function(doc) {
           if (doc.exists) {
-            console.log('Updating document:')
+            console.log('Updating document')
             // Actualizamos los valores del documento
             docRef.set(
               {
@@ -223,7 +223,7 @@ export const actions = {
         .get()
         .then(function(doc) {
           if (doc.exists) {
-            console.log('Updating document:')
+            console.log('Updating document (image)')
             // Actualizamos imagen en el documento firebase
             docRef.set({ image: newImage }, { merge: true })
             // Actualizamos imagen en el store

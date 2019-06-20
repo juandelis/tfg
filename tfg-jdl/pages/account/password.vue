@@ -10,7 +10,7 @@
         <br />
 
         <form
-          id="passwordform"
+          id="passwordForm"
           method="post"
           target="_self"
           @submit.prevent="update_password()"
@@ -57,7 +57,7 @@
           <p>
             <input
               id="button_password"
-              ref="submitForm"
+              ref="submit_passwordForm"
               type="submit"
               value=" ACEPTAR "
               style="display:none"
@@ -92,7 +92,7 @@ export default {
   methods: {
     ...mapActions('user', ['updateAccount', 'updateUserImage']),
     click_submit() {
-      this.$refs.submitForm.click()
+      this.$refs.submit_passwordForm.click()
     },
     async update_password() {
       const newPassword = this.$refs.password.value
