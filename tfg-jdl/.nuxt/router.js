@@ -6,6 +6,8 @@ const _47e4f73a = () => interopDefault(import('..\\pages\\account\\index.vue' /*
 const _743269d5 = () => interopDefault(import('..\\pages\\index2.vue' /* webpackChunkName: "pages_index2" */))
 const _e12d7316 = () => interopDefault(import('..\\pages\\inspire.vue' /* webpackChunkName: "pages_inspire" */))
 const _07e09084 = () => interopDefault(import('..\\pages\\login\\index.vue' /* webpackChunkName: "pages_login_index" */))
+const _7ed62514 = () => interopDefault(import('..\\pages\\posts\\index.vue' /* webpackChunkName: "pages_posts_index" */))
+const _16f60fbf = () => interopDefault(import('..\\pages\\users\\index.vue' /* webpackChunkName: "pages_users_index" */))
 const _a4c3465c = () => interopDefault(import('..\\pages\\account\\edit.vue' /* webpackChunkName: "pages_account_edit" */))
 const _5453a806 = () => interopDefault(import('..\\pages\\login\\autologin.vue' /* webpackChunkName: "pages_login_autologin" */))
 const _7ae42c46 = () => interopDefault(import('..\\pages\\login\\logged.vue' /* webpackChunkName: "pages_login_logged" */))
@@ -101,6 +103,14 @@ export function createRouter() {
       path: "/login",
       component: _07e09084,
       name: "login"
+    }, {
+      path: "/posts",
+      component: _7ed62514,
+      name: "posts"
+    }, {
+      path: "/users",
+      component: _16f60fbf,
+      name: "users"
     }, {
       path: "/account/edit",
       component: _a4c3465c,

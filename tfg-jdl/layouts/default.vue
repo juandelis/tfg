@@ -131,6 +131,16 @@ export default {
           to: '/inspire'
         },
         {
+          icon: 'description',
+          title: 'Publicaciones',
+          to: '/posts'
+        },
+        {
+          icon: 'people_outline',
+          title: 'Usuarios',
+          to: '/users'
+        },
+        {
           icon: 'account_circle',
           title: 'Mi perfil',
           to: '/account'
