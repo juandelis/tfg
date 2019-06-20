@@ -35,6 +35,11 @@
           <p>
             <input id="button_login" type="submit" value=" INICIAR SESION " />
           </p>
+          <p>
+            <router-link to="/login/password"
+              >¿Olvidaste tu contraseña?</router-link
+            >
+          </p>
         </form>
         <div id="firebaseui-auth-container" />
         <br />
