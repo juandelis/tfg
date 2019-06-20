@@ -107,7 +107,6 @@ export default {
 
       const downloadURL = await snapshot.ref.getDownloadURL()
       console.log('File available at', downloadURL)
-
       this.updateUserImage(downloadURL)
 
       /* storageRef.put(newImage).then(function(uploadTask) {
@@ -155,5 +154,3 @@ export default {
   }
 }
 </script>
-
-<style scoped></style>
