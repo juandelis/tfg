@@ -9,6 +9,7 @@ const _07e09084 = () => interopDefault(import('..\\pages\\login\\index.vue' /* w
 const _7ed62514 = () => interopDefault(import('..\\pages\\posts\\index.vue' /* webpackChunkName: "pages_posts_index" */))
 const _16f60fbf = () => interopDefault(import('..\\pages\\users\\index.vue' /* webpackChunkName: "pages_users_index" */))
 const _a4c3465c = () => interopDefault(import('..\\pages\\account\\edit.vue' /* webpackChunkName: "pages_account_edit" */))
+const _7f01e0e3 = () => interopDefault(import('..\\pages\\account\\password.vue' /* webpackChunkName: "pages_account_password" */))
 const _5453a806 = () => interopDefault(import('..\\pages\\login\\autologin.vue' /* webpackChunkName: "pages_login_autologin" */))
 const _7ae42c46 = () => interopDefault(import('..\\pages\\login\\logged.vue' /* webpackChunkName: "pages_login_logged" */))
 const _dfbc35a6 = () => interopDefault(import('..\\pages\\index.vue' /* webpackChunkName: "pages_index" */))
@@ -115,6 +116,10 @@ export function createRouter() {
       path: "/account/edit",
       component: _a4c3465c,
       name: "account-edit"
+    }, {
+      path: "/account/password",
+      component: _7f01e0e3,
+      name: "account-password"
     }, {
       path: "/login/autologin",
       component: _5453a806,

@@ -81,12 +81,7 @@
 import { mapActions, mapState } from 'vuex'
 
 export default {
-  data: () => ({
-    name: '',
-    birth: '',
-    genre: '',
-    info: ''
-  }),
+  data: () => ({}),
   middleware: 'autenticado',
   computed: {
     ...mapState('user', ['user'])

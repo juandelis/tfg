@@ -24,8 +24,8 @@
             <v-btn nuxt to="/account/edit">
               EDITAR
             </v-btn>
-            <v-btn nuxt @click="change_password()">
-              RESTABLECER CONTRASEÑA
+            <v-btn nuxt to="/account/password">
+              CAMBIAR CONTRASEÑA
             </v-btn>
           </v-flex>
           <v-flex shrink>
@@ -37,7 +37,7 @@
                 height="240px"
               />
               <br />
-              <v-btn nuxt @click="change_image()">
+              <v-btn nuxt @click="click_fileInput()">
                 CAMBIAR IMAGEN PERFIL
               </v-btn>
               <input
@@ -75,7 +75,6 @@ import { storage } from '~/services/fireinit'
 
 export default {
   data: () => ({
-    name: ''
     /* imageURL: '',
     imageDownloadURL:
       'https://firebasestorage.googleapis.com/v0/b/tfg-jdl.appspot.com/o/profileImages%2Fjuan.jpg?alt=media&token=5d5e7241-a753-46ed-9fc3-848627e727d1',
@@ -87,7 +86,7 @@ export default {
   },
   methods: {
     ...mapActions('user', ['updateUserImage', 'test']),
-    change_image() {
+    click_fileInput() {
       this.$refs.fileInput.click()
     },
     updateImage(newImage) {
