@@ -236,6 +236,40 @@ export const actions = {
           console.log('Error getting document:', error)
         })
     }
+  },
+  async follow({ commit, dispatch }, idUserToFollow) {
+    const userLogged = await getCurrentUser() // Obtiene el usuario actual
+    if (userLogged) {
+      const docRef = await db.collection('accounts').doc(userLogged.uid)
+      // const docRef = await self._firebase.child('accounts/' + userLogged.uid + '/follows')
+      // const docRef = firebase.database().ref(accounts).child(userLogged.uid).push(idUserToFollow);
+
+      // docRef.push(idUserToFollow)
+      // docRef.set({ follows: idUserToFollow }, { merge: true })
+
+      /* docRef
+        .get()
+        .then(function(doc) {
+          if (doc.exists) {
+            console.log('DATA: ' + doc.data())
+            docRef.push({ idfollow: 'idUserToFollow' })
+          } else {
+            console.log('No such document!')
+          }
+        })
+        .catch(function(error) {
+          console.log('Error getting document:', error)
+        }) */
+
+      // const usersSnapshot = await docRef.get()
+      // console.log('DATA:' + usersSnapshot.name)
+
+      // const newFollowsRef = followsRef.push()
+      // newFollowsRef.set({ user: idUserToFollow })
+
+      // Actualizamos follows en el store
+      // commit('updateFollows', idUserToFollow)
+    }
   }
   /*,
   setUserWithFirebase({ commit, dispatch }, user) {
