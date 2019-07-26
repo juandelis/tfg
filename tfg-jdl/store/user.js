@@ -189,15 +189,12 @@ export const actions = {
           if (doc.exists) {
             console.log('Updating document')
             // Actualizamos los valores del documento
-            docRef.set(
-              {
-                birth: payload.birth,
-                genre: payload.genre,
-                info: payload.info,
-                name: payload.name
-              },
-              { merge: true }
-            )
+            docRef.update({
+              birth: payload.birth,
+              genre: payload.genre,
+              info: payload.info,
+              name: payload.name
+            })
             // Hacemos setUser con los campos editados
             commit('updateUser', {
               name: payload.name,
@@ -225,7 +222,7 @@ export const actions = {
           if (doc.exists) {
             console.log('Updating document (image)')
             // Actualizamos imagen en el documento firebase
-            docRef.set({ image: newImage }, { merge: true })
+            docRef.update({ image: newImage })
             // Actualizamos imagen en el store
             commit('updateImage', newImage)
           } else {
