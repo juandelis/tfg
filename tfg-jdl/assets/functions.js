@@ -15,6 +15,8 @@ const functions = {
           docRef.set({
             birth: birth,
             email: user.email,
+            followed: [],
+            followers: [],
             genre: genre,
             info: info || '', // info personal por defecto vacía, editable luego
             image: image || '/default-profile.png', // imagen por defecto, editable luego

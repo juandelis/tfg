@@ -1,6 +1,7 @@
 import { auth, getCurrentUser, db } from '~/services/fireinit'
 // import firebase from 'firebase'
 import functions from '~/assets/functions'
+import { firestore } from 'firebase'
 
 /* function createUserDocument(user) {
   return firebase
@@ -20,7 +21,9 @@ export const state = () => ({
     email: '',
     birth: '',
     genre: '',
-    image: ''
+    image: '',
+    followed: [],
+    followers: []
   },
   afterLogin: '/', // donde dirigirse una vez complete el login (por defecto el inicio)
   listeningAuth: false
@@ -31,7 +34,10 @@ export const getters = {
 }
 
 export const mutations = {
-  setUser(state, { user, name, birth, genre, info, image }) {
+  setUser(
+    state,
+    { user, name, birth, genre, info, image, followed, followers }
+  ) {
     if (user) {
       state.user.uid = user.uid
       state.user.name = user.displayName || name
@@ -40,6 +46,8 @@ export const mutations = {
       state.user.genre = genre
       state.user.info = info
       state.user.image = image || 'default-profile.png'
+      state.user.followed = followed
+      state.user.followers = followers
     } else {
       // clearUserState
       state.user.uid = null
@@ -47,11 +55,13 @@ export const mutations = {
       state.user.email = ''
       state.user.birth = ''
       state.user.genre = ''
-      state.user.genre = ''
+      state.user.info = ''
       state.user.image = ''
+      state.user.followed = []
+      state.user.followers = []
     }
   },
-  updateUser(state, { name, birth, genre, info }) {
+  updateUserData(state, { name, birth, genre, info }) {
     state.user.name = name
     state.user.birth = birth
     state.user.genre = genre
@@ -91,7 +101,9 @@ export const actions = {
                   birth: doc.data().birth,
                   genre: doc.data().genre,
                   info: doc.data().info,
-                  image: doc.data().image
+                  image: doc.data().image,
+                  followed: doc.data().followed,
+                  followers: doc.data().followers
                 })
               }
             })
@@ -105,7 +117,9 @@ export const actions = {
             birth: '',
             genre: '',
             info: '',
-            image: null
+            image: null,
+            followed: [],
+            followers: []
           })
         }
         console.log('Cambio Auth state')
@@ -120,7 +134,9 @@ export const actions = {
           birth: '',
           genre: '',
           info: '',
-          image: null
+          image: null,
+          followed: [],
+          followers: []
         })
     }
   },
@@ -235,37 +251,35 @@ export const actions = {
     }
   },
   async follow({ commit, dispatch }, idUserToFollow) {
+    // UserLogged starts following UserToFollow
+    const userLogged = await getCurrentUser() // Get actual user
+    if (userLogged) {
+      // Add userToFollow to followed array of userLogged
+      const docRef = await db.collection('accounts').doc(userLogged.uid)
+      docRef.update({
+        followed: firestore.FieldValue.arrayUnion(idUserToFollow)
+      })
+      // Add userLogged to followers array of userToFollow
+      const docRef2 = await db.collection('accounts').doc(idUserToFollow)
+      docRef2.update({
+        followers: firestore.FieldValue.arrayUnion(userLogged.uid)
+      })
+    }
+  },
+  async unfollow({ commit, dispatch }, idUserToUnfollow) {
+    // const admin = require('firebase-admin')
     const userLogged = await getCurrentUser() // Obtiene el usuario actual
     if (userLogged) {
+      // Remove idUserToUnfollow from followed array of userLogged
       const docRef = await db.collection('accounts').doc(userLogged.uid)
-      // const docRef = await self._firebase.child('accounts/' + userLogged.uid + '/follows')
-      // const docRef = firebase.database().ref(accounts).child(userLogged.uid).push(idUserToFollow);
-
-      // docRef.push(idUserToFollow)
-      // docRef.set({ follows: idUserToFollow }, { merge: true })
-
-      /* docRef
-        .get()
-        .then(function(doc) {
-          if (doc.exists) {
-            console.log('DATA: ' + doc.data())
-            docRef.push({ idfollow: 'idUserToFollow' })
-          } else {
-            console.log('No such document!')
-          }
-        })
-        .catch(function(error) {
-          console.log('Error getting document:', error)
-        }) */
-
-      // const usersSnapshot = await docRef.get()
-      // console.log('DATA:' + usersSnapshot.name)
-
-      // const newFollowsRef = followsRef.push()
-      // newFollowsRef.set({ user: idUserToFollow })
-
-      // Actualizamos follows en el store
-      // commit('updateFollows', idUserToFollow)
+      docRef.update({
+        followed: firestore.FieldValue.arrayRemove(idUserToUnfollow)
+      })
+      // Remove userLogged from followers array of idUserToUnfollow
+      const docRef2 = await db.collection('accounts').doc(idUserToUnfollow)
+      docRef2.update({
+        followers: firestore.FieldValue.arrayRemove(userLogged.uid)
+      })
     }
   }
   /*,
