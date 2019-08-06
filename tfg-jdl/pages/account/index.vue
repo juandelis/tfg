@@ -73,8 +73,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { db, getCurrentUser } from '~/services/fireinit'
-import { storage } from '~/services/fireinit'
+import { db, getCurrentUser, storage } from '~/services/fireinit'
 
 export default {
   /* data: () => ({
