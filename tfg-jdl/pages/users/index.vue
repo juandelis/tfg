@@ -28,19 +28,29 @@
         <br />
 
         <div v-for="(user, i) in users" :key="i">
-          <div v-if="user.followed">
-            {{ i + 1 }} - NOMBRE: {{ user.name }} -- CORREO: {{ user.email }}
-            <v-btn color="orange" outline round @click="unfollow(user.id, i)">
-              DEJAR DE SEGUIR
-            </v-btn>
-          </div>
-          <div v-else>
-            {{ i + 1 }} - NOMBRE: {{ user.name }} -- CORREO: {{ user.email }}
-            <v-btn color="green" outline round @click="follow(user.id, i)">
-              SEGUIR
-            </v-btn>
-          </div>
+          {{ i + 1 }} -&nbsp; {{ user.name }} &nbsp; --- &nbsp; {{ user.email }}
+          <v-btn
+            v-if="user.followed"
+            color="orange"
+            outline
+            round
+            left
+            @click="unfollow(user.id, i)"
+          >
+            DEJAR DE SEGUIR
+          </v-btn>
+          <v-btn
+            v-else
+            color="green"
+            outline
+            round
+            left
+            @click="follow(user.id, i)"
+          >
+            SEGUIR
+          </v-btn>
         </div>
+
         <br />
       </v-card>
       <br />
