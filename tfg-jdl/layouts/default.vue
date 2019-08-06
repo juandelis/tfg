@@ -23,50 +23,15 @@
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
-    </v-navigation-drawer>
-
-    <v-toolbar :clipped-left="clipped" fixed app>
-      <v-btn icon flat nuxt to="/">
-        <v-icon>home</v-icon>
-      </v-btn>
-      <v-toolbar-side-icon @click="drawer = !drawer" />
       <v-btn icon @click.stop="miniVariant = !miniVariant">
         <v-icon>{{ `chevron_${miniVariant ? 'right' : 'left'}` }}</v-icon>
       </v-btn>
+    </v-navigation-drawer>
+
+    <v-toolbar :clipped-left="clipped" fixed app>
+      <v-toolbar-side-icon @click="drawer = !drawer" />
 
       <v-spacer />
-
-      <!--
-      <p id="demo2"></p>
-
-      <script>
-        import firebase from '~/services/fireinit'
-
-        function user() {
-          document.getElementById('demo2').innerHTML = 'Hello World'
-          var user = firebase.auth().currentUser
-          if (user) {
-            // User is signed in.
-            document.getElementById('demo2').innerHTML = 'USER'
-          } else {
-            // No user is signed in.
-            document.getElementById('demo2').innerHTML = 'NO USER'
-          }
-
-          document.getElementById('demo2').innerHTML = '2'
-          //firebase.auth().signOut()
-          //firebase.auth().signInWithEmailAndPassword('juanlis96@hotmail.com', 'pepito')
-        }
-      </script>
-
-      <v-btn v-if="!userLogged()" color="red" flat nuxt @click="logout()">
-        LOGOUT
-      </v-btn>
-
-      <v-btn color="green" flat nuxt to="/login" @click="log_in">
-        LOGIN
-      </v-btn>
-      -->
 
       <div v-if="logged">
         <v-btn color="red" flat nuxt @click="logout()">
@@ -116,7 +81,7 @@ export default {
   data() {
     return {
       dark: true,
-      drawer: false,
+      drawer: true,
       clipped: true,
       miniVariant: false,
       items: [
