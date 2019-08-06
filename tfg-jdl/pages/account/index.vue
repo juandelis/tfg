@@ -55,14 +55,16 @@
         <br />
       </v-card>
 
-      <br />
+      <br /><br />
 
       <v-card>
         <br />
-        <h1 align="center">SEGUIDORES / OTRA SECCION</h1>
-        <br />
-
+        <h1 align="center">SEGUIDORES ( {{ followers.length }} )</h1>
         <hr />
+        <br />
+        <div v-for="(user, i) in followers" :key="i">
+          {{ i + 1 }} -&nbsp; {{ user.name }} &nbsp; --- &nbsp; {{ user.email }}
+        </div>
         <br />
       </v-card>
     </v-flex>
@@ -71,21 +73,48 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { db, getCurrentUser } from '~/services/fireinit'
 import { storage } from '~/services/fireinit'
 
 export default {
-  data: () => ({
-    /* imageURL: '',
+  /* data: () => ({
+    imageURL: '',
     imageDownloadURL:
       'https://firebasestorage.googleapis.com/v0/b/tfg-jdl.appspot.com/o/profileImages%2Fjuan.jpg?alt=media&token=5d5e7241-a753-46ed-9fc3-848627e727d1',
-    image: null */
-  }),
+    image: null
+  }), */
+  data() {
+    return {
+      followers: []
+    }
+  },
   middleware: 'autenticado',
   computed: {
     ...mapState('user', ['user'])
   },
+  mounted: function() {
+    this.getUsers()
+  },
   methods: {
     ...mapActions('user', ['updateUserImage', 'test']),
+    async getUsers() {
+      const usersSnapshot = await db.collection('accounts').get()
+      const userLogged = await getCurrentUser()
+      usersSnapshot.forEach(userDoc => {
+        const userData = userDoc.data()
+        if (
+          userDoc.id !== userLogged.uid &&
+          userData.followed.includes(userLogged.uid)
+        ) {
+          this.followers.push({
+            id: userDoc.id,
+            name: userData.name,
+            email: userData.email
+          })
+          // console.log('Usuario: ' + user.email)
+        }
+      })
+    },
     click_fileInput() {
       this.$refs.fileInput.click()
     },
