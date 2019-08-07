@@ -99,18 +99,18 @@ export default {
     async getUsers() {
       const usersSnapshot = await db.collection('accounts').get()
       const userLogged = await getCurrentUser()
-      usersSnapshot.forEach(userDoc => {
-        const userData = userDoc.data()
+      const userFollowers = this.user.followers
+      usersSnapshot.forEach(eachUserDoc => {
+        const eachUserData = eachUserDoc.data()
         if (
-          userDoc.id !== userLogged.uid &&
-          userData.followed.includes(userLogged.uid)
+          eachUserDoc.id !== userLogged.uid &&
+          userFollowers.includes(eachUserDoc.id)
         ) {
           this.followers.push({
-            id: userDoc.id,
-            name: userData.name,
-            email: userData.email
+            id: eachUserDoc.id,
+            name: eachUserData.name,
+            email: eachUserData.email
           })
-          // console.log('Usuario: ' + user.email)
         }
       })
     },
