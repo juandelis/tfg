@@ -1,6 +1,7 @@
 import { auth, getCurrentUser, db } from '~/services/fireinit'
 // import firebase from 'firebase'
 import functions from '~/assets/functions'
+import { firestore } from 'firebase'
 
 /* function createUserDocument(user) {
   return firebase
@@ -69,6 +70,15 @@ export const mutations = {
   updateImage(state, image) {
     state.user.image = image
   },
+  addFollowed(state, newFollowed) {
+    state.user.followed.push(newFollowed)
+  },
+  removeFollowed(state, oldFollowed) {
+    state.user.followed.pop(oldFollowed)
+  },
+  updateFollowers(state, followers) {
+    state.user.followers = followers
+  },
   setListeningAuth(state, listening) {
     state.listeningAuth = listening
   },
@@ -81,6 +91,7 @@ export const actions = {
   test() {
     console.log('test')
   },
+
   async initAuth({ state, commit, dispatch }) {
     if (!state.listeningAuth) {
       commit('setListeningAuth', true)
@@ -139,11 +150,13 @@ export const actions = {
         })
     }
   },
+
   async logout({ commit, dispatch }) {
     commit('setUser', {})
     await auth.signOut()
     this.$router.push('/')
   },
+
   login({ commit, dispatch }, payload) {
     auth
       .signInWithEmailAndPassword(payload.email, payload.password)
@@ -157,6 +170,7 @@ export const actions = {
         // ...
       })
   },
+
   signup({ commit, dispatch }, payload) {
     auth
       .createUserWithEmailAndPassword(payload.email, payload.password)
@@ -193,6 +207,7 @@ export const actions = {
         // ...
       })
   },
+
   async updateAccount({ commit, dispatch }, payload) {
     const user = await getCurrentUser() // Obtiene el usuario actual
     if (user) {
@@ -226,6 +241,7 @@ export const actions = {
         })
     }
   },
+
   async updateUserImage({ commit, dispatch }, newImage) {
     const user = await getCurrentUser() // Obtiene el usuario actual
     if (user) {
@@ -247,6 +263,38 @@ export const actions = {
         .catch(function(error) {
           console.log('Error getting document:', error)
         })
+    }
+  },
+
+  async follow({ commit, dispatch }, idUserToFollow) {
+    const userLogged = await getCurrentUser() // Obtiene el usuario actual
+    if (userLogged) {
+      // Add userToFollow to followed array of userLogged
+      const docRef = await db.collection('accounts').doc(userLogged.uid)
+      docRef.update({
+        followed: firestore.FieldValue.arrayUnion(idUserToFollow)
+      })
+      // Add userLogged to followers array of userToFollow
+      const docRef2 = await db.collection('accounts').doc(idUserToFollow)
+      docRef2.update({
+        followers: firestore.FieldValue.arrayUnion(userLogged.uid)
+      })
+    }
+  },
+
+  async unfollow({ commit, dispatch }, idUserToUnfollow) {
+    const userLogged = await getCurrentUser() // Obtiene el usuario actual
+    if (userLogged) {
+      // Remove idUserToUnfollow from followed array of userLogged
+      const docRef = await db.collection('accounts').doc(userLogged.uid)
+      docRef.update({
+        followed: firestore.FieldValue.arrayRemove(idUserToUnfollow)
+      })
+      // Remove userLogged from followers array of idUserToUnfollow
+      const docRef2 = await db.collection('accounts').doc(idUserToUnfollow)
+      docRef2.update({
+        followers: firestore.FieldValue.arrayRemove(userLogged.uid)
+      })
     }
   }
   /*,

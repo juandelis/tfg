@@ -35,7 +35,7 @@
             outline
             round
             left
-            @click="unfollow(user.id, i)"
+            @click="unfollowUser(user.id, i)"
           >
             DEJAR DE SEGUIR
           </v-btn>
@@ -45,7 +45,7 @@
             outline
             round
             left
-            @click="follow(user.id, i)"
+            @click="followUser(user.id, i)"
           >
             SEGUIR
           </v-btn>
@@ -54,14 +54,14 @@
         <br />
       </v-card>
       <br />
+      {{ this.user.followed }}
     </v-flex>
   </v-layout>
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import { db, getCurrentUser } from '~/services/fireinit'
-import { firestore } from 'firebase'
+import { mapState, mapMutations, mapActions } from 'vuex'
+import { db } from '~/services/fireinit'
 
 export default {
   data() {
@@ -77,49 +77,36 @@ export default {
     this.getUsers()
   },
   methods: {
-    async follow(idUserToFollow, index) {
-      // UserLogged starts following UserToFollow
-      const userLogged = this.user // Get actual user
-      if (userLogged) {
-        // Add userToFollow to followed array of userLogged
-        const docRef = await db.collection('accounts').doc(userLogged.uid)
-        docRef.update({
-          followed: firestore.FieldValue.arrayUnion(idUserToFollow)
-        })
-        // Add userLogged to followers array of userToFollow
-        const docRef2 = await db.collection('accounts').doc(idUserToFollow)
-        docRef2.update({
-          followers: firestore.FieldValue.arrayUnion(userLogged.uid)
-        })
-      }
+    ...mapMutations('user', ['addFollowed', 'removeFollowed']),
+    ...mapActions('user', ['follow', 'unfollow']),
+
+    followUser(idUserToFollow, index) {
+      // follow method in user.js (store)
+      this.follow(idUserToFollow)
+      // Update store
+      this.addFollowed(idUserToFollow)
+
       // Update users array (here in default.data) to change the view
       this.users[index].followed = true
       const newUser = this.users[index]
       this.users.splice(index, 1, newUser)
     },
-    async unfollow(idUserToUnfollow, index) {
-      // const admin = require('firebase-admin')
-      const userLogged = await getCurrentUser() // Obtiene el usuario actual
-      if (userLogged) {
-        // Remove idUserToUnfollow from followed array of userLogged
-        const docRef = await db.collection('accounts').doc(userLogged.uid)
-        docRef.update({
-          followed: firestore.FieldValue.arrayRemove(idUserToUnfollow)
-        })
-        // Remove userLogged from followers array of idUserToUnfollow
-        const docRef2 = await db.collection('accounts').doc(idUserToUnfollow)
-        docRef2.update({
-          followers: firestore.FieldValue.arrayRemove(userLogged.uid)
-        })
-      }
+
+    unfollowUser(idUserToUnfollow, index) {
+      // follow method in user.js (store)
+      this.unfollow(idUserToUnfollow)
+      // Update store
+      this.removeFollowed(idUserToUnfollow)
+
       // Update users array (here in default.data) to see changes
       this.users[index].followed = false
       const newUser = this.users[index]
       this.users.splice(index, 1, newUser)
     },
+
     async getUsers() {
       const usersSnapshot = await db.collection('accounts').get()
-      const userLogged = await getCurrentUser()
+      const userLogged = this.user
       usersSnapshot.forEach(userDoc => {
         const userData = userDoc.data()
         if (userDoc.id !== userLogged.uid) {
