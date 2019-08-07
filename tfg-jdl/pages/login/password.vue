@@ -9,32 +9,18 @@
         <hr />
         <br />
 
-        <form
-          id="recover_passwordForm"
-          method="post"
-          target="_self"
-          @submit.prevent="recover_password()"
-        >
-          <p>
-            <label class="labelForm" for="name">Correo electrónico</label>
-            <input ref="email_recovery" type="email" name="correo" required />
-          </p>
-          <p>
-            <input
-              id="button_recover_password"
-              ref="submit_recover_passwordForm"
-              type="submit"
-              value=" ACEPTAR "
-              style="display:none"
-            />
-            <v-btn nuxt @click="click_submit()">
-              ENVIAR
-            </v-btn>
-            <v-btn nuxt to="/login">
-              VOLVER
-            </v-btn>
-          </p>
-        </form>
+        <p>
+          <label class="labelForm" for="name">Correo electrónico</label>
+          <input ref="email_recovery" type="email" name="correo" required />
+        </p>
+        <p>
+          <v-btn nuxt @click="recover_password()">
+            ENVIAR
+          </v-btn>
+          <v-btn nuxt to="/login">
+            VOLVER
+          </v-btn>
+        </p>
 
         <br />
       </v-card>
@@ -55,9 +41,6 @@ export default {
   },
   methods: {
     ...mapActions('user', ['updateAccount', 'updateUserImage']),
-    click_submit() {
-      this.$refs.submit_recover_passwordForm.click()
-    },
     async recover_password() {
       await auth
         .sendPasswordResetEmail(this.$refs.email_recovery.value)
@@ -65,7 +48,7 @@ export default {
           console.log('Email to reset password sent!')
         })
         .catch(function(error) {
-          alert('Error enviando correo de recuperación de contraseña:', error)
+          alert('Error: Usuario no existente', error)
         })
 
       this.$router.push('/login')
