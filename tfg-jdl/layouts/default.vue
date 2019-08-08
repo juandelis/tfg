@@ -96,6 +96,11 @@ export default {
           to: '/inspire'
         },
         {
+          icon: 'build',
+          title: 'PRUEBAS',
+          to: '/pruebas'
+        },
+        {
           icon: 'description',
           title: 'Publicaciones',
           to: '/posts'

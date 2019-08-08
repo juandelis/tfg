@@ -112,8 +112,19 @@
             />
           </p>
 
+          <div id="recaptcha" align="center" />
+
           <p>
-            <input id="button_register" type="submit" value=" ACEPTAR " />
+            <input
+              id="button_register"
+              ref="button_register"
+              type="submit"
+              value=" ACEPTAR "
+              style="display:none"
+            />
+            <v-btn v-show="reCAPTCHA_verified" @click="click_submit()">
+              ACEPTAR
+            </v-btn>
           </p>
 
           <br />
@@ -138,7 +149,8 @@ export default {
     password: '',
     name: '',
     birth: '',
-    genre: ''
+    genre: '',
+    reCAPTCHA_verified: false
   }),
   computed: {
     ...mapGetters('user', ['logged']),
@@ -159,6 +171,10 @@ export default {
     ...mapActions('user', ['initAuth', 'login', 'signup']),
     ...mapMutations('user', ['setRecoveryEmail']),
 
+    click_submit() {
+      this.$refs.button_register.click()
+    },
+
     change_password() {
       // Save email recovery in the store (user.js)
       this.setRecoveryEmail(this.email_log)
@@ -167,6 +183,21 @@ export default {
 
     showLogin() {
       this.initAuth()
+      window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
+        'recaptcha',
+        {
+          callback: response => {
+            // reCAPTCHA solved, allow signIn button.
+            this.reCAPTCHA_verified = true
+          },
+          'expired-callback': () => {
+            // Response expired. SignIn button hides again
+            this.reCAPTCHA_verified = false
+          }
+        }
+      )
+      window.recaptchaVerifier.render()
+
       const uiConfig = {
         // signInSuccessUrl: '<url-to-redirect-to-on-success>', //En Nuxt esto sería un problema, ya que firebase-ui no usa vue-route
         signInOptions: [

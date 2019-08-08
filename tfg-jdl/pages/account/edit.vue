@@ -69,7 +69,7 @@
           <p>
             <input
               id="button_edit"
-              ref="submit_editForm"
+              ref="button_edit"
               type="submit"
               value=" ACEPTAR "
               style="display:none"
@@ -103,7 +103,7 @@ export default {
   methods: {
     ...mapActions('user', ['updateAccount', 'updateUserImage']),
     click_submit() {
-      this.$refs.submit_editForm.click()
+      this.$refs.button_edit.click()
     },
     update_account() {
       this.updateAccount({
