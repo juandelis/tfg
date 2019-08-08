@@ -74,8 +74,10 @@ export const mutations = {
   addFollowed(state, newFollowed) {
     state.user.followed.push(newFollowed)
   },
-  removeFollowed(state, oldFollowed) {
-    state.user.followed.pop(oldFollowed)
+  removeFollowed(state, idUserToUnfollow) {
+    state.user.followed = state.user.followed.filter(
+      item => item !== idUserToUnfollow
+    )
   },
   updateFollowers(state, followers) {
     state.user.followers = followers
@@ -283,6 +285,8 @@ export const actions = {
       docRef2.update({
         followers: firestore.FieldValue.arrayUnion(userLogged.uid)
       })
+
+      commit('addFollowed', idUserToFollow)
     }
   },
 
@@ -299,6 +303,8 @@ export const actions = {
       docRef2.update({
         followers: firestore.FieldValue.arrayRemove(userLogged.uid)
       })
+
+      commit('removeFollowed', idUserToUnfollow)
     }
   }
   /*,

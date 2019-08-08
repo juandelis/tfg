@@ -54,7 +54,6 @@
         <br />
       </v-card>
       <br />
-      {{ this.user.followed }}
     </v-flex>
   </v-layout>
 </template>
@@ -83,8 +82,6 @@ export default {
     followUser(idUserToFollow, index) {
       // follow method in user.js (store)
       this.follow(idUserToFollow)
-      // Update store
-      this.addFollowed(idUserToFollow)
 
       // Update users array (here in default.data) to change the view
       this.users[index].followed = true
@@ -93,10 +90,8 @@ export default {
     },
 
     unfollowUser(idUserToUnfollow, index) {
-      // follow method in user.js (store)
+      // unfollow method in user.js (store)
       this.unfollow(idUserToUnfollow)
-      // Update store
-      this.removeFollowed(idUserToUnfollow)
 
       // Update users array (here in default.data) to see changes
       this.users[index].followed = false
