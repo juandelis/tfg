@@ -7,6 +7,7 @@ const _743269d5 = () => interopDefault(import('..\\pages\\index2.vue' /* webpack
 const _e12d7316 = () => interopDefault(import('..\\pages\\inspire.vue' /* webpackChunkName: "pages_inspire" */))
 const _07e09084 = () => interopDefault(import('..\\pages\\login\\index.vue' /* webpackChunkName: "pages_login_index" */))
 const _7ed62514 = () => interopDefault(import('..\\pages\\posts\\index.vue' /* webpackChunkName: "pages_posts_index" */))
+const _d3b9b346 = () => interopDefault(import('..\\pages\\pruebas.vue' /* webpackChunkName: "pages_pruebas" */))
 const _16f60fbf = () => interopDefault(import('..\\pages\\users\\index.vue' /* webpackChunkName: "pages_users_index" */))
 const _a4c3465c = () => interopDefault(import('..\\pages\\account\\edit.vue' /* webpackChunkName: "pages_account_edit" */))
 const _7f01e0e3 = () => interopDefault(import('..\\pages\\account\\password.vue' /* webpackChunkName: "pages_account_password" */))
@@ -109,6 +110,10 @@ export function createRouter() {
       path: "/posts",
       component: _7ed62514,
       name: "posts"
+    }, {
+      path: "/pruebas",
+      component: _d3b9b346,
+      name: "pruebas"
     }, {
       path: "/users",
       component: _16f60fbf,
