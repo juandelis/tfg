@@ -15,7 +15,7 @@ const functions = {
           docRef.set({
             birth: birth,
             email: user.email,
-            followed: [],
+            following: [],
             followers: [],
             genre: genre,
             info: info || '', // info personal por defecto vacía, editable luego

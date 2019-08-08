@@ -76,7 +76,7 @@ export default {
     this.getUsers()
   },
   methods: {
-    ...mapMutations('user', ['addFollowed', 'removeFollowed']),
+    ...mapMutations('user', ['addFollowing', 'removeFollowing']),
     ...mapActions('user', ['follow', 'unfollow']),
 
     followUser(idUserToFollow, index) {
@@ -109,7 +109,7 @@ export default {
             id: userDoc.id,
             name: userData.name,
             email: userData.email,
-            followed: userData.followers.includes(userLogged.uid)
+            followed: userLogged.following.includes(userDoc.id)
           })
           // console.log('Usuario: ' + user.email)
         }

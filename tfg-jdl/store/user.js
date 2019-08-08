@@ -22,8 +22,8 @@ export const state = () => ({
     birth: '',
     genre: '',
     image: '',
-    followed: [],
-    followers: []
+    followers: [],
+    following: []
   },
   afterLogin: '/', // donde dirigirse una vez complete el login (por defecto el inicio)
   listeningAuth: false,
@@ -37,7 +37,7 @@ export const getters = {
 export const mutations = {
   setUser(
     state,
-    { user, name, birth, genre, info, image, followed, followers }
+    { user, name, birth, genre, info, image, following, followers }
   ) {
     if (user) {
       state.user.uid = user.uid
@@ -47,8 +47,8 @@ export const mutations = {
       state.user.genre = genre
       state.user.info = info
       state.user.image = image || 'default-profile.png'
-      state.user.followed = followed
       state.user.followers = followers
+      state.user.following = following
     } else {
       // clearUserState
       state.user.uid = null
@@ -58,8 +58,8 @@ export const mutations = {
       state.user.genre = ''
       state.user.info = ''
       state.user.image = ''
-      state.user.followed = []
       state.user.followers = []
+      state.user.following = []
     }
   },
   updateUserData(state, { name, birth, genre, info }) {
@@ -71,11 +71,11 @@ export const mutations = {
   updateImage(state, image) {
     state.user.image = image
   },
-  addFollowed(state, newFollowed) {
-    state.user.followed.push(newFollowed)
+  addFollowing(state, newFollowing) {
+    state.user.following.push(newFollowing)
   },
-  removeFollowed(state, idUserToUnfollow) {
-    state.user.followed = state.user.followed.filter(
+  removeFollowing(state, idUserToUnfollow) {
+    state.user.following = state.user.following.filter(
       item => item !== idUserToUnfollow
     )
   },
@@ -102,6 +102,7 @@ export const actions = {
     if (!state.listeningAuth) {
       commit('setListeningAuth', true)
       auth.onAuthStateChanged(user => {
+        console.log('Cambio Auth state')
         // Buscamos el documento del usuario logueado en firebase
         if (user) {
           const docRef = db.collection('accounts').doc(user.uid)
@@ -118,8 +119,8 @@ export const actions = {
                   genre: doc.data().genre,
                   info: doc.data().info,
                   image: doc.data().image,
-                  followed: doc.data().followed,
-                  followers: doc.data().followers
+                  followers: doc.data().followers,
+                  following: doc.data().following
                 })
               }
             })
@@ -134,11 +135,10 @@ export const actions = {
             genre: '',
             info: '',
             image: null,
-            followed: [],
-            followers: []
+            followers: [],
+            following: []
           })
         }
-        console.log('Cambio Auth state')
       })
       const user = await getCurrentUser() // Obtiene el usuario si no se cerrá sesión
       const prevUid = state.user.uid
@@ -151,8 +151,8 @@ export const actions = {
           genre: '',
           info: '',
           image: null,
-          followed: [],
-          followers: []
+          followers: [],
+          following: []
         })
     }
   },
@@ -199,7 +199,9 @@ export const actions = {
             birth: payload.birth,
             genre: payload.genre,
             info: '',
-            image: 'default-profile.png'
+            image: 'default-profile.png',
+            following: [],
+            followers: []
           })
         }
       })
@@ -214,11 +216,11 @@ export const actions = {
       })
   },
 
-  async updateAccount({ commit, dispatch }, payload) {
-    const user = await getCurrentUser() // Obtiene el usuario actual
-    if (user) {
+  updateAccount({ commit, dispatch }, payload) {
+    const userLogged = state.user
+    if (userLogged) {
       // Actualizamos el documento en firebase
-      const docRef = db.collection('accounts').doc(user.uid)
+      const docRef = db.collection('accounts').doc(userLogged.uid)
       docRef
         .get()
         .then(function(doc) {
@@ -248,11 +250,11 @@ export const actions = {
     }
   },
 
-  async updateUserImage({ commit, dispatch }, newImage) {
-    const user = await getCurrentUser() // Obtiene el usuario actual
-    if (user) {
+  updateUserImage({ commit, dispatch }, newImage) {
+    const userLogged = state.user
+    if (userLogged) {
       // Actualizamos el documento en firebase
-      const docRef = db.collection('accounts').doc(user.uid)
+      const docRef = db.collection('accounts').doc(userLogged.uid)
       docRef
         .get()
         .then(function(doc) {
@@ -272,13 +274,13 @@ export const actions = {
     }
   },
 
-  async follow({ commit, dispatch }, idUserToFollow) {
-    const userLogged = await getCurrentUser() // Obtiene el usuario actual
+  async follow({ state, commit, dispatch }, idUserToFollow) {
+    const userLogged = state.user
     if (userLogged) {
-      // Add userToFollow to followed array of userLogged
+      // Add userToFollow to following array of userLogged
       const docRef = await db.collection('accounts').doc(userLogged.uid)
       docRef.update({
-        followed: firestore.FieldValue.arrayUnion(idUserToFollow)
+        following: firestore.FieldValue.arrayUnion(idUserToFollow)
       })
       // Add userLogged to followers array of userToFollow
       const docRef2 = await db.collection('accounts').doc(idUserToFollow)
@@ -286,17 +288,17 @@ export const actions = {
         followers: firestore.FieldValue.arrayUnion(userLogged.uid)
       })
 
-      commit('addFollowed', idUserToFollow)
+      commit('addFollowing', idUserToFollow)
     }
   },
 
-  async unfollow({ commit, dispatch }, idUserToUnfollow) {
-    const userLogged = await getCurrentUser() // Obtiene el usuario actual
+  async unfollow({ state, commit, dispatch }, idUserToUnfollow) {
+    const userLogged = state.user
     if (userLogged) {
-      // Remove idUserToUnfollow from followed array of userLogged
+      // Remove idUserToUnfollow from following array of userLogged
       const docRef = await db.collection('accounts').doc(userLogged.uid)
       docRef.update({
-        followed: firestore.FieldValue.arrayRemove(idUserToUnfollow)
+        following: firestore.FieldValue.arrayRemove(idUserToUnfollow)
       })
       // Remove userLogged from followers array of idUserToUnfollow
       const docRef2 = await db.collection('accounts').doc(idUserToUnfollow)
@@ -304,7 +306,7 @@ export const actions = {
         followers: firestore.FieldValue.arrayRemove(userLogged.uid)
       })
 
-      commit('removeFollowed', idUserToUnfollow)
+      commit('removeFollowing', idUserToUnfollow)
     }
   }
   /*,

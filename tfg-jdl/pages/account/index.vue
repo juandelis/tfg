@@ -72,10 +72,10 @@
 
       <v-card>
         <br />
-        <h1 align="center">SEGUIDOS ( {{ followed.length }} )</h1>
+        <h1 align="center">SEGUIDOS ( {{ following.length }} )</h1>
         <hr />
         <br />
-        <div v-for="(user, i) in followed" :key="i">
+        <div v-for="(user, i) in following" :key="i">
           {{ i + 1 }} -&nbsp; {{ user.name }} &nbsp; --- &nbsp; {{ user.email }}
         </div>
         <br />
@@ -92,7 +92,7 @@ export default {
   data() {
     return {
       followers: [],
-      followed: []
+      following: []
     }
   },
   middleware: 'autenticado',
@@ -110,8 +110,8 @@ export default {
       usersSnapshot.forEach(eachUserDoc => {
         const eachUserData = eachUserDoc.data()
         if (eachUserDoc.id !== this.user.uid) {
-          if (this.user.followed.includes(eachUserDoc.id)) {
-            this.followed.push({
+          if (this.user.following.includes(eachUserDoc.id)) {
+            this.following.push({
               id: eachUserDoc.id,
               name: eachUserData.name,
               email: eachUserData.email
