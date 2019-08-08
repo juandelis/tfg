@@ -34,11 +34,10 @@
 
           <p>
             <input id="button_login" type="submit" value=" INICIAR SESION " />
-          </p>
-          <p>
-            <router-link to="/login/password"
-              >¿Olvidaste tu contraseña?</router-link
-            >
+            <br />
+            <v-btn flat color="blue" small round @click="change_password()">
+              ¿Olvidaste tu contraseña?
+            </v-btn>
           </p>
         </form>
         <div id="firebaseui-auth-container" />
@@ -125,7 +124,7 @@
 </template>
 
 <script>
-import { mapGetters, mapState, mapActions } from 'vuex'
+import { mapGetters, mapState, mapActions, mapMutations } from 'vuex'
 import firebase, { auth, getCurrentUser } from '~/services/fireinit'
 import * as firebaseui from 'firebaseui'
 import functions from '~/assets/functions'
@@ -158,6 +157,14 @@ export default {
   },
   methods: {
     ...mapActions('user', ['initAuth', 'login', 'signup']),
+    ...mapMutations('user', ['setRecoveryEmail']),
+
+    change_password() {
+      // Save email recovery in the store (user.js)
+      this.setRecoveryEmail(this.email_log)
+      this.$router.push('/login/password')
+    },
+
     showLogin() {
       this.initAuth()
       const uiConfig = {

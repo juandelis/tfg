@@ -26,7 +26,8 @@ export const state = () => ({
     followers: []
   },
   afterLogin: '/', // donde dirigirse una vez complete el login (por defecto el inicio)
-  listeningAuth: false
+  listeningAuth: false,
+  recoveryEmail: ''
 })
 
 export const getters = {
@@ -82,8 +83,11 @@ export const mutations = {
   setListeningAuth(state, listening) {
     state.listeningAuth = listening
   },
-  setAfterLogin(state, payload) {
-    state.afterLogin = payload
+  setAfterLogin(state, path) {
+    state.afterLogin = path
+  },
+  setRecoveryEmail(state, email) {
+    state.recoveryEmail = email
   }
 }
 

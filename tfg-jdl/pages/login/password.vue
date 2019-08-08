@@ -11,10 +11,10 @@
 
         <p>
           <label class="labelForm" for="name">Correo electrónico</label>
-          <input ref="email_recovery" type="email" name="correo" required />
+          <input v-model="email_recovery" type="email" name="correo" required />
         </p>
         <p>
-          <v-btn nuxt @click="recover_password()">
+          <v-btn @click="recover_password()">
             ENVIAR
           </v-btn>
           <v-btn nuxt to="/login">
@@ -31,19 +31,24 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapState } from 'vuex'
 import { auth } from '~/services/fireinit'
 
 export default {
-  data: () => ({}),
+  data: () => ({
+    email_recovery: ''
+  }),
   computed: {
-    ...mapState('user', ['user'])
+    ...mapState('user', ['recoveryEmail'])
+  },
+  mounted: function() {
+    // Get email recovery from store (user.js)
+    this.email_recovery = this.recoveryEmail
   },
   methods: {
-    ...mapActions('user', ['updateAccount', 'updateUserImage']),
     async recover_password() {
       await auth
-        .sendPasswordResetEmail(this.$refs.email_recovery.value)
+        .sendPasswordResetEmail(this.email_recovery)
         .then(function() {
           console.log('Email to reset password sent!')
         })
