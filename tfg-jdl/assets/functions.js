@@ -20,9 +20,8 @@ const functions = {
             genre: genre,
             info: info || '', // info personal por defecto vacía, editable luego
             image: image || '/default-profile.png', // imagen por defecto, editable luego
-            name: name,
+            name: name
             // TODO CAMPOS QUE SEAN NECESARIOS
-            follows: []
             // username: user.email.split('@')[0] // parte del email como username
           })
         }
