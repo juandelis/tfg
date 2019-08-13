@@ -71,7 +71,6 @@
               id="button_edit"
               ref="button_edit"
               type="submit"
-              value=" ACEPTAR "
               style="display:none"
             />
             <v-btn nuxt @click="click_submit()">

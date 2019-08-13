@@ -19,7 +19,9 @@
             <h3 align="left">
               DESCRIPCIÓN PERSONAL / AFICIONES: &nbsp;
             </h3>
-            <h3 align="left">{{ user.info }} &nbsp;</h3>
+            <h4 align="left" style="max-width: 325px">
+              {{ user.info }} &nbsp;
+            </h4>
             <br />
             <v-btn nuxt to="/account/edit">
               EDITAR
@@ -62,8 +64,9 @@
         <h1 align="center">SEGUIDORES ( {{ followers.length }} )</h1>
         <hr />
         <br />
-        <div v-for="(user, i) in followers" :key="i">
-          {{ i + 1 }} -&nbsp; {{ user.name }} &nbsp; --- &nbsp; {{ user.email }}
+        <div v-for="(follower, i) in followers" :key="i">
+          {{ i + 1 }} -&nbsp; {{ follower.name }} &nbsp; --- &nbsp;
+          {{ follower.email }}
         </div>
         <br />
       </v-card>
@@ -75,8 +78,9 @@
         <h1 align="center">SEGUIDOS ( {{ following.length }} )</h1>
         <hr />
         <br />
-        <div v-for="(user, i) in following" :key="i">
-          {{ i + 1 }} -&nbsp; {{ user.name }} &nbsp; --- &nbsp; {{ user.email }}
+        <div v-for="(followed, i) in following" :key="i">
+          {{ i + 1 }} -&nbsp; {{ followed.name }} &nbsp; --- &nbsp;
+          {{ followed.email }}
         </div>
         <br />
       </v-card>

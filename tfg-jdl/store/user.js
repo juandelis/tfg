@@ -216,7 +216,8 @@ export const actions = {
       })
   },
 
-  updateAccount({ commit, dispatch }, payload) {
+  updateAccount({ state, commit, dispatch }, payload) {
+    console.log('UPDATE ' + state.user.uid)
     const userLogged = state.user
     if (userLogged) {
       // Actualizamos el documento en firebase
@@ -234,7 +235,7 @@ export const actions = {
               name: payload.name
             })
             // Hacemos setUser con los campos editados
-            commit('updateUser', {
+            commit('updateUserData', {
               name: payload.name,
               birth: payload.birth,
               genre: payload.genre,
@@ -250,7 +251,7 @@ export const actions = {
     }
   },
 
-  updateUserImage({ commit, dispatch }, newImage) {
+  updateUserImage({ state, commit, dispatch }, newImage) {
     const userLogged = state.user
     if (userLogged) {
       // Actualizamos el documento en firebase
