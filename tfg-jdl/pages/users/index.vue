@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import { db } from '~/services/fireinit'
 
 export default {
@@ -76,7 +76,6 @@ export default {
     this.getUsers()
   },
   methods: {
-    ...mapMutations('user', ['addFollowing', 'removeFollowing']),
     ...mapActions('user', ['follow', 'unfollow']),
 
     followUser(idUserToFollow, index) {
@@ -85,8 +84,6 @@ export default {
 
       // Update users array (here in default.data) to change the view
       this.users[index].followed = true
-      const newUser = this.users[index]
-      this.users.splice(index, 1, newUser)
     },
 
     unfollowUser(idUserToUnfollow, index) {
@@ -95,8 +92,6 @@ export default {
 
       // Update users array (here in default.data) to see changes
       this.users[index].followed = false
-      const newUser = this.users[index]
-      this.users.splice(index, 1, newUser)
     },
 
     async getUsers() {
