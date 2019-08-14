@@ -78,9 +78,18 @@
         <h1 align="center">SEGUIDOS ( {{ following.length }} )</h1>
         <hr />
         <br />
-        <div v-for="(followed, i) in following" :key="i">
-          {{ i + 1 }} -&nbsp; {{ followed.name }} &nbsp; --- &nbsp;
+        <div v-for="(followed, j) in following" :key="j">
+          {{ j + 1 }} -&nbsp; {{ followed.name }} &nbsp; --- &nbsp;
           {{ followed.email }}
+          <v-btn
+            color="orange"
+            outline
+            round
+            left
+            @click="unfollowUser(followed.id, j)"
+          >
+            DEJAR DE SEGUIR
+          </v-btn>
         </div>
         <br />
       </v-card>
@@ -107,7 +116,7 @@ export default {
     this.getUsers()
   },
   methods: {
-    ...mapActions('user', ['updateUserImage', 'test']),
+    ...mapActions('user', ['updateUserImage', 'unfollow']),
 
     async getUsers() {
       const usersSnapshot = await db.collection('accounts').get()
@@ -130,6 +139,14 @@ export default {
           }
         }
       })
+    },
+
+    unfollowUser(idUserToUnfollow, index) {
+      // unfollow method in user.js (store)
+      this.unfollow(idUserToUnfollow)
+
+      // Remove user from following array (here in default.data) to see changes
+      this.following.splice(index, 1)
     },
 
     click_fileInput() {
