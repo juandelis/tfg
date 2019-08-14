@@ -75,9 +75,11 @@ export const mutations = {
     state.user.following.push(newFollowing)
   },
   removeFollowing(state, idUserToUnfollow) {
-    state.user.following = state.user.following.filter(
+    const index = state.user.following.indexOf(idUserToUnfollow)
+    state.user.following.splice(index, 1)
+    /* state.user.following = state.user.following.filter(
       item => item !== idUserToUnfollow
-    )
+    ) */
   },
   updateFollowers(state, followers) {
     state.user.followers = followers
