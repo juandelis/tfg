@@ -32,8 +32,6 @@
             />
           </p>
 
-          <div id="recaptcha" />
-
           <p>
             <input
               id="button_login"
@@ -107,20 +105,6 @@ export default {
 
     showLogin() {
       this.initAuth()
-      window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
-        'recaptcha',
-        {
-          callback: response => {
-            // reCAPTCHA solved, allow signIn button.
-            this.reCAPTCHA_verified = true
-          },
-          'expired-callback': () => {
-            // Response expired. SignIn button hides again
-            this.reCAPTCHA_verified = false
-          }
-        }
-      )
-      window.recaptchaVerifier.render()
 
       const uiConfig = {
         // signInSuccessUrl: '<url-to-redirect-to-on-success>', //En Nuxt esto sería un problema, ya que firebase-ui no usa vue-route

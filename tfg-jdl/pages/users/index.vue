@@ -3,18 +3,34 @@
     <v-flex text-xs-center xs12 sm9 md7>
       <v-card>
         <br />
-        <h1 align="center">BUSCADOR</h1>
-        <br />
-
-        <hr />
-        <br />
-      </v-card>
-
-      <br /><br />
-
-      <v-card ml-4>
-        <br />
         <h1 align="center">USUARIOS</h1>
+        <br />
+        <hr />
+
+        <br />
+
+        <p>
+          <label class="labelForm" for="name"> Nombre</label>
+          <input v-model="name" type="search" name="nombre" />
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <label class="labelForm" for="correo"> Correo</label>
+          <input v-model="email" type="email" name="correo" size="30" />
+        </p>
+
+        <p>
+          <input v-model="followed" type="radio" value="all" checked />
+          Todos &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <input v-model="followed" type="radio" value="followed" />
+          Seguidos &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <input v-model="followed" type="radio" value="notFollowed" />
+          No seguidos
+        </p>
+
+        <v-btn @click="search()">
+          BUSCAR
+        </v-btn>
+
+        <br />
         <br />
 
         <!--
@@ -65,6 +81,9 @@ import { db } from '~/services/fireinit'
 export default {
   data() {
     return {
+      name: '',
+      email: '',
+      followed: 'all',
       users: []
     }
   },
@@ -77,6 +96,52 @@ export default {
   },
   methods: {
     ...mapActions('user', ['follow', 'unfollow']),
+
+    async search() {
+      this.users = []
+      const usersSnapshot = await db.collection('accounts').get()
+      const userLogged = this.user
+
+      if (this.followed === 'all') {
+        usersSnapshot.forEach(userDoc => {
+          const userData = userDoc.data()
+          if (
+            userDoc.id !== userLogged.uid &&
+            userData.name.includes(this.name) &&
+            userData.email.includes(this.email)
+          ) {
+            this.users.push({
+              id: userDoc.id,
+              name: userData.name,
+              email: userData.email,
+              followed: userLogged.following.includes(userDoc.id)
+            })
+          }
+        })
+      } else {
+        const followedd = this.followed === 'followed'
+        usersSnapshot.forEach(userDoc => {
+          const userData = userDoc.data()
+          if (
+            userDoc.id !== userLogged.uid &&
+            userData.name.includes(this.name) &&
+            userData.email.includes(this.email) &&
+            userLogged.following.includes(userDoc.id) === followedd
+          ) {
+            this.users.push({
+              id: userDoc.id,
+              name: userData.name,
+              email: userData.email,
+              followed: followedd
+            })
+          }
+        })
+      }
+      /* this.getUsers()
+      console.log('Users: ' + this.users)
+      this.users = this.users.filter(item => item.name === this.name)
+      console.log('Users: ' + this.users) */
+    },
 
     followUser(idUserToFollow, index) {
       // follow method in user.js (store)
@@ -95,6 +160,7 @@ export default {
     },
 
     async getUsers() {
+      this.users = []
       const usersSnapshot = await db.collection('accounts').get()
       const userLogged = this.user
       usersSnapshot.forEach(userDoc => {
