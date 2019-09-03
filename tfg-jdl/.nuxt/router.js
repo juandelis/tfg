@@ -14,6 +14,7 @@ const _7f01e0e3 = () => interopDefault(import('..\\pages\\account\\password.vue'
 const _5453a806 = () => interopDefault(import('..\\pages\\login\\autologin.vue' /* webpackChunkName: "pages_login_autologin" */))
 const _7ae42c46 = () => interopDefault(import('..\\pages\\login\\logged.vue' /* webpackChunkName: "pages_login_logged" */))
 const _8bc9bc42 = () => interopDefault(import('..\\pages\\login\\password.vue' /* webpackChunkName: "pages_login_password" */))
+const _2bd35624 = () => interopDefault(import('..\\pages\\users\\user.vue' /* webpackChunkName: "pages_users_user" */))
 const _dfbc35a6 = () => interopDefault(import('..\\pages\\index.vue' /* webpackChunkName: "pages_index" */))
 
 Vue.use(Router)
@@ -138,6 +139,10 @@ export function createRouter() {
       path: "/login/password",
       component: _8bc9bc42,
       name: "login-password"
+    }, {
+      path: "/users/user",
+      component: _2bd35624,
+      name: "users-user"
     }, {
       path: "/",
       component: _dfbc35a6,

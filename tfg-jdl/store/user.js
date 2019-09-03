@@ -27,7 +27,18 @@ export const state = () => ({
   },
   afterLogin: '/', // donde dirigirse una vez complete el login (por defecto el inicio)
   listeningAuth: false,
-  recoveryEmail: ''
+  recoveryEmail: '',
+  userToShow: {
+    uid: null, // no null si está logueado
+    name: '',
+    email: '',
+    birth: '',
+    genre: '',
+    image: '',
+    followed: false,
+    followers: [],
+    following: []
+  }
 })
 
 export const getters = {
@@ -92,6 +103,35 @@ export const mutations = {
   },
   setRecoveryEmail(state, email) {
     state.recoveryEmail = email
+  },
+  setUserToShow(
+    state,
+    {
+      uid,
+      name,
+      email,
+      birth,
+      genre,
+      info,
+      image,
+      followed,
+      following,
+      followers
+    }
+  ) {
+    state.userToShow.uid = uid
+    state.userToShow.name = name
+    state.userToShow.email = email
+    state.userToShow.birth = birth
+    state.userToShow.genre = genre
+    state.userToShow.info = info
+    state.userToShow.image = image
+    state.userToShow.followed = followed
+    state.userToShow.followers = followers
+    state.userToShow.following = following
+  },
+  updateUSerToShowFollowed(state, followed) {
+    state.userToShow.followed = followed
   }
 }
 
@@ -311,6 +351,42 @@ export const actions = {
 
       commit('removeFollowing', idUserToUnfollow)
     }
+  },
+
+  showUser({ state, commit, dispatch }, userToShow) {
+    if (userToShow.uid === state.user.uid) {
+      this.$router.push('/account')
+    } else {
+      const docRef = db.collection('accounts').doc(userToShow.uid)
+      docRef
+        .get()
+        .then(function(doc) {
+          if (doc.exists) {
+            // Hacemos el setUser con los datos obtenidos
+            console.log('Document readed:', doc.data())
+            commit('setUserToShow', {
+              uid: userToShow.uid,
+              name: doc.data().name,
+              email: doc.data().email,
+              birth: doc.data().birth,
+              genre: doc.data().genre,
+              info: doc.data().info,
+              image: doc.data().image,
+              followed: userToShow.followed,
+              followers: doc.data().followers,
+              following: doc.data().following
+            })
+          }
+        })
+        .catch(function(error) {
+          console.log('Error getting document:', error)
+        })
+      this.$router.push('/users/user')
+    }
+    /* .go({
+      path: '/users/user',
+      //force: true
+    }) */
   }
   /*,
   setUserWithFirebase({ commit, dispatch }, user) {

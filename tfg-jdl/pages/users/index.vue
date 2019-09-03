@@ -41,17 +41,19 @@
         -->
 
         <hr />
-        <br />
+        <br /><br />
 
         <div v-for="(user, i) in users" :key="i">
-          {{ i + 1 }} -&nbsp; {{ user.name }} &nbsp; --- &nbsp; {{ user.email }}
+          <v-btn flat color="white" left round @click="showUser(user)">
+            {{ i + 1 }} -&nbsp;{{ user.name }}&nbsp; --- &nbsp;{{ user.email }}
+          </v-btn>
           <v-btn
             v-if="user.followed"
             color="orange"
             outline
             round
             left
-            @click="unfollowUser(user.id, i)"
+            @click="unfollow_user(user.uid, i)"
           >
             DEJAR DE SEGUIR
           </v-btn>
@@ -61,10 +63,11 @@
             outline
             round
             left
-            @click="followUser(user.id, i)"
+            @click="follow_user(user.uid, i)"
           >
             SEGUIR
           </v-btn>
+          <br /><br />
         </div>
 
         <br />
@@ -75,7 +78,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapMutations } from 'vuex'
 import { db } from '~/services/fireinit'
 
 export default {
@@ -95,7 +98,8 @@ export default {
     this.getUsers()
   },
   methods: {
-    ...mapActions('user', ['follow', 'unfollow']),
+    ...mapActions('user', ['follow', 'unfollow', 'showUser']),
+    ...mapMutations('user', ['updateUserToShow']),
 
     async search() {
       this.users = []
@@ -111,7 +115,7 @@ export default {
             userData.email.includes(this.email)
           ) {
             this.users.push({
-              id: userDoc.id,
+              uid: userDoc.id,
               name: userData.name,
               email: userData.email,
               followed: userLogged.following.includes(userDoc.id)
@@ -119,20 +123,20 @@ export default {
           }
         })
       } else {
-        const followedd = this.followed === 'followed'
+        const followedFilter = this.followed === 'followed'
         usersSnapshot.forEach(userDoc => {
           const userData = userDoc.data()
           if (
             userDoc.id !== userLogged.uid &&
             userData.name.includes(this.name) &&
             userData.email.includes(this.email) &&
-            userLogged.following.includes(userDoc.id) === followedd
+            userLogged.following.includes(userDoc.id) === followedFilter
           ) {
             this.users.push({
-              id: userDoc.id,
+              uid: userDoc.id,
               name: userData.name,
               email: userData.email,
-              followed: followedd
+              followed: followedFilter
             })
           }
         })
@@ -143,7 +147,7 @@ export default {
       console.log('Users: ' + this.users) */
     },
 
-    followUser(idUserToFollow, index) {
+    follow_user(idUserToFollow, index) {
       // follow method in user.js (store)
       this.follow(idUserToFollow)
 
@@ -151,7 +155,7 @@ export default {
       this.users[index].followed = true
     },
 
-    unfollowUser(idUserToUnfollow, index) {
+    unfollow_user(idUserToUnfollow, index) {
       // unfollow method in user.js (store)
       this.unfollow(idUserToUnfollow)
 
@@ -167,7 +171,7 @@ export default {
         const userData = userDoc.data()
         if (userDoc.id !== userLogged.uid) {
           this.users.push({
-            id: userDoc.id,
+            uid: userDoc.id,
             name: userData.name,
             email: userData.email,
             followed: userLogged.following.includes(userDoc.id)

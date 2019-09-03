@@ -1,12 +1,10 @@
 <template>
   <v-layout justify-center>
-    <v-flex text-xs-center xs12 sm9 md7>
+    <v-flex text-xs-center xs12 sm9 md7 lg8>
       <v-card>
         <h1 align="center">MI PERFIL</h1>
-
         <hr />
         <br />
-
         <v-layout row>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <v-flex grow>
@@ -59,40 +57,47 @@
 
       <br /><br />
 
-      <v-card>
-        <br />
-        <h1 align="center">SEGUIDORES ( {{ followers.length }} )</h1>
-        <hr />
-        <br />
-        <div v-for="(follower, i) in followers" :key="i">
-          {{ i + 1 }} -&nbsp; {{ follower.name }} &nbsp; --- &nbsp;
-          {{ follower.email }}
-        </div>
-        <br />
-      </v-card>
+      <v-layout row justify-center>
+        <v-flex grow>
+          <v-card>
+            <h1 align="center">SEGUIDORES ( {{ followers.length }} )</h1>
+            <hr />
+            <br />
+            <div v-for="(follower, i) in followers" :key="i">
+              <v-btn flat color="white" round @click="showUser(follower)">
+                {{ i + 1 }} -&nbsp;{{ follower.name }}&nbsp; --- &nbsp;
+                {{ follower.email }}
+              </v-btn>
+            </div>
+            <br />
+          </v-card>
+        </v-flex>
 
-      <br /><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;
 
-      <v-card>
-        <br />
-        <h1 align="center">SEGUIDOS ( {{ following.length }} )</h1>
-        <hr />
-        <br />
-        <div v-for="(followed, j) in following" :key="j">
-          {{ j + 1 }} -&nbsp; {{ followed.name }} &nbsp; --- &nbsp;
-          {{ followed.email }}
-          <v-btn
-            color="orange"
-            outline
-            round
-            left
-            @click="unfollowUser(followed.id, j)"
-          >
-            DEJAR DE SEGUIR
-          </v-btn>
-        </div>
-        <br />
-      </v-card>
+        <v-flex grow>
+          <v-card>
+            <h1 align="center">SEGUIDOS ( {{ following.length }} )</h1>
+            <hr />
+            <br />
+            <div v-for="(followed, j) in following" :key="j">
+              <v-btn flat color="white" round @click="showUser(followed)">
+                {{ j + 1 }} -&nbsp;{{ followed.name }}&nbsp; --- &nbsp;
+                {{ followed.email }}
+              </v-btn>
+              <v-btn
+                color="orange"
+                outline
+                round
+                @click="unfollowUser(followed.uid, j)"
+              >
+                DEJAR DE SEGUIR
+              </v-btn>
+            </div>
+            <br />
+          </v-card>
+        </v-flex>
+      </v-layout>
     </v-flex>
   </v-layout>
 </template>
@@ -116,25 +121,30 @@ export default {
     this.getUsers()
   },
   methods: {
-    ...mapActions('user', ['updateUserImage', 'unfollow']),
+    ...mapActions('user', ['updateUserImage', 'unfollow', 'showUser']),
 
     async getUsers() {
+      this.followers = []
+      this.following = []
       const usersSnapshot = await db.collection('accounts').get()
+      const userLogged = this.user
       usersSnapshot.forEach(eachUserDoc => {
         const eachUserData = eachUserDoc.data()
-        if (eachUserDoc.id !== this.user.uid) {
-          if (this.user.following.includes(eachUserDoc.id)) {
+        if (eachUserDoc.id !== userLogged.uid) {
+          if (userLogged.following.includes(eachUserDoc.id)) {
             this.following.push({
-              id: eachUserDoc.id,
+              uid: eachUserDoc.id,
               name: eachUserData.name,
-              email: eachUserData.email
+              email: eachUserData.email,
+              followed: true
             })
           }
-          if (this.user.followers.includes(eachUserDoc.id)) {
+          if (userLogged.followers.includes(eachUserDoc.id)) {
             this.followers.push({
-              id: eachUserDoc.id,
+              uid: eachUserDoc.id,
               name: eachUserData.name,
-              email: eachUserData.email
+              email: eachUserData.email,
+              followed: userLogged.following.includes(eachUserDoc.id)
             })
           }
         }
