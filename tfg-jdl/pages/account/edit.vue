@@ -59,7 +59,7 @@
               name="info"
               rows="3"
               cols="60"
-              maxlength="400"
+              maxlength="300"
               style="background-color:white; color:black"
               :value="user.info"
             >
