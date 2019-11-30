@@ -64,12 +64,12 @@
     </v-content>
 
     <v-footer :fixed="fixed" app>
-      <span>
-        &copy; 2019 GAMER CREW
-        <v-btn color="white" flat nuxt to="/contacto">
-          Contacto
-        </v-btn>
-      </span>
+      <v-btn class="align-middle" color="white" flat nuxt to="/contacto">
+        Contacto
+      </v-btn>
+      <v-spacer />
+      &copy; 2019 GAMER CREW
+      <v-spacer />
     </v-footer>
   </v-app>
 </template>
@@ -104,6 +104,11 @@ export default {
           icon: 'description',
           title: 'Publicaciones',
           to: '/posts'
+        },
+        {
+          icon: 'description',
+          title: 'Publicar',
+          to: '/posts/create'
         },
         {
           icon: 'people_outline',

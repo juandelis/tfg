@@ -381,12 +381,23 @@ export const actions = {
         .catch(function(error) {
           console.log('Error getting document:', error)
         })
-      this.$router.push('/users/user')
     }
     /* .go({
       path: '/users/user',
       //force: true
     }) */
+  },
+
+  create_post({ state, commit, dispatch }, payload) {
+    /* console.log('Titulo:' + payload.tittle)
+    console.log('Body: ' + payload.body)
+    console.log('Date:' + payload.date) */
+    functions.createPostDocument(
+      state.user.uid,
+      payload.tittle,
+      payload.body,
+      payload.date
+    )
   }
   /*,
   setUserWithFirebase({ commit, dispatch }, user) {

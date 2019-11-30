@@ -4,9 +4,9 @@
       <v-card>
         <br />
         <h1 align="center">USUARIOS</h1>
+
         <br />
         <hr />
-
         <br />
 
         <p>

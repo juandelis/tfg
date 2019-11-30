@@ -29,6 +29,9 @@ const functions = {
       .catch(function(error) {
         console.log('Error getting document:', error)
       })
+  },
+  createPostDocument(uid, tittle, body, date) {
+    db.collection('posts').add({ body, uid, date, tittle })
   }
 }
 
