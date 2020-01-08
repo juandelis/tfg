@@ -381,6 +381,7 @@ export const actions = {
         .catch(function(error) {
           console.log('Error getting document:', error)
         })
+      this.$router.push('/users/user')
     }
     /* .go({
       path: '/users/user',
