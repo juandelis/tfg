@@ -44,7 +44,7 @@
         <br /><br />
 
         <div v-for="(user, i) in users" :key="i">
-          <v-btn flat color="white" left round @click="showUser(user)">
+          <v-btn flat color="white" left round @click="showUser(user.uid)">
             {{ i + 1 }} -&nbsp;{{ user.name }}&nbsp; --- &nbsp;{{ user.email }}
           </v-btn>
           <v-btn
@@ -90,15 +90,33 @@ export default {
       users: []
     }
   },
+
   middleware: 'autenticado',
+
   computed: {
     ...mapState('user', ['user'])
   },
-  mounted: function() {
-    this.getUsers()
+
+  mounted: async function() {
+    this.users = []
+    const usersSnapshot = await db.collection('accounts').get()
+    const userLogged = this.user
+    usersSnapshot.forEach(userDoc => {
+      const userData = userDoc.data()
+      if (userDoc.id !== userLogged.uid) {
+        this.users.push({
+          uid: userDoc.id,
+          name: userData.name,
+          email: userData.email,
+          followed: userLogged.following.includes(userDoc.id)
+        })
+        // console.log('Usuario: ' + user.email)
+      }
+    })
   },
+
   methods: {
-    ...mapActions('user', ['follow', 'unfollow', 'showUser']),
+    ...mapActions('user', ['follow', 'unfollow']),
     ...mapMutations('user', ['updateUserToShow']),
 
     async search() {
@@ -150,7 +168,6 @@ export default {
     follow_user(idUserToFollow, index) {
       // follow method in user.js (store)
       this.follow(idUserToFollow)
-
       // Update users array (here in default.data) to change the view
       this.users[index].followed = true
     },
@@ -158,27 +175,16 @@ export default {
     unfollow_user(idUserToUnfollow, index) {
       // unfollow method in user.js (store)
       this.unfollow(idUserToUnfollow)
-
       // Update users array (here in default.data) to see changes
       this.users[index].followed = false
     },
 
-    async getUsers() {
-      this.users = []
-      const usersSnapshot = await db.collection('accounts').get()
-      const userLogged = this.user
-      usersSnapshot.forEach(userDoc => {
-        const userData = userDoc.data()
-        if (userDoc.id !== userLogged.uid) {
-          this.users.push({
-            uid: userDoc.id,
-            name: userData.name,
-            email: userData.email,
-            followed: userLogged.following.includes(userDoc.id)
-          })
-          // console.log('Usuario: ' + user.email)
-        }
-      })
+    showUser(idUserToShow) {
+      if (idUserToShow === this.user.uid) {
+        this.$router.push('/account')
+      } else {
+        this.$router.push('/users/' + idUserToShow)
+      }
     }
   }
 }

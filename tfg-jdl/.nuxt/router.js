@@ -16,6 +16,7 @@ const _7ae42c46 = () => interopDefault(import('..\\pages\\login\\logged.vue' /* 
 const _8bc9bc42 = () => interopDefault(import('..\\pages\\login\\password.vue' /* webpackChunkName: "pages_login_password" */))
 const _f8ba6fac = () => interopDefault(import('..\\pages\\posts\\create.vue' /* webpackChunkName: "pages_posts_create" */))
 const _2bd35624 = () => interopDefault(import('..\\pages\\users\\user.vue' /* webpackChunkName: "pages_users_user" */))
+const _17f2f5e7 = () => interopDefault(import('..\\pages\\users\\_id.vue' /* webpackChunkName: "pages_users__id" */))
 const _dfbc35a6 = () => interopDefault(import('..\\pages\\index.vue' /* webpackChunkName: "pages_index" */))
 
 Vue.use(Router)
@@ -148,6 +149,10 @@ export function createRouter() {
       path: "/users/user",
       component: _2bd35624,
       name: "users-user"
+    }, {
+      path: "/users/:id",
+      component: _17f2f5e7,
+      name: "users-id"
     }, {
       path: "/",
       component: _dfbc35a6,
