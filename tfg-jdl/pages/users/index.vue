@@ -78,7 +78,7 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import { db } from '~/services/fireinit'
 
 export default {
@@ -117,7 +117,6 @@ export default {
 
   methods: {
     ...mapActions('user', ['follow', 'unfollow']),
-    ...mapMutations('user', ['updateUserToShow']),
 
     async search() {
       this.users = []
@@ -129,8 +128,8 @@ export default {
           const userData = userDoc.data()
           if (
             userDoc.id !== userLogged.uid &&
-            userData.name.includes(this.name) &&
-            userData.email.includes(this.email)
+            userData.name.toLowerCase().includes(this.name.toLowerCase()) &&
+            userData.email.toLowerCase().includes(this.email.toLowerCase()) // str.normalize("NFD").replace(/[\u0300-\u036f]/g, "") to remove accents
           ) {
             this.users.push({
               uid: userDoc.id,
@@ -146,8 +145,8 @@ export default {
           const userData = userDoc.data()
           if (
             userDoc.id !== userLogged.uid &&
-            userData.name.includes(this.name) &&
-            userData.email.includes(this.email) &&
+            userData.name.toLowerCase().includes(this.name.toLowerCase()) &&
+            userData.email.toLowerCase().includes(this.email.toLowerCase()) &&
             userLogged.following.includes(userDoc.id) === followedFilter
           ) {
             this.users.push({
