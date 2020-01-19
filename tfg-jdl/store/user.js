@@ -353,42 +353,6 @@ export const actions = {
     }
   },
 
-  showUser({ state, commit, dispatch }, userToShow) {
-    if (userToShow.uid === state.user.uid) {
-      this.$router.push('/account')
-    } else {
-      const docRef = db.collection('accounts').doc(userToShow.uid)
-      docRef
-        .get()
-        .then(function(doc) {
-          if (doc.exists) {
-            // Hacemos el setUser con los datos obtenidos
-            console.log('Document readed:', doc.data())
-            commit('setUserToShow', {
-              uid: userToShow.uid,
-              name: doc.data().name,
-              email: doc.data().email,
-              birth: doc.data().birth,
-              genre: doc.data().genre,
-              info: doc.data().info,
-              image: doc.data().image,
-              followed: userToShow.followed,
-              followers: doc.data().followers,
-              following: doc.data().following
-            })
-          }
-        })
-        .catch(function(error) {
-          console.log('Error getting document:', error)
-        })
-      this.$router.push('/users/user')
-    }
-    /* .go({
-      path: '/users/user',
-      //force: true
-    }) */
-  },
-
   create_post({ state, commit, dispatch }, payload) {
     /* console.log('Titulo:' + payload.tittle)
     console.log('Body: ' + payload.body)

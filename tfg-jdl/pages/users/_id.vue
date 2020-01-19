@@ -63,19 +63,19 @@ export default {
   mounted: async function() {
     const idUserToShow = this.$route.params.id
     const docRef = await db.collection('accounts').doc(idUserToShow)
-    const doc = await docRef.get()
-    if (doc.exists) {
-      // Hacemos el setUser con los datos obtenidos
-      console.log('Document readed:', doc.data())
-      this.userToShow.name = doc.data().name
-      this.userToShow.email = doc.data().email
-      this.userToShow.birth = doc.data().birth
-      this.userToShow.genre = doc.data().genre
-      this.userToShow.info = doc.data().info
-      this.userToShow.image = doc.data().image
+    const userDoc = await docRef.get()
+    if (userDoc.exists) {
+      const userData = userDoc.data()
+      // Guardamos los datos de la publicacion
+      this.userToShow.name = userData.name
+      this.userToShow.email = userData.email
+      this.userToShow.birth = userData.birth
+      this.userToShow.genre = userData.genre
+      this.userToShow.info = userData.info
+      this.userToShow.image = userData.image
       this.userToShow.followed = this.user.following.includes(idUserToShow)
-      this.userToShow.followers = doc.data().followers
-      this.userToShow.following = doc.data().following
+      this.userToShow.followers = userData.followers
+      this.userToShow.following = userData.following
     }
   },
 
