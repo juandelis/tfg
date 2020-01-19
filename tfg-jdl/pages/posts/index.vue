@@ -10,7 +10,7 @@
         <br />
 
         <p>
-          <label class="labelForm" for="tittle"> Titulo</label>
+          <label class="labelForm" for="tittle"> Titulo: </label>
           <input v-model="tittle" type="search" name="titulo" />
         </p>
 
@@ -24,7 +24,6 @@
         <br />
 
         <div v-for="(post, i) in posts" :key="i">
-          <!-- TODO: metodo showPost() en user.js igual que el showUser-->
           <v-btn
             flat
             color="white"
@@ -33,7 +32,7 @@
             @click="showPost(post.uid, post.creator)"
           >
             {{ i + 1 }} - &nbsp; {{ post.tittle }} &nbsp; ---&nbsp;
-            {{ post.date.toDate().toLocaleDateString('es-ES') }}
+            {{ post.date }}
           </v-btn>
           <br /><br />
         </div>
@@ -55,24 +54,36 @@ export default {
   computed: {
     ...mapState('user', ['user'])
   },
-  mounted: function() {
-    this.getPosts()
+  mounted: async function() {
+    this.posts = []
+    const postsSnapshot = await db.collection('posts').get()
+    // const userLogged = this.user
+    postsSnapshot.forEach(postDoc => {
+      const postData = postDoc.data()
+      this.posts.push({
+        uid: postDoc.id,
+        tittle: postData.tittle,
+        date: postData.date.toDate().toLocaleDateString('es-ES'),
+        creator: postData.creator,
+        body: postData.body
+      })
+    })
   },
   methods: {
-    // ...mapActions('user', ['updateUserImage', 'test']),
-    async getPosts() {
+    async search() {
       this.posts = []
       const postsSnapshot = await db.collection('posts').get()
-      // const userLogged = this.user
       postsSnapshot.forEach(postDoc => {
         const postData = postDoc.data()
-        this.posts.push({
-          uid: postDoc.id,
-          tittle: postData.tittle,
-          date: postData.date,
-          creator: postData.creator,
-          body: postData.body
-        })
+        if (postData.tittle.toLowerCase().includes(this.tittle.toLowerCase())) {
+          this.posts.push({
+            uid: postDoc.id,
+            tittle: postData.tittle,
+            date: postData.date.toDate().toLocaleDateString('es-ES'),
+            creator: postData.creator,
+            body: postData.body
+          })
+        }
       })
     },
 
