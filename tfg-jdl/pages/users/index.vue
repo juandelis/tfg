@@ -53,7 +53,7 @@
             outline
             round
             left
-            @click="unfollow_user(user.uid, i)"
+            @click="unfollow_aux(user.uid, i)"
           >
             DEJAR DE SEGUIR
           </v-btn>
@@ -63,7 +63,7 @@
             outline
             round
             left
-            @click="follow_user(user.uid, i)"
+            @click="follow_aux(user.uid, i)"
           >
             SEGUIR
           </v-btn>
@@ -164,14 +164,14 @@ export default {
       console.log('Users: ' + this.users) */
     },
 
-    follow_user(idUserToFollow, index) {
+    follow_aux(idUserToFollow, index) {
       // follow method in user.js (store)
       this.follow(idUserToFollow)
       // Update users array (here in default.data) to change the view
       this.users[index].followed = true
     },
 
-    unfollow_user(idUserToUnfollow, index) {
+    unfollow_aux(idUserToUnfollow, index) {
       // unfollow method in user.js (store)
       this.unfollow(idUserToUnfollow)
       // Update users array (here in default.data) to see changes
