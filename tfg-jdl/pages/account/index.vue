@@ -64,7 +64,7 @@
             <hr />
             <br />
             <div v-for="(follower, i) in followers" :key="i">
-              <v-btn flat color="white" round @click="showUser(follower)">
+              <v-btn flat color="white" round @click="showUser(follower.uid)">
                 {{ i + 1 }} -&nbsp;{{ follower.name }}&nbsp; --- &nbsp;
                 {{ follower.email }}
               </v-btn>
@@ -81,7 +81,7 @@
             <hr />
             <br />
             <div v-for="(followed, j) in following" :key="j">
-              <v-btn flat color="white" round @click="showUser(followed)">
+              <v-btn flat color="white" round @click="showUser(followed.uid)">
                 {{ j + 1 }} -&nbsp;{{ followed.name }}&nbsp; --- &nbsp;
                 {{ followed.email }}
               </v-btn>
@@ -161,10 +161,6 @@ export default {
 
     click_fileInput() {
       this.$refs.fileInput.click()
-    },
-
-    updateImage(newImage) {
-      this.updateUserImage(newImage)
     },
 
     async onFileChange(event) {

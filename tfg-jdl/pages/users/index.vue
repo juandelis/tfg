@@ -116,7 +116,7 @@ export default {
   },
 
   methods: {
-    ...mapActions('user', ['follow', 'unfollow']),
+    ...mapActions('user', ['follow', 'unfollow', 'showUser']),
 
     async search() {
       this.users = []
@@ -176,14 +176,6 @@ export default {
       this.unfollow(idUserToUnfollow)
       // Update users array (here in default.data) to see changes
       this.users[index].followed = false
-    },
-
-    showUser(idUserToShow) {
-      if (idUserToShow === this.user.uid) {
-        this.$router.push('/account')
-      } else {
-        this.$router.push('/users/' + idUserToShow)
-      }
     }
   }
 }
