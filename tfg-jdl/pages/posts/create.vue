@@ -13,7 +13,7 @@
           id="editForm"
           method="post"
           target="_self"
-          @submit.prevent="createPost()"
+          @submit.prevent="create_post()"
         >
           <p>
             <label class="labelForm" for="tittle">Titulo: </label>
@@ -77,25 +77,28 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState } from 'vuex'
 import { firestore } from 'firebase'
+import functions from '~/assets/functions'
 
 export default {
   data: () => ({}),
   middleware: 'autenticado',
-  computed: {},
+  computed: {
+    ...mapState('user', ['user'])
+  },
   methods: {
-    ...mapActions('user', ['create_post']),
     click_submit() {
       this.$refs.button_post.click()
     },
-    createPost() {
-      this.create_post({
-        tittle: this.$refs.tittle.value,
-        body: this.$refs.body.value,
-        date: firestore.Timestamp.now()
-        // firestore.Timestamp.now().toDate()
-      })
+    create_post() {
+      functions.createPostDocument(
+        this.user.uid,
+        this.user.name,
+        this.$refs.tittle.value,
+        this.$refs.body.value,
+        firestore.Timestamp.now()
+      )
       this.$router.push('/') // TODO redirigir a mis publicaciones
     }
   }

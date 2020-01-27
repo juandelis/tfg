@@ -30,8 +30,14 @@ const functions = {
         console.log('Error getting document:', error)
       })
   },
-  createPostDocument(uid, tittle, body, date) {
-    db.collection('posts').add({ body, uid, date, tittle })
+  createPostDocument(creatorUid, creatorName, tittle, body, date) {
+    db.collection('posts').add({
+      creatorUid,
+      creatorName,
+      tittle,
+      body,
+      date
+    })
   }
 }
 

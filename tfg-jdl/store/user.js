@@ -353,15 +353,6 @@ export const actions = {
     }
   },
 
-  create_post({ state, commit, dispatch }, payload) {
-    functions.createPostDocument(
-      state.user.uid,
-      payload.tittle,
-      payload.body,
-      payload.date
-    )
-  },
-
   showUser({ state }, idUserToShow) {
     if (idUserToShow === state.user.uid) {
       this.$router.push('/account')

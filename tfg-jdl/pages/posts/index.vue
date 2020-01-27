@@ -29,7 +29,7 @@
             color="white"
             left
             round
-            @click="showPost(post.uid, post.creator)"
+            @click="showPost(post.uid, post.creatorUid)"
           >
             {{ i + 1 }} - &nbsp; {{ post.tittle }} &nbsp; ---&nbsp;
             {{ post.date }}
@@ -48,7 +48,8 @@ import { db } from '~/services/fireinit'
 
 export default {
   data: () => ({
-    posts: []
+    posts: [],
+    tittle: ''
   }),
   middleware: 'autenticado',
   computed: {
@@ -64,7 +65,8 @@ export default {
         uid: postDoc.id,
         tittle: postData.tittle,
         date: postData.date.toDate().toLocaleDateString('es-ES'),
-        creator: postData.creator,
+        creatorUid: postData.creatorUid,
+        creatorName: postData.creatorName,
         body: postData.body
       })
     })
@@ -87,8 +89,8 @@ export default {
       })
     },
 
-    showPost(idPostToShow, creator) {
-      if (creator === this.user.uid) {
+    showPost(idPostToShow, idCreator) {
+      if (idCreator === this.user.uid) {
         this.$router.push('/myposts/' + idPostToShow) // TODO MYPOSTS
       } else {
         this.$router.push('/posts/' + idPostToShow)

@@ -8,7 +8,7 @@
         <v-layout row>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <v-flex grow>
-            <h3 align="left">AUTOR: &nbsp; {{ postToShow.creator }}</h3>
+            <h3 align="left">AUTOR: &nbsp; {{ postToShow.creatorName }}</h3>
             <br />
             <h3 align="left">
               CONTENIDO: &nbsp;
@@ -37,7 +37,8 @@ export default {
         tittle: '',
         date: '',
         body: '',
-        creator: ''
+        creatorUid: '',
+        creatorName: ''
       }
     }
   },
@@ -57,7 +58,8 @@ export default {
       const postData = postDoc.data()
       // Guardamos los datos de la publicacion
       this.postToShow.tittle = postData.tittle
-      this.postToShow.creator = postData.creator
+      this.postToShow.creatorUid = postData.creatorUid
+      this.postToShow.creatorName = postData.creatorName
       this.postToShow.date = postData.date.toDate().toLocaleDateString('es-ES')
       this.postToShow.body = postData.body
     }
