@@ -93,11 +93,11 @@ export default {
     },
     create_post() {
       functions.createPostDocument(
+        this.$refs.body.value,
         this.user.uid,
         this.user.name,
-        this.$refs.tittle.value,
-        this.$refs.body.value,
-        firestore.Timestamp.now()
+        firestore.Timestamp.now(),
+        this.$refs.tittle.value
       )
       this.$router.push('/') // TODO redirigir a mis publicaciones
     }
