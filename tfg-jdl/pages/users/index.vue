@@ -44,8 +44,8 @@
         <br /><br />
 
         <div v-for="(user, i) in users" :key="i">
-          <v-btn flat color="white" left round @click="showUser(user.uid)">
-            {{ i + 1 }} -&nbsp;{{ user.name }}&nbsp; --- &nbsp;{{ user.email }}
+          <v-btn flat color="white" left round @click="showUser(user.id)">
+            &nbsp;{{ user.name }}&nbsp; --- &nbsp;{{ user.email }}
           </v-btn>
           <v-btn
             v-if="user.followed"
@@ -53,7 +53,7 @@
             outline
             round
             left
-            @click="unfollow_aux(user.uid, i)"
+            @click="unfollow_aux(user.id, i)"
           >
             DEJAR DE SEGUIR
           </v-btn>
@@ -63,7 +63,7 @@
             outline
             round
             left
-            @click="follow_aux(user.uid, i)"
+            @click="follow_aux(user.id, i)"
           >
             SEGUIR
           </v-btn>
@@ -105,7 +105,7 @@ export default {
       const userData = userDoc.data()
       if (userDoc.id !== userLogged.uid) {
         this.users.push({
-          uid: userDoc.id,
+          id: userDoc.id,
           name: userData.name,
           email: userData.email,
           followed: userLogged.following.includes(userDoc.id)
@@ -132,7 +132,7 @@ export default {
             userData.email.toLowerCase().includes(this.email.toLowerCase()) // str.normalize("NFD").replace(/[\u0300-\u036f]/g, "") to remove accents
           ) {
             this.users.push({
-              uid: userDoc.id,
+              id: userDoc.id,
               name: userData.name,
               email: userData.email,
               followed: userLogged.following.includes(userDoc.id)
@@ -150,7 +150,7 @@ export default {
             userLogged.following.includes(userDoc.id) === followedFilter
           ) {
             this.users.push({
-              uid: userDoc.id,
+              id: userDoc.id,
               name: userData.name,
               email: userData.email,
               followed: followedFilter

@@ -124,6 +124,39 @@ export default {
     ...mapActions('user', ['updateUserImage', 'unfollow', 'showUser']),
 
     async getUsers() {
+      this.following = []
+      for (const item of this.user.following) {
+        console.log('User: ', item)
+        const docUserFollowed = await db
+          .collection('accounts')
+          .doc(item)
+          .get()
+        if (docUserFollowed.exists) {
+          this.following.push({
+            uid: docUserFollowed.id,
+            name: docUserFollowed.data().name,
+            email: docUserFollowed.data().email
+          })
+        }
+      }
+      this.followers = []
+      for (const item of this.user.followers) {
+        console.log('User: ', item)
+        const docUserFollower = await db
+          .collection('accounts')
+          .doc(item)
+          .get()
+        if (docUserFollower.exists) {
+          this.followers.push({
+            uid: docUserFollower.id,
+            name: docUserFollower.data().name,
+            email: docUserFollower.data().email
+          })
+        }
+      }
+    },
+
+    /* async getUsers() {
       this.followers = []
       this.following = []
       const usersSnapshot = await db.collection('accounts').get()
@@ -149,7 +182,7 @@ export default {
           }
         }
       })
-    },
+    }, */
 
     unfollowUser(idUserToUnfollow, index) {
       // unfollow method in user.js (store)

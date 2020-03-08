@@ -14,7 +14,7 @@
             type="search"
             name="creator"
             size="40"
-            @input="updatePosts({ creatorName: creator, date: date })"
+            @input="searchPosts({ creatorName: creator, date: date })"
           />
           <br /><br />
           <label class="labelForm" for="date"> Fecha: </label> &nbsp;
@@ -22,10 +22,10 @@
             v-model="date"
             type="date"
             name="date"
-            @input="updatePosts({ creatorName: creator, date: date })"
+            @input="searchPosts({ creatorName: creator, date: date })"
           />
           <!--<br /><br />
-          <v-btn @click="search()">
+          <v-btn @click="searchPosts({ creatorName: creator, date: date })">
             BUSCAR
           </v-btn>-->
         </p>
@@ -49,17 +49,22 @@
           {{ post.body }}
           <br />
           <v-card-title>
-            <v-spacer />
+            <v-spacer /><v-spacer /><v-spacer /><v-spacer /><v-spacer /><v-spacer /><v-spacer />
             <v-card color="">
+              &nbsp;&nbsp;&nbsp;&nbsp; {{ post.num_dislikes }}
               <v-btn icon flat @click="like(post.creatorId)">
                 <v-icon>thumb_down</v-icon>
               </v-btn>
-              <span>256</span>
+            </v-card>
+            <v-spacer />
+            <v-card color="">
+              &nbsp;&nbsp;&nbsp;&nbsp; {{ post.num_dislikes }}
               <v-btn icon flat @click="dislike(post.creatorId)">
                 <v-icon>thumb_up</v-icon>
               </v-btn>
+              <v-spacer />
             </v-card>
-            <v-spacer />
+            <v-spacer /><v-spacer /><v-spacer /><v-spacer /><v-spacer /><v-spacer /><v-spacer />
           </v-card-title>
         </v-card>
         <br />
@@ -86,11 +91,6 @@ export default {
   },
 
   mounted: function() {
-    // TODO missings
-    // TODO onSnapShot para el user
-    // Se puede también escuchar a un documento concreto
-    // TODO sincronizar también el nombre del usuario (si se cambia que se actualice tambien en el post) - onSnapShot a users
-
     this.startListeningToPosts({ creator: this.creator, date: this.date })
   },
 
@@ -99,7 +99,6 @@ export default {
   },
 
   methods: {
-    // TODO funciones de like y dislike (añadir id de usuario a lista de likes o dislikes)
     ...mapActions('user', ['showUser']),
     ...mapActions('posts', ['startListeningToPosts', 'stopListeningToPosts'])
     /*,
