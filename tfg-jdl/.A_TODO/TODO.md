@@ -1,3 +1,8 @@
+user
+  poner birth como timestamp en user.js y signup
+
+
+
 user.js
   funciones de follow y unfollow
       poner restricciones en las reglas para controlar que solo modificas tu array de seguidos
@@ -24,9 +29,6 @@ posts/index.vue
       onSnapShot a users o Hacer con firebase functions (cambia o borra user, actualizar sus posts)?
       cuando cambia el name de un user actualizar sus posts, tambien cuando se borra un usuario, etc.
 
-users/index.vue
-  obtener users desde users.js igual que hacemos con posts.js
-
 users/ _ id
   añadir seguidores y seguidos como en miperfil (aquí ambos tendrán boton de follow/unfollow)
 
@@ -35,4 +37,4 @@ account/index.vue
   onSnapShot en user.js al documento del user
   No guardar aqui followers y followed, hacer onSnapShot en user.js a los documentos de los followers y following
   o crear nuevo usersFollowed.js con esta info
-  ¿como hacer la query para obtener solo los documentos de los usuarios followers y following?
+  ¿como hacer la query para obtener solo los documentos de los usuarios followers y following? array-contains
