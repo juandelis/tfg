@@ -7,176 +7,161 @@
 
         <br />
         <hr />
+        <br /><br />
+
+        <p>
+          <label class="labelForm"> Nombre </label>
+          <input
+            v-model="name"
+            type="search"
+            @input="
+              searchUsers({
+                name: name,
+                email: email,
+                relation: relation
+              })
+            "
+          />
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <label class="labelForm"> Correo </label>
+          <input
+            v-model="email"
+            type="email"
+            size="30"
+            @input="
+              searchUsers({
+                name: name,
+                email: email,
+                relation: relation
+              })
+            "
+          />
+        </p>
+
         <br />
 
         <p>
-          <label class="labelForm" for="name"> Nombre</label>
-          <input v-model="name" type="search" name="nombre" />
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <label class="labelForm" for="correo"> Correo</label>
-          <input v-model="email" type="email" name="correo" size="30" />
-        </p>
-
-        <p>
-          <input v-model="followed" type="radio" value="all" checked />
+          <input
+            v-model="relation"
+            type="radio"
+            value="all"
+            checked
+            @input="
+              searchUsers({
+                name: name,
+                email: email,
+                relation: 'all'
+              })
+            "
+          />
           Todos &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <input v-model="followed" type="radio" value="followed" />
+          <input
+            v-model="relation"
+            type="radio"
+            value="followed"
+            @input="
+              searchUsers({
+                name: name,
+                email: email,
+                relation: 'followed'
+              })
+            "
+          />
           Seguidos &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <input v-model="followed" type="radio" value="notFollowed" />
+          <input
+            v-model="relation"
+            type="radio"
+            value="notFollowed"
+            @input="
+              searchUsers({
+                name: name,
+                email: email,
+                relation: 'notFollowed'
+              })
+            "
+          />
           No seguidos
         </p>
 
-        <v-btn @click="search()">
-          BUSCAR
-        </v-btn>
-
         <br />
-        <br />
-
-        <!--
         <hr />
-        <br />
-        <h3 align="center">USERS: &nbsp; {{ users }}</h3>
-        <br />
-        -->
 
-        <hr />
-        <br /><br />
-
-        <div v-for="(user, i) in users" :key="i">
-          <v-btn flat color="white" left round @click="showUser(user.id)">
-            &nbsp;{{ user.name }}&nbsp; --- &nbsp;{{ user.email }}
-          </v-btn>
-          <v-btn
-            v-if="user.followed"
-            color="orange"
-            outline
-            round
-            left
-            @click="unfollow_aux(user.id, i)"
-          >
-            DEJAR DE SEGUIR
-          </v-btn>
-          <v-btn
-            v-else
-            color="green"
-            outline
-            round
-            left
-            @click="follow_aux(user.id, i)"
-          >
-            SEGUIR
-          </v-btn>
-          <br /><br />
-        </div>
-
+        <v-div v-for="(user, i) in users" :key="i">
+          <br />
+          <v-row>
+            <v-card>
+              <v-avatar size="70">
+                <img :src="user.image" alt="User profile photo" />
+              </v-avatar>
+              <v-btn flat color="white" large round @click="showUser(user.id)">
+                {{ user.name }} <br />
+                {{ user.email }}
+              </v-btn>
+              <v-btn
+                v-if="user.followed"
+                color="orange"
+                outline
+                round
+                @click="unfollow(user.id)"
+              >
+                DEJAR DE SEGUIR
+              </v-btn>
+              <v-btn
+                v-else
+                color="green"
+                outline
+                round
+                @click="follow(user.id)"
+              >
+                SEGUIR
+              </v-btn>
+            </v-card>
+          </v-row>
+        </v-div>
         <br />
       </v-card>
-      <br />
     </v-flex>
   </v-layout>
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { db } from '~/services/fireinit'
 
 export default {
   data() {
     return {
       name: '',
       email: '',
-      followed: 'all',
-      users: []
+      relation: 'all'
     }
   },
 
   middleware: 'autenticado',
 
   computed: {
-    ...mapState('user', ['user'])
+    ...mapState('user', ['user']),
+    ...mapState('users', ['users'])
   },
 
-  mounted: async function() {
-    this.users = []
-    const usersSnapshot = await db.collection('accounts').get()
-    const userLogged = this.user
-    usersSnapshot.forEach(userDoc => {
-      const userData = userDoc.data()
-      if (userDoc.id !== userLogged.uid) {
-        this.users.push({
-          id: userDoc.id,
-          name: userData.name,
-          email: userData.email,
-          followed: userLogged.following.includes(userDoc.id)
-        })
-        // console.log('Usuario: ' + user.email)
-      }
+  mounted: function() {
+    this.startListeningToUsers({
+      name: this.name,
+      email: this.email,
+      relation: this.relation
     })
+  },
+
+  beforeDestroy: function() {
+    this.stopListeningToUsers()
   },
 
   methods: {
     ...mapActions('user', ['follow', 'unfollow', 'showUser']),
-
-    async search() {
-      this.users = []
-      const usersSnapshot = await db.collection('accounts').get()
-      const userLogged = this.user
-
-      if (this.followed === 'all') {
-        usersSnapshot.forEach(userDoc => {
-          const userData = userDoc.data()
-          if (
-            userDoc.id !== userLogged.uid &&
-            userData.name.toLowerCase().includes(this.name.toLowerCase()) &&
-            userData.email.toLowerCase().includes(this.email.toLowerCase()) // str.normalize("NFD").replace(/[\u0300-\u036f]/g, "") to remove accents
-          ) {
-            this.users.push({
-              id: userDoc.id,
-              name: userData.name,
-              email: userData.email,
-              followed: userLogged.following.includes(userDoc.id)
-            })
-          }
-        })
-      } else {
-        const followedFilter = this.followed === 'followed'
-        usersSnapshot.forEach(userDoc => {
-          const userData = userDoc.data()
-          if (
-            userDoc.id !== userLogged.uid &&
-            userData.name.toLowerCase().includes(this.name.toLowerCase()) &&
-            userData.email.toLowerCase().includes(this.email.toLowerCase()) &&
-            userLogged.following.includes(userDoc.id) === followedFilter
-          ) {
-            this.users.push({
-              id: userDoc.id,
-              name: userData.name,
-              email: userData.email,
-              followed: followedFilter
-            })
-          }
-        })
-      }
-      /* this.getUsers()
-      console.log('Users: ' + this.users)
-      this.users = this.users.filter(item => item.name === this.name)
-      console.log('Users: ' + this.users) */
-    },
-
-    follow_aux(idUserToFollow, index) {
-      // follow method in user.js (store)
-      this.follow(idUserToFollow)
-      // Update users array (here in default.data) to change the view
-      this.users[index].followed = true
-    },
-
-    unfollow_aux(idUserToUnfollow, index) {
-      // unfollow method in user.js (store)
-      this.unfollow(idUserToUnfollow)
-      // Update users array (here in default.data) to see changes
-      this.users[index].followed = false
-    }
+    ...mapActions('users', [
+      'startListeningToUsers',
+      'stopListeningToUsers',
+      'searchUsers'
+    ])
   }
 }
 </script>

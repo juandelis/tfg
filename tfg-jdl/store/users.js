@@ -10,6 +10,7 @@ export const state = () => ({
     uid: null,
     name: '',
     email: '',
+    image: ''
     followed: false
   } */
 })
@@ -19,23 +20,25 @@ export const getters = {
 }
 
 export const mutations = {
-  pushUser(state, { id, name, email, followed }) {
+  pushUser(state, { id, name, email, image, followed }) {
     if (id) {
       state.users.push({
         id: id,
         name: name,
         email: email,
+        image: image,
         followed: followed
       })
     }
   },
-  updateUser(state, { index, id, name, email, followed }) {
+  updateUser(state, { index, id, name, email, image, followed }) {
     if (state.users[index]) {
       // Borramos el antiguo user e insertamos el nuevo en su lugar
       state.users.splice(index, 1, {
         id: id,
         name: name,
         email: email,
+        image: image,
         followed: followed
       })
     }
@@ -100,6 +103,7 @@ export const actions = {
               id: change.doc.id,
               name: userData.name,
               email: userData.email,
+              image: userData.image,
               followed: userLogged.following.includes(change.doc.id)
             })
           }
@@ -115,6 +119,7 @@ export const actions = {
               id: change.doc.id,
               name: userData.name,
               email: userData.email,
+              image: userData.image,
               followed: userLogged.following.includes(change.doc.id)
             })
           }
@@ -128,6 +133,7 @@ export const actions = {
           id: change.doc.id,
           name: userData.name,
           email: userData.email,
+          image: userData.image,
           followed: userLogged.following.includes(change.doc.id)
         })
       }
@@ -158,6 +164,7 @@ export const actions = {
             id: userDoc.id,
             name: userData.name,
             email: userData.email,
+            image: userData.image,
             followed: userLogged.following.includes(userDoc.id)
           })
         }
@@ -173,6 +180,7 @@ export const actions = {
             id: userDoc.id,
             name: userData.name,
             email: userData.email,
+            image: userData.image,
             followed: userLogged.following.includes(userDoc.id)
           })
         }
