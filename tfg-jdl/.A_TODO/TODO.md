@@ -2,21 +2,16 @@ user
   poner birth como timestamp en user.js y signup
 
 
-
 user.js
+  onSnapShot en user.js al documento del user cuando se inicia sesion
   funciones de follow y unfollow
-      poner restricciones en las reglas para controlar que solo modificas tu array de seguidos
-      comparar array anterior con nuevo, operador ==
-      no se puede modificar tu array de seguidores
-      El array del otro usuario se actualiza desde el servidor Firebase con funciones
-  otra opcion seria
-      Cambiar sistema de seguidores a una coleccion aparte con los pares origen destino
-      seguir a alguien significa ponerte como origen y al usuario a seguir como destino
-      por tanto, solo se puede añadir documento con tu id como origen y otro id como destino
+      --poner restricciones en las reglas para controlar que solo modificas tu array de seguidos
+      --comparar array anterior con nuevo, operador ==
+      --no se puede modificar tu array de seguidores, solo el de seguidos
+      --El array del otro usuario puedes modificarlo pero solo para añadir/quitar tu id
+      quitar commit del store cuando esté sincronizado con onSnapShot
   funciones de like y dislike
-      añadir en el doc del user un array de ids de post que ha dado like y otro para dislikes
-      estos serán los que pueda modificar el usuario y las funciones de firebase modificaran el documento del post
-      esto evita que los usuarios puedan modificar directamente las publicaciones, solo pueden añadir posts a sus likes o dislikes
+      solo puedes añadir/quitar tu uid de la lista de likes/dislikes del post
   poner date como Timestamp
 
 
@@ -34,7 +29,9 @@ users/ _ id
 
 
 account/index.vue
-  onSnapShot en user.js al documento del user
   No guardar aqui followers y followed, hacer onSnapShot en user.js a los documentos de los followers y following
   o crear nuevo usersFollowed.js con esta info
   ¿como hacer la query para obtener solo los documentos de los usuarios followers y following? array-contains
+
+
+pagina contacto
