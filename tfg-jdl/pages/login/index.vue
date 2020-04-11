@@ -35,7 +35,7 @@
           <p>
             <input id="button_login" type="submit" value=" INICIAR SESION " />
             <br />
-            <v-btn flat color="blue" small round @click="change_password()">
+            <v-btn flat color="blue" small round nuxt to="/login/password">
               ¿Olvidaste tu contraseña?
             </v-btn>
           </p>
@@ -135,7 +135,7 @@
 </template>
 
 <script>
-import { mapGetters, mapState, mapActions, mapMutations } from 'vuex'
+import { mapGetters, mapState, mapActions } from 'vuex'
 import firebase, { auth, getCurrentUser } from '~/services/fireinit'
 import * as firebaseui from 'firebaseui'
 import functions from '~/assets/functions'
@@ -169,15 +169,12 @@ export default {
   },
   methods: {
     ...mapActions('user', ['initAuth', 'login', 'signup']),
-    ...mapMutations('user', ['setRecoveryEmail']),
 
     click_submit() {
       this.$refs.button_register.click()
     },
 
     change_password() {
-      // Save email recovery in the store (user.js)
-      this.setRecoveryEmail(this.email_log)
       this.$router.push('/login/password')
     },
 

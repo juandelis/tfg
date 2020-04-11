@@ -31,32 +31,24 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import { auth } from '~/services/fireinit'
 
 export default {
   data: () => ({
     email_recovery: ''
   }),
-  computed: {
-    ...mapState('user', ['recoveryEmail'])
-  },
-  mounted: function() {
-    // Get email recovery from store (user.js)
-    this.email_recovery = this.recoveryEmail
-  },
   methods: {
     async recover_password() {
+      const router = this.$router
       await auth
         .sendPasswordResetEmail(this.email_recovery)
         .then(function() {
           console.log('Email to reset password sent!')
+          router.push('/login')
         })
         .catch(function(error) {
           alert('Error: Usuario no existente', error)
         })
-
-      this.$router.push('/login')
     }
   }
 }
