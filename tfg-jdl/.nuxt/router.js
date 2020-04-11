@@ -11,11 +11,8 @@ const _d3b9b346 = () => interopDefault(import('..\\pages\\pruebas.vue' /* webpac
 const _16f60fbf = () => interopDefault(import('..\\pages\\users\\index.vue' /* webpackChunkName: "pages_users_index" */))
 const _a4c3465c = () => interopDefault(import('..\\pages\\account\\edit.vue' /* webpackChunkName: "pages_account_edit" */))
 const _7f01e0e3 = () => interopDefault(import('..\\pages\\account\\password.vue' /* webpackChunkName: "pages_account_password" */))
-const _5453a806 = () => interopDefault(import('..\\pages\\login\\autologin.vue' /* webpackChunkName: "pages_login_autologin" */))
-const _7ae42c46 = () => interopDefault(import('..\\pages\\login\\logged.vue' /* webpackChunkName: "pages_login_logged" */))
 const _8bc9bc42 = () => interopDefault(import('..\\pages\\login\\password.vue' /* webpackChunkName: "pages_login_password" */))
 const _f8ba6fac = () => interopDefault(import('..\\pages\\posts\\create.vue' /* webpackChunkName: "pages_posts_create" */))
-const _2bd35624 = () => interopDefault(import('..\\pages\\users\\user.vue' /* webpackChunkName: "pages_users_user" */))
 const _ebdb4708 = () => interopDefault(import('..\\pages\\posts\\_id.vue' /* webpackChunkName: "pages_posts__id" */))
 const _17f2f5e7 = () => interopDefault(import('..\\pages\\users\\_id.vue' /* webpackChunkName: "pages_users__id" */))
 const _dfbc35a6 = () => interopDefault(import('..\\pages\\index.vue' /* webpackChunkName: "pages_index" */))
@@ -131,14 +128,6 @@ export function createRouter() {
       component: _7f01e0e3,
       name: "account-password"
     }, {
-      path: "/login/autologin",
-      component: _5453a806,
-      name: "login-autologin"
-    }, {
-      path: "/login/logged",
-      component: _7ae42c46,
-      name: "login-logged"
-    }, {
       path: "/login/password",
       component: _8bc9bc42,
       name: "login-password"
@@ -146,10 +135,6 @@ export function createRouter() {
       path: "/posts/create",
       component: _f8ba6fac,
       name: "posts-create"
-    }, {
-      path: "/users/user",
-      component: _2bd35624,
-      name: "users-user"
     }, {
       path: "/posts/:id",
       component: _ebdb4708,
