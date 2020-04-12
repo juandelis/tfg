@@ -51,16 +51,22 @@
           <v-card-title>
             <v-spacer /><v-spacer /><v-spacer /><v-spacer /><v-spacer /><v-spacer /><v-spacer />
             <v-card color="">
-              &nbsp;&nbsp;&nbsp;&nbsp; {{ post.num_dislikes }}
-              <v-btn icon flat @click="like(post.creatorId)">
-                <v-icon>thumb_down</v-icon>
+              &nbsp;&nbsp;&nbsp;&nbsp; {{ post.num_likes }}
+              <v-btn v-if="!post.liked" icon @click="like(post.id)">
+                <v-icon>thumb_up</v-icon>
+              </v-btn>
+              <v-btn v-else color="#878787" icon @click="unlike(post.id)">
+                <v-icon>thumb_up</v-icon>
               </v-btn>
             </v-card>
             <v-spacer />
             <v-card color="">
               &nbsp;&nbsp;&nbsp;&nbsp; {{ post.num_dislikes }}
-              <v-btn icon flat @click="dislike(post.creatorId)">
-                <v-icon>thumb_up</v-icon>
+              <v-btn v-if="!post.disliked" icon @click="dislike(post.id)">
+                <v-icon>thumb_down</v-icon>
+              </v-btn>
+              <v-btn v-else color="#878787" icon @click="undislike(post.id)">
+                <v-icon>thumb_down</v-icon>
               </v-btn>
               <v-spacer />
             </v-card>
@@ -79,8 +85,7 @@ import { mapState, mapActions } from 'vuex'
 export default {
   data: () => ({
     creator: '',
-    date: '',
-    unsubscribe: null
+    date: ''
   }),
 
   middleware: 'autenticado',
@@ -100,12 +105,15 @@ export default {
 
   methods: {
     ...mapActions('user', ['showUser']),
-    ...mapActions('posts', ['startListeningToPosts', 'stopListeningToPosts'])
-    /*,
-    getDateWithFormat(date) {
-     var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      return date.toLocaleDateString('es-ES')
-    } */
+    ...mapActions('posts', [
+      'startListeningToPosts',
+      'stopListeningToPosts',
+      'searchPosts',
+      'like',
+      'dislike',
+      'unlike',
+      'undislike'
+    ])
   }
 }
 </script>

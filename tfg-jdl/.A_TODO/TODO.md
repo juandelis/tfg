@@ -1,6 +1,6 @@
 
 user.js
-  --onSnapShot en user.js al documento del user cuando se inicia sesion
+  onSnapShot en user.js al documento del user cuando se inicia sesion
   --funciones de follow y unfollow
       --poner restricciones en las reglas para controlar que solo modificas tu array de seguidos
       --comparar array anterior con nuevo, operador ==
@@ -10,13 +10,13 @@ user.js
   borrar usuario
       quitarle de followers followed
       borrar sus publicaciones
-  poner birth como Timestamp
+  poner birth como Timestamp (convertir html date to Timestamp)
 
 
 posts/index.vue
-  funciones de like y dislike
-    solo puedes añadir/quitar tu uid de la lista de likes/dislikes del post
-  Restricciones en posts para creacion (estar loggeado) y edicion (ser el creador)
+  --funciones de like y dislike
+    --solo puedes añadir/quitar tu uid de la lista de likes/dislikes del post
+  --Restricciones en posts para creacion (estar loggeado) y edicion (ser el creador)
   BOTON subir al comienzo
   Numero máximo de elementos a mostrar??
   missings ¿¿que es??
