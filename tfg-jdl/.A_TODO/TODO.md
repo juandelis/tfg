@@ -1,21 +1,22 @@
-user
-  poner birth como timestamp en user.js y signup
-
 
 user.js
-  onSnapShot en user.js al documento del user cuando se inicia sesion
-  funciones de follow y unfollow
+  --onSnapShot en user.js al documento del user cuando se inicia sesion
+  --funciones de follow y unfollow
       --poner restricciones en las reglas para controlar que solo modificas tu array de seguidos
       --comparar array anterior con nuevo, operador ==
       --no se puede modificar tu array de seguidores, solo el de seguidos
       --El array del otro usuario puedes modificarlo pero solo para añadir/quitar tu id
-      quitar commit del store cuando esté sincronizado con onSnapShot
-  funciones de like y dislike
-      solo puedes añadir/quitar tu uid de la lista de likes/dislikes del post
-  poner date como Timestamp
+      --quitar commit del store cuando esté sincronizado con onSnapShot
+  borrar usuario
+      quitarle de followers followed
+      borrar sus publicaciones
+  poner birth como Timestamp
 
 
 posts/index.vue
+  funciones de like y dislike
+    solo puedes añadir/quitar tu uid de la lista de likes/dislikes del post
+  Restricciones en posts para creacion (estar loggeado) y edicion (ser el creador)
   BOTON subir al comienzo
   Numero máximo de elementos a mostrar??
   missings ¿¿que es??
