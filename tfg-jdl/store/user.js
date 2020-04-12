@@ -1,6 +1,6 @@
 import { auth, getCurrentUser, db } from '~/services/fireinit'
 // import firebase from 'firebase'
-import functions from '~/assets/functions'
+// import functions from '~/assets/functions'
 import { firestore } from 'firebase'
 
 /* function createUserDocument(user) {
@@ -27,18 +27,7 @@ export const state = () => ({
   },
   afterLogin: '/', // donde dirigirse una vez complete el login (por defecto el inicio)
   listeningAuth: false,
-  recoveryEmail: '',
-  userToShow: {
-    uid: null, // no null si está logueado
-    name: '',
-    email: '',
-    birth: '',
-    genre: '',
-    image: '',
-    followed: false,
-    followers: [],
-    following: []
-  }
+  unsuscribe: null // guardará la funcion para dejar de escuchar cambios
 })
 
 export const getters = {
@@ -48,30 +37,28 @@ export const getters = {
 export const mutations = {
   setUser(
     state,
-    { user, name, birth, genre, info, image, following, followers }
+    { id, name, email, birth, genre, info, image, following, followers }
   ) {
-    if (user) {
-      state.user.uid = user.uid
-      state.user.name = user.displayName || name
-      state.user.email = user.email
-      state.user.birth = birth
-      state.user.genre = genre
-      state.user.info = info
-      state.user.image = image || 'default-profile.png'
-      state.user.followers = followers
-      state.user.following = following
-    } else {
-      // clearUserState
-      state.user.uid = null
-      state.user.name = ''
-      state.user.email = ''
-      state.user.birth = ''
-      state.user.genre = ''
-      state.user.info = ''
-      state.user.image = ''
-      state.user.followers = []
-      state.user.following = []
-    }
+    state.user.uid = id
+    state.user.name = name
+    state.user.email = email
+    state.user.birth = birth
+    state.user.genre = genre
+    state.user.info = info
+    state.user.image = image || 'default-profile.png'
+    state.user.followers = followers
+    state.user.following = following
+  },
+  clearUser(state) {
+    state.user.uid = null
+    state.user.name = ''
+    state.user.email = ''
+    state.user.birth = ''
+    state.user.genre = ''
+    state.user.info = ''
+    state.user.image = ''
+    state.user.followers = []
+    state.user.following = []
   },
   updateUserData(state, { name, birth, genre, info }) {
     state.user.name = name
@@ -100,38 +87,6 @@ export const mutations = {
   },
   setAfterLogin(state, path) {
     state.afterLogin = path
-  },
-  setRecoveryEmail(state, email) {
-    state.recoveryEmail = email
-  },
-  setUserToShow(
-    state,
-    {
-      uid,
-      name,
-      email,
-      birth,
-      genre,
-      info,
-      image,
-      followed,
-      following,
-      followers
-    }
-  ) {
-    state.userToShow.uid = uid
-    state.userToShow.name = name
-    state.userToShow.email = email
-    state.userToShow.birth = birth
-    state.userToShow.genre = genre
-    state.userToShow.info = info
-    state.userToShow.image = image
-    state.userToShow.followed = followed
-    state.userToShow.followers = followers
-    state.userToShow.following = following
-  },
-  updateUSerToShowFollowed(state, followed) {
-    state.userToShow.followed = followed
   }
 }
 
@@ -140,69 +95,74 @@ export const actions = {
     console.log('test')
   },
 
+  startListeningToUser({ state, dispatch }, userDoc) {
+    // Nos ponemos en escucha del documento del usuario
+    state.unsubscribe = userDoc.onSnapshot(userDocSnapshot => {
+      // funcion que se ejecutará cuando se detecten cambios en el documento del usuario
+      dispatch('updateUser', userDocSnapshot)
+    })
+    console.log('startListeningToUser')
+  },
+
+  stopListeningToUser({ state, commit }) {
+    // Limpiar el user
+    commit('clearUser')
+    // Dejar de escuchar a cambios
+    state.unsubscribe()
+    console.log('stopListeningToUser')
+  },
+
+  updateUser({ commit, rootState }, userDocSnapshot) {
+    // Borrar el viejo user
+    commit('clearUser')
+    // Guardar el nuevo user
+    const userData = userDocSnapshot.data()
+    commit('setUser', {
+      id: userDocSnapshot.id,
+      name: userData.name,
+      email: userData.email,
+      birth: userData.birth,
+      genre: userData.genre,
+      info: userData.info,
+      image: userData.image,
+      following: userData.following,
+      followers: userData.followers
+    })
+  },
+
   async initAuth({ state, commit, dispatch }) {
     if (!state.listeningAuth) {
       commit('setListeningAuth', true)
       auth.onAuthStateChanged(user => {
         console.log('Cambio Auth state')
-        // Buscamos el documento del usuario logueado en firebase
         if (user) {
-          const docRef = db.collection('accounts').doc(user.uid)
-          docRef
+          // Login: buscamos el documento y empezamos a escuchar sus cambios
+          const userDoc = db.collection('accounts').doc(user.uid)
+          userDoc
             .get()
             .then(function(doc) {
               if (doc.exists) {
-                // Hacemos el setUser con los datos obtenidos
-                console.log('Document readed:', doc.data())
-                commit('setUser', {
-                  user: user,
-                  name: doc.data().name,
-                  birth: doc.data().birth,
-                  genre: doc.data().genre,
-                  info: doc.data().info,
-                  image: doc.data().image,
-                  followers: doc.data().followers,
-                  following: doc.data().following
-                })
+                dispatch('startListeningToUser', userDoc)
+                console.log('startListeningToUser de initAuth')
+              } else {
+                // No existe el documento del usuario loggeado
               }
             })
             .catch(function(error) {
-              console.log('Error getting document:', error)
+              console.log('Error getting document: ', error)
             })
         } else {
-          commit('setUser', {
-            user: user,
-            name: '',
-            birth: '',
-            genre: '',
-            info: '',
-            image: null,
-            followers: [],
-            following: []
-          })
+          // Logout: limpiamos store y dejamos de escuchar cambios
+          commit('clearUser')
+          dispatch('stopListeningToUser')
+          console.log('stopListeningToUser de initAuth')
         }
       })
       const user = await getCurrentUser() // Obtiene el usuario si no se cerrá sesión
       const prevUid = state.user.uid
       const newUid = user ? user.uid : null
-      if (prevUid !== newUid)
-        commit('setUser', {
-          user: user,
-          name: '',
-          birth: '',
-          genre: '',
-          info: '',
-          image: null,
-          followers: [],
-          following: []
-        })
+      if (prevUid !== newUid) commit('clearUser')
     }
-  },
-
-  async logout({ commit, dispatch }) {
-    commit('setUser', {})
-    await auth.signOut()
-    this.$router.push('/')
   },
 
   login({ commit, dispatch }, payload) {
@@ -219,32 +179,50 @@ export const actions = {
       })
   },
 
+  async logout({ commit, dispatch }) {
+    await auth.signOut()
+    this.$router.push('/')
+  },
+
   signup({ commit, dispatch }, payload) {
     auth
       .createUserWithEmailAndPassword(payload.email, payload.password)
       .then(async function() {
         const user = await getCurrentUser() // Obtiene el usuario actual
+        const userDocRef = db.collection('accounts').doc(user.uid)
         if (user) {
           // Creamos el documento en firebase del usuario registrado
-          functions.createUserDocument(
-            user,
-            payload.name,
-            payload.birth,
-            payload.genre,
-            null,
-            null
-          )
-          // Hacemos setUser con los datos del usuario registrado
-          commit('setUser', {
-            user: user,
-            name: payload.name,
-            birth: payload.birth,
-            genre: payload.genre,
-            info: '',
-            image: 'default-profile.png',
-            following: [],
-            followers: []
-          })
+          userDocRef
+            .get()
+            .then(function(doc) {
+              if (doc.exists) {
+                // Ya existe el documento de este usuario
+                console.log('Document already exists:', doc.data())
+              } else {
+                // Creamos el documento
+                userDocRef
+                  .set({
+                    birth: payload.birth,
+                    email: user.email,
+                    following: [],
+                    followers: [],
+                    genre: payload.genre,
+                    info: '', // info personal por defecto vacía, editable luego
+                    image: '/default-profile.png', // imagen por defecto, editable luego
+                    name: payload.name
+                  })
+                  .then(function() {
+                    // Con el usuario loggeado y documento creado empezamos a escuchar
+                    dispatch('startListeningToUser', userDocRef)
+                  })
+                  .catch(function(error) {
+                    console.log('Error creando el documento: ' + error)
+                  })
+              }
+            })
+            .catch(function(error) {
+              console.log('Error getting document:', error)
+            })
         }
       })
       .catch(function(error) {
@@ -262,26 +240,17 @@ export const actions = {
     console.log('UPDATE ' + state.user.uid)
     const userLogged = state.user
     if (userLogged) {
-      // Actualizamos el documento en firebase
+      // Buscamos y actualizamos el documento en firebase
       const docRef = db.collection('accounts').doc(userLogged.uid)
       docRef
         .get()
         .then(function(doc) {
           if (doc.exists) {
-            console.log('Updating document')
-            // Actualizamos los valores del documento
             docRef.update({
               birth: payload.birth,
               genre: payload.genre,
               info: payload.info,
               name: payload.name
-            })
-            // Hacemos setUser con los campos editados
-            commit('updateUserData', {
-              name: payload.name,
-              birth: payload.birth,
-              genre: payload.genre,
-              info: payload.info
             })
           } else {
             console.log('No such document!')
@@ -296,17 +265,13 @@ export const actions = {
   updateUserImage({ state, commit, dispatch }, newImage) {
     const userLogged = state.user
     if (userLogged) {
-      // Actualizamos el documento en firebase
+      // Buscamos y actualizamos el documento en firebase
       const docRef = db.collection('accounts').doc(userLogged.uid)
       docRef
         .get()
         .then(function(doc) {
           if (doc.exists) {
-            console.log('Updating document (image)')
-            // Actualizamos imagen en el documento firebase
             docRef.update({ image: newImage })
-            // Actualizamos imagen en el store
-            commit('updateImage', newImage)
           } else {
             console.log('No such document!')
           }
@@ -330,8 +295,6 @@ export const actions = {
       docRef2.update({
         followers: firestore.FieldValue.arrayUnion(userLogged.uid)
       })
-
-      commit('addFollowing', idUserToFollow)
     }
   },
 
@@ -348,8 +311,6 @@ export const actions = {
       docRef2.update({
         followers: firestore.FieldValue.arrayRemove(userLogged.uid)
       })
-
-      commit('removeFollowing', idUserToUnfollow)
     }
   },
 
@@ -360,38 +321,4 @@ export const actions = {
       this.$router.push('/users/' + idUserToShow)
     }
   }
-  /*,
-  setUserWithFirebase({ commit, dispatch }, user) {
-    // Buscamos el documento del usuario logueado en firebase
-    const docRef = db.collection('accounts').doc(user.uid)
-    docRef
-      .get()
-      .then(function(doc) {
-        if (doc.exists) {
-          // Hacemos el setUser con los datos obtenidos
-          console.log('Document readed:', doc.data())
-          commit('setUser', {
-            user: user,
-            name: doc.data().name,
-            birth: doc.data().birth,
-            genre: doc.data().genre,
-            info: doc.data().info,
-            image: doc.data().image
-          })
-        }
-      })
-      .catch(function(error) {
-        console.log('Error getting document:', error)
-      })
-  } ,
-  userCreate({ state }, account) {
-    return auth
-      .createUserWithEmailAndPassword(account.email, account.password)
-      .then(({ user }) => {
-        return createUserDocument(user)
-      })
-  },
-  userCreateDocument({ state }) {
-    return true
-  } */
 }

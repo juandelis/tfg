@@ -1,6 +1,6 @@
 
 user.js
-  onSnapShot en user.js al documento del user cuando se inicia sesion
+  --onSnapShot en user.js al documento del user cuando se inicia sesion
   --funciones de follow y unfollow
       --poner restricciones en las reglas para controlar que solo modificas tu array de seguidos
       --comparar array anterior con nuevo, operador ==

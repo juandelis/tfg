@@ -110,17 +110,21 @@ export const actions = {
     // Guardar el nuevo userToShow
     const userToShowId = userToShowDocSnapshot.id
     const userToShowData = userToShowDocSnapshot.data()
-    commit('setUserToShow', {
-      id: userToShowId,
-      name: userToShowData.name,
-      email: userToShowData.email,
-      birth: userToShowData.birth,
-      genre: userToShowData.genre,
-      info: userToShowData.info,
-      image: userToShowData.image,
-      followed: rootState.user.user.following.includes(userToShowId),
-      following: userToShowData.following,
-      followers: userToShowData.followers
-    })
+    if (userToShowData) {
+      commit('setUserToShow', {
+        id: userToShowId,
+        name: userToShowData.name,
+        email: userToShowData.email,
+        birth: userToShowData.birth,
+        genre: userToShowData.genre,
+        info: userToShowData.info,
+        image: userToShowData.image,
+        followed: rootState.user.user.following.includes(userToShowId),
+        following: userToShowData.following,
+        followers: userToShowData.followers
+      })
+    } else {
+      console.log('No data found for user ' + userToShowId)
+    }
   }
 }
