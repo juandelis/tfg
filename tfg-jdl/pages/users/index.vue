@@ -86,7 +86,7 @@
         <br />
         <hr />
 
-        <v-div v-for="(user, i) in users" :key="i">
+        <div v-for="(user, i) in users" :key="i">
           <br />
           <v-card>
             <v-avatar size="70">
@@ -109,7 +109,7 @@
               SEGUIR
             </v-btn>
           </v-card>
-        </v-div>
+        </div>
         <br />
       </v-card>
     </v-flex>

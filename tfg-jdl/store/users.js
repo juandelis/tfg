@@ -66,7 +66,7 @@ export const actions = {
     commit('clearUsers')
   },
 
-  async startListeningToUsers({ state, dispatch }, payload) {
+  async startListeningToUsers({ state, dispatch, rootState }, payload) {
     const usersCollection = await db.collection('accounts')
     // Nos ponemos en escucha de la colleccion de accounts
     state.unsubscribe = usersCollection.onSnapshot(usersSnapshot => {
@@ -89,58 +89,63 @@ export const actions = {
   updateUsers({ state, commit, rootState }, payload) {
     // Cargar los nuevos users, modificar los cambiados y quitar los borrados
     payload.usersSnapshot.docChanges().forEach(change => {
-      const userData = change.doc.data()
       const userLogged = rootState.user.user
-      // Users añadidos
-      if (change.type === 'added') {
-        if (payload.relation === 'all') {
-          if (
-            change.doc.id !== userLogged.uid &&
-            userData.name.toLowerCase().includes(payload.name.toLowerCase()) &&
-            userData.email.toLowerCase().includes(payload.email.toLowerCase()) // str.normalize("NFD").replace(/[\u0300-\u036f]/g, "") to remove accents
-          ) {
-            commit('pushUser', {
-              id: change.doc.id,
-              name: userData.name,
-              email: userData.email,
-              image: userData.image,
-              followed: userLogged.following.includes(change.doc.id)
-            })
-          }
-        } else {
-          const followed = payload.relation === 'followed'
-          if (
-            change.doc.id !== userLogged.uid &&
-            userLogged.following.includes(change.doc.id) === followed &&
-            userData.name.toLowerCase().includes(payload.name.toLowerCase()) &&
-            userData.email.toLowerCase().includes(payload.email.toLowerCase())
-          ) {
-            commit('pushUser', {
-              id: change.doc.id,
-              name: userData.name,
-              email: userData.email,
-              image: userData.image,
-              followed: userLogged.following.includes(change.doc.id)
-            })
+      // Ignoramos cambios en el usuario loggeado (estos estarán en user.js)
+      if (change.doc.id !== rootState.user.user.uid) {
+        const userData = change.doc.data()
+        // Users añadidos
+        if (change.type === 'added') {
+          if (payload.relation === 'all') {
+            if (
+              userData.name
+                .toLowerCase()
+                .includes(payload.name.toLowerCase()) &&
+              userData.email.toLowerCase().includes(payload.email.toLowerCase()) // str.normalize("NFD").replace(/[\u0300-\u036f]/g, "") to remove accents
+            ) {
+              commit('pushUser', {
+                id: change.doc.id,
+                name: userData.name,
+                email: userData.email,
+                image: userData.image,
+                followed: userLogged.following.includes(change.doc.id)
+              })
+            }
+          } else {
+            const followed = payload.relation === 'followed'
+            if (
+              userLogged.following.includes(change.doc.id) === followed &&
+              userData.name
+                .toLowerCase()
+                .includes(payload.name.toLowerCase()) &&
+              userData.email.toLowerCase().includes(payload.email.toLowerCase())
+            ) {
+              commit('pushUser', {
+                id: change.doc.id,
+                name: userData.name,
+                email: userData.email,
+                image: userData.image,
+                followed: userLogged.following.includes(change.doc.id)
+              })
+            }
           }
         }
-      }
-      // Users modificados
-      if (change.type === 'modified') {
-        const index = state.users.findIndex(item => item.id === change.doc.id)
-        commit('updateUser', {
-          index: index,
-          id: change.doc.id,
-          name: userData.name,
-          email: userData.email,
-          image: userData.image,
-          followed: userLogged.following.includes(change.doc.id)
-        })
-      }
-      // Users borrados
-      if (change.type === 'removed') {
-        const index = state.users.findIndex(item => item.id === change.doc.id)
-        commit('deleteUser', { index: index })
+        // Users modificados
+        if (change.type === 'modified') {
+          const index = state.users.findIndex(item => item.id === change.doc.id)
+          commit('updateUser', {
+            index: index,
+            id: change.doc.id,
+            name: userData.name,
+            email: userData.email,
+            image: userData.image,
+            followed: userLogged.following.includes(change.doc.id)
+          })
+        }
+        // Users borrados
+        if (change.type === 'removed') {
+          const index = state.users.findIndex(item => item.id === change.doc.id)
+          commit('deleteUser', { index: index })
+        }
       }
     })
   },

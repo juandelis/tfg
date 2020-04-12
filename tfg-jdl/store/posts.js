@@ -26,11 +26,11 @@ export const getters = {
 export const mutations = {
   pushPost(
     state,
-    { postId, creatorName, creatorId, tittle, body, date, likes, dislikes }
+    { id, creatorName, creatorId, tittle, body, date, likes, dislikes }
   ) {
-    if (postId) {
+    if (id) {
       state.posts.push({
-        id: postId,
+        id: id,
         creatorName: creatorName,
         creatorId: creatorId,
         tittle: tittle,
@@ -45,22 +45,12 @@ export const mutations = {
   },
   updatePost(
     state,
-    {
-      index,
-      postId,
-      creatorName,
-      creatorId,
-      tittle,
-      body,
-      date,
-      likes,
-      dislikes
-    }
+    { index, id, creatorName, creatorId, tittle, body, date, likes, dislikes }
   ) {
     if (state.posts[index]) {
       // Borramos el antiguo post e insertamos el nuevo en su lugar
       state.posts.splice(index, 1, {
-        id: postId,
+        id: id,
         creatorName: creatorName,
         creatorId: creatorId,
         tittle: tittle,
@@ -134,7 +124,7 @@ export const actions = {
                 .split('T')[0] === payload.date)
         ) {
           commit('pushPost', {
-            postId: change.doc.id,
+            id: change.doc.id,
             creatorName: postData.creatorName,
             creatorId: postData.creatorId,
             tittle: postData.tittle,
@@ -150,7 +140,7 @@ export const actions = {
         const index = state.posts.findIndex(item => item.id === change.doc.id)
         commit('updatePost', {
           index: index,
-          postId: change.doc.id,
+          id: change.doc.id,
           creatorName: postData.creatorName,
           creatorId: postData.creatorId,
           tittle: postData.tittle,
@@ -175,8 +165,11 @@ export const actions = {
     // Limpiar array de posts
     commit('clearPosts')
 
-    // TODO: aplicar filtro en la query
-    const postsCollection = await db.collection('posts').orderBy('date', 'desc')
+    const postsCollection = await db
+      .collection('posts')
+      .orderBy('date', 'desc')
+      .get()
+
     postsCollection.forEach(postDoc => {
       const postData = postDoc.data()
       if (
@@ -191,7 +184,7 @@ export const actions = {
               .split('T')[0] === payload.date)
       ) {
         commit('pushPost', {
-          postId: postDoc.id,
+          id: postDoc.id,
           creatorName: postData.creatorName,
           creatorId: postData.creatorId,
           tittle: postData.tittle,
