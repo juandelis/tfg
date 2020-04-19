@@ -33,15 +33,14 @@ const functions = {
         console.log('Error getting document:', error)
       })
   },
-  createPostDocument(body, creatorId, creatorName, date, tittle) {
+  createPostDocument(body, creatorId, creatorName, date) {
     db.collection('posts').add({
       body: body,
       creatorId: creatorId,
       creatorName: creatorName,
       date: date,
       dislikes: [],
-      likes: [],
-      tittle: tittle
+      likes: []
     })
   }
 }

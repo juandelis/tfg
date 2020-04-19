@@ -16,43 +16,16 @@
           @submit.prevent="create_post()"
         >
           <p>
-            <label class="labelForm" for="tittle">Titulo: </label>
-            <input
-              id="tittle"
-              ref="tittle"
-              type="text"
-              name="tittle"
-              size="50"
-              maxlength="45"
-              required
-            />
-          </p>
-
-          <p>
-            <label class="labelForm" for="body">
-              Contenido:
-            </label>
-            <br />
             <textarea
               ref="body"
               name="body"
-              rows="6"
-              cols="60"
-              maxlength="400"
-              style="background-color:white; color:black"
+              rows="7"
+              cols="55"
+              maxlength="333"
+              style="background-color:white; color:black; resize:none"
               required
             >
             </textarea>
-          </p>
-
-          <p>
-            <label class="labelForm" for="genre">Campo:</label>
-            <select id="genre" ref="genre" name="genre">
-              <option style="display:none"></option>
-              <option>Masculino</option>
-              <option>Femenino</option>
-              <option>Otro</option>
-            </select>
           </p>
 
           <p>
@@ -96,10 +69,9 @@ export default {
         this.$refs.body.value,
         this.user.uid,
         this.user.name,
-        firestore.Timestamp.now(),
-        this.$refs.tittle.value
+        firestore.Timestamp.now()
       )
-      this.$router.push('/') // TODO redirigir a mis publicaciones
+      this.$router.push('/posts/myposts')
     }
   }
 }
