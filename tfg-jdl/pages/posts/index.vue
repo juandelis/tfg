@@ -14,7 +14,7 @@
             type="search"
             name="creator"
             size="40"
-            @input="searchPosts({ creatorName: creator, date: date })"
+            @input="searchPosts({ creator: creator, date: date, type: type })"
           />
           <br /><br />
           <label class="labelForm" for="date"> Fecha: </label> &nbsp;
@@ -22,13 +22,45 @@
             v-model="date"
             type="date"
             name="date"
-            @input="searchPosts({ creatorName: creator, date: date })"
+            @input="searchPosts({ creator: creator, date: date, type: type })"
           />
-          <!--<br /><br />
-          <v-btn @click="searchPosts({ creatorName: creator, date: date })">
+          <br /><br />
+        </p>
+        <p>
+          <input
+            v-model="type"
+            type="radio"
+            value="all"
+            @input="searchPosts({ creator: creator, date: date, type: 'all' })"
+          />
+          Todas &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <input
+            v-model="type"
+            type="radio"
+            value="liked"
+            @input="
+              searchPosts({ creator: creator, date: date, type: 'liked' })
+            "
+          />
+          Me gustan &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <input
+            v-model="type"
+            type="radio"
+            value="disliked"
+            @input="
+              searchPosts({
+                creator: creator,
+                date: date,
+                type: 'disliked'
+              })
+            "
+          />
+          No me gustan
+        </p>
+        <!--<br /><br />
+          <v-btn @click="searchPosts({ creator: creator, date: date })">
             BUSCAR
           </v-btn>-->
-        </p>
         <br />
       </v-card>
 
@@ -49,7 +81,7 @@
           <v-card-text>
             {{ post.body }}
           </v-card-text>
-          <v-card-title v-if="post.creatorId != user.uid">
+          <v-card-title>
             <v-spacer /><v-spacer /><v-spacer /><v-spacer /><v-spacer /><v-spacer /><v-spacer />
             <v-card>
               &nbsp;&nbsp;&nbsp;&nbsp; {{ post.num_likes }}
@@ -86,7 +118,8 @@ import { mapState, mapActions } from 'vuex'
 export default {
   data: () => ({
     creator: '',
-    date: ''
+    date: '',
+    type: 'all'
   }),
 
   middleware: 'autenticado',
@@ -97,7 +130,11 @@ export default {
   },
 
   mounted: function() {
-    this.startListeningToPosts({ creator: this.creator, date: this.date })
+    this.startListeningToPosts({
+      creator: this.creator,
+      date: this.date,
+      type: this.type
+    })
   },
 
   beforeDestroy: function() {

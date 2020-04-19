@@ -5,17 +5,6 @@ import { firestore } from 'firebase'
 export const state = () => ({
   posts: [],
   unsuscribe: null // guardará la funcion para dejar de escuchar (se invocará en beforeDestroy)
-  /* posts: {
-    id: null, // no null si está logueado
-    creatorName: '',
-    creatorId: '',
-    tittle: '',
-    body: '',
-    date: '',
-    likes: [],
-    dislikes: [],
-    date: 0
-  } */
 })
 
 export const getters = {
@@ -47,7 +36,7 @@ export const mutations = {
   },
   updatePost(
     state,
-    { uid, id, creatorName, creatorId, tittle, body, date, likes, dislikes }
+    { id, creatorName, creatorId, tittle, body, date, uid, likes, dislikes }
   ) {
     const index = state.posts.findIndex(item => item.id === id)
     if (state.posts[index]) {
@@ -68,7 +57,7 @@ export const mutations = {
       })
     }
   },
-  deletePost(state, { index }) {
+  removePost(state, { index }) {
     if (state.posts[index]) {
       // Borramos el post
       state.posts.splice(index, 1)
@@ -99,8 +88,9 @@ export const actions = {
       // funcion que se ejecutará cuando se detecten cambios en postsCollection
       dispatch('updatePosts', {
         postsSnapshot: postsSnapshot,
-        creatorName: payload.creator,
-        date: payload.date
+        creator: payload.creator,
+        date: payload.date,
+        type: payload.type
       })
     })
   },
@@ -115,58 +105,62 @@ export const actions = {
     // Cargar los nuevos posts, modificar los cambiados y quitar los borrados
     payload.postsSnapshot.docChanges().forEach(change => {
       const postData = change.doc.data()
-      // Posts añadidos
-      if (change.type === 'added') {
-        if (
-          postData.creatorName
-            .toUpperCase()
-            .includes(payload.creatorName.toUpperCase()) &&
-          (payload.date === ''
-            ? true
-            : postData.date
-                .toDate()
-                .toISOString()
-                .split('T')[0] === payload.date)
-        ) {
-          commit('pushPost', {
-            uid: rootState.user.user.uid,
+      const user = rootState.user.user.uid
+      // Ignoramos posts del usuario loggeado
+      if (postData.creatorId !== user) {
+        // Posts añadidos
+        if (change.type === 'added') {
+          if (
+            postData.creatorName
+              .toUpperCase()
+              .includes(payload.creator.toUpperCase()) &&
+            (payload.date === ''
+              ? true
+              : postData.date
+                  .toDate()
+                  .toISOString()
+                  .split('T')[0] === payload.date) &&
+            (payload.type === 'all' ||
+              (payload.type === 'liked' && postData.likes.includes(user)) ||
+              (payload.type === 'disliked' && postData.dislikes.includes(user)))
+          ) {
+            commit('pushPost', {
+              id: change.doc.id,
+              creatorName: postData.creatorName,
+              creatorId: postData.creatorId,
+              tittle: postData.tittle,
+              body: postData.body,
+              date: postData.date.toDate().toLocaleDateString('es-ES'),
+              uid: rootState.user.user.uid,
+              likes: postData.likes,
+              dislikes: postData.dislikes
+            })
+          }
+        }
+        // Posts modificados
+        else if (change.type === 'modified') {
+          commit('updatePost', {
             id: change.doc.id,
             creatorName: postData.creatorName,
             creatorId: postData.creatorId,
             tittle: postData.tittle,
             body: postData.body,
             date: postData.date.toDate().toLocaleDateString('es-ES'),
+            uid: rootState.user.user.uid,
             likes: postData.likes,
             dislikes: postData.dislikes
           })
         }
-      }
-      // Posts modificados
-      if (change.type === 'modified') {
-        commit('updatePost', {
-          uid: rootState.user.user.uid,
-          id: change.doc.id,
-          creatorName: postData.creatorName,
-          creatorId: postData.creatorId,
-          tittle: postData.tittle,
-          body: postData.body,
-          date: postData.date.toDate().toLocaleDateString('es-ES'),
-          likes: postData.likes,
-          dislikes: postData.dislikes
-        })
-      }
-      // Posts borrados
-      if (change.type === 'removed') {
-        const index = state.posts.findIndex(item => item.id === change.doc.id)
-        commit('deletePost', { index: index })
+        // Posts borrados
+        else if (change.type === 'removed') {
+          const index = state.posts.findIndex(item => item.id === change.doc.id)
+          commit('removePost', { index: index })
+        }
       }
     })
   },
 
   async searchPosts({ state, rootState, commit, dispatch }, payload) {
-    // TODO: No limpiar y volver a meter todo, aplicar filtro al array posts,
-    // pero habría que guardarlo en otro array postsToShow que será el que se muestre
-
     // Limpiar array de posts
     commit('clearPosts')
 
@@ -177,25 +171,31 @@ export const actions = {
 
     postsCollection.forEach(postDoc => {
       const postData = postDoc.data()
+      const user = rootState.user.user.uid
+      // Ignoramos posts del usuario loggeado
       if (
+        postData.creatorId !== user &&
         postData.creatorName
           .toUpperCase()
-          .includes(payload.creatorName.toUpperCase()) &&
+          .includes(payload.creator.toUpperCase()) &&
         (payload.date === ''
           ? true
           : postData.date
               .toDate()
               .toISOString()
-              .split('T')[0] === payload.date)
+              .split('T')[0] === payload.date) &&
+        (payload.type === 'all' ||
+          (payload.type === 'liked' && postData.likes.includes(user)) ||
+          (payload.type === 'disliked' && postData.dislikes.includes(user)))
       ) {
         commit('pushPost', {
-          uid: rootState.user.user.uid,
           id: postDoc.id,
           creatorName: postData.creatorName,
           creatorId: postData.creatorId,
           tittle: postData.tittle,
           body: postData.body,
           date: postData.date.toDate().toLocaleDateString('es-ES'),
+          uid: rootState.user.user.uid,
           likes: postData.likes,
           dislikes: postData.dislikes
         })

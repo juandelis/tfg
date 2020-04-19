@@ -13,6 +13,7 @@ const _a4c3465c = () => interopDefault(import('..\\pages\\account\\edit.vue' /* 
 const _7f01e0e3 = () => interopDefault(import('..\\pages\\account\\password.vue' /* webpackChunkName: "pages_account_password" */))
 const _8bc9bc42 = () => interopDefault(import('..\\pages\\login\\password.vue' /* webpackChunkName: "pages_login_password" */))
 const _f8ba6fac = () => interopDefault(import('..\\pages\\posts\\create.vue' /* webpackChunkName: "pages_posts_create" */))
+const _6546a0e9 = () => interopDefault(import('..\\pages\\posts\\myposts.vue' /* webpackChunkName: "pages_posts_myposts" */))
 const _ebdb4708 = () => interopDefault(import('..\\pages\\posts\\_id.vue' /* webpackChunkName: "pages_posts__id" */))
 const _17f2f5e7 = () => interopDefault(import('..\\pages\\users\\_id.vue' /* webpackChunkName: "pages_users__id" */))
 const _dfbc35a6 = () => interopDefault(import('..\\pages\\index.vue' /* webpackChunkName: "pages_index" */))
@@ -135,6 +136,10 @@ export function createRouter() {
       path: "/posts/create",
       component: _f8ba6fac,
       name: "posts-create"
+    }, {
+      path: "/posts/myposts",
+      component: _6546a0e9,
+      name: "posts-myposts"
     }, {
       path: "/posts/:id",
       component: _ebdb4708,

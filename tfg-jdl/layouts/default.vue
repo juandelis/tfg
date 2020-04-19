@@ -113,6 +113,11 @@ export default {
           to: '/posts/create'
         },
         {
+          icon: 'recent_actors',
+          title: 'Mis publicaciones',
+          to: '/posts/myposts'
+        },
+        {
           icon: 'people_outline',
           title: 'Usuarios',
           to: '/users'
