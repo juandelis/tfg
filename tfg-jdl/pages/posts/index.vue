@@ -35,7 +35,7 @@
       <br />
 
       <div v-for="(post, i) in posts" :key="i">
-        <v-card dark>
+        <v-card>
           <v-card-title>
             <v-btn flat round @click="showUser(post.creatorId)">
               <v-icon>account_circle</v-icon>&nbsp;
@@ -46,11 +46,12 @@
             <v-spacer />
             {{ post.date }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           </v-card-title>
-          {{ post.body }}
-          <br />
-          <v-card-title>
+          <v-card-text>
+            {{ post.body }}
+          </v-card-text>
+          <v-card-title v-if="post.creatorId != user.uid">
             <v-spacer /><v-spacer /><v-spacer /><v-spacer /><v-spacer /><v-spacer /><v-spacer />
-            <v-card color="">
+            <v-card>
               &nbsp;&nbsp;&nbsp;&nbsp; {{ post.num_likes }}
               <v-btn v-if="!post.liked" icon @click="like(post.id)">
                 <v-icon>thumb_up</v-icon>
@@ -60,7 +61,7 @@
               </v-btn>
             </v-card>
             <v-spacer />
-            <v-card color="">
+            <v-card>
               &nbsp;&nbsp;&nbsp;&nbsp; {{ post.num_dislikes }}
               <v-btn v-if="!post.disliked" icon @click="dislike(post.id)">
                 <v-icon>thumb_down</v-icon>
