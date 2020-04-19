@@ -41,7 +41,9 @@
           <a style="color:white"> {{ user.email }} </a>
         </router-link>
         <v-btn icon flat nuxt to="/account">
-          <v-icon>account_circle</v-icon>
+          <v-avatar size="40">
+            <img :src="user.image" alt="User profile photo" />
+          </v-avatar>
         </v-btn>
       </div>
       <div v-else>
@@ -68,7 +70,7 @@
         Contacto
       </v-btn>
       <v-spacer />
-      &copy; 2019 GAMER CREW
+      &copy; 2020 GAMER CREW
       <v-spacer />
     </v-footer>
   </v-app>
@@ -106,7 +108,7 @@ export default {
           to: '/posts'
         },
         {
-          icon: 'description',
+          icon: 'note_add',
           title: 'Publicar',
           to: '/posts/create'
         },
