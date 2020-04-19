@@ -45,7 +45,6 @@
             v-model="relation"
             type="radio"
             value="all"
-            checked
             @input="
               searchUsers({
                 name: name,

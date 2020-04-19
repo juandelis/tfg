@@ -14,9 +14,11 @@ user.js
 
 
 posts/index.vue
+  --No poder like y dislike a tus publicaciones pero poder borrarlas
   --funciones de like y dislike
     --solo puedes añadir/quitar tu uid de la lista de likes/dislikes del post
   --Restricciones en posts para creacion (estar loggeado) y edicion (ser el creador)
+  --Publicaciones propio usuario separadas de las demás
   BOTON subir al comienzo
   Numero máximo de elementos a mostrar??
   missings ¿¿que es??
