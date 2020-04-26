@@ -1,4 +1,11 @@
 
+GENERAL
+  Documento de usuarios con email como id (nombre del documento), hacer email algo único al registrarse, no emails repetidos
+  Poner seguidores en coleccion aparte (id/nombre del documento podría ser "email1-email2" y buscar directamente por id/nombre del doc)
+  Cambiar nombre de coleccion "accounts" a "users"
+  Cambiar array de followers y following por collecion de follows con un documento por cada par Follower-Followed
+
+
 user.js
   --onSnapShot en user.js al documento del user cuando se inicia sesion
   --funciones de follow y unfollow

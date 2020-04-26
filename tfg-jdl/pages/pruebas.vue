@@ -1,203 +1,160 @@
 <template>
   <v-layout justify-center>
-    <v-flex text-xs-center xs12 sm8 md6>
-      <v-card color="#4A4E57">
-        <br />
-        <h1 align="center">PRUEBAS</h1>
-        <br />
-
+    <v-flex text-xs-center xs12 sm9 md7 lg8>
+      <v-card>
+        <h1 align="center">MI PERFIL</h1>
         <hr />
-
-        <form
-          id="loginform"
-          action="/"
-          method="post"
-          target="_self"
-          @submit.prevent="login({ email: email_log, password: password_log })"
-        >
-          <br />
-          <p>
-            <label class="labelForm" for="correo"> Correo electrónico </label>
-            <input v-model="email_log" type="email" name="correo" required />
-          </p>
-
-          <p>
-            <label class="labelForm" for="password_log"> Contraseña </label>
-            <input
-              v-model="password_log"
-              type="password"
-              name="password_log"
-              minlength="6"
-              required
-            />
-          </p>
-
-          <p>
-            <input
-              id="button_login"
-              ref="submit_loginForm"
-              type="submit"
-              value=" INICIAR SESION "
-              style="display:none"
-            />
-            <v-btn v-show="reCAPTCHA_verified" @click="click_submit()">
-              LOGIN
-            </v-btn>
+        <br />
+        <v-layout row>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <v-flex grow>
+            <h3 align="left">NOMBRE: &nbsp; {{ user.name }}</h3>
             <br />
-            <v-btn flat color="blue" small round @click="change_password()">
-              ¿Olvidaste tu contraseña?
+            <h3 align="left">FECHA NACIMIENTO: &nbsp; {{ user.birth }}</h3>
+            <br />
+            <h3 align="left">GENERO: &nbsp; {{ user.genre }}</h3>
+            <br />
+            <h3 align="left">
+              DESCRIPCIÓN PERSONAL / AFICIONES: &nbsp;
+            </h3>
+            <h4 align="left" style="max-width: 325px">
+              {{ user.info }} &nbsp;
+            </h4>
+            <br />
+            <v-btn nuxt to="/account/edit">
+              EDITAR
             </v-btn>
-          </p>
-        </form>
-        <div id="firebaseui-auth-container" />
+            <v-btn nuxt to="/account/password">
+              CAMBIAR CONTRASEÑA
+            </v-btn>
+          </v-flex>
+          <v-flex shrink>
+            <v-card min-width="220px">
+              <img
+                :src="user.image"
+                alt="User profile photo"
+                width="200px"
+                height="240px"
+              />
+              <br />
+              <v-btn nuxt @click="click_fileInput()">
+                CAMBIAR IMAGEN PERFIL
+              </v-btn>
+              <input
+                ref="fileInput"
+                type="file"
+                style="display:none"
+                accept="image/*"
+                @change="onFileChange"
+              />
+            </v-card>
+          </v-flex>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </v-layout>
+
         <br />
       </v-card>
+
+      <v-btn nuxt @click="change_email()">
+        CAMBIAR CORREO
+      </v-btn>
+      <v-btn nuxt @click="change_name()">
+        CAMBIAR NOMBRE
+      </v-btn>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
-import { mapGetters, mapState, mapActions, mapMutations } from 'vuex'
-import firebase, { auth, getCurrentUser } from '~/services/fireinit'
-import * as firebaseui from 'firebaseui'
-import functions from '~/assets/functions'
+import { mapState, mapActions } from 'vuex'
+import { db, storage } from '~/services/fireinit'
 
 export default {
-  // middleware: 'autenticado', // poner en todas las páginas que requieran autenticacion, menos esta!
-  data: () => ({
-    email_log: '',
-    password_log: '',
-    email: '',
-    password: '',
-    name: '',
-    birth: '',
-    genre: '',
-    reCAPTCHA_verified: false
-  }),
+  data() {
+    return {
+      followers: [],
+      following: []
+    }
+  },
+  middleware: 'autenticado',
   computed: {
-    ...mapGetters('user', ['logged']),
-    ...mapState('user', ['afterLogin'])
+    ...mapState('user', ['user'])
   },
-  watch: {
-    logged: {
-      immediate: true,
-      handler(logged) {
-        if (logged) this.$router.push(this.afterLogin)
-      }
-    }
-  },
-  mounted: function() {
-    this.showLogin()
-  },
+  mounted: function() {},
   methods: {
-    ...mapActions('user', ['initAuth', 'login', 'signup']),
-    ...mapMutations('user', ['setRecoveryEmail']),
+    ...mapActions('user', ['updateUserImage', 'unfollow', 'showUser']),
 
-    click_submit() {
-      this.$refs.submit_loginForm.click()
-    },
-
-    change_password() {
-      // Save email recovery in the store (user.js)
-      this.setRecoveryEmail(this.email_log)
-      this.$router.push('/login/password')
-    },
-
-    showLogin() {
-      this.initAuth()
-
-      const uiConfig = {
-        // signInSuccessUrl: '<url-to-redirect-to-on-success>', //En Nuxt esto sería un problema, ya que firebase-ui no usa vue-route
-        signInOptions: [
-          // Leave the lines as is for the providers you want to offer your users.
-          // firebase.auth.EmailAuthProvider.PROVIDER_ID,
-          firebase.auth.GoogleAuthProvider.PROVIDER_ID
-          // firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-          // firebase.auth.TwitterAuthProvider.PROVIDER_ID
-          // firebase.auth.GithubAuthProvider.PROVIDER_ID,
-          // firebase.auth.PhoneAuthProvider.PROVIDER_ID,
-          // firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
-        ],
-        callbacks: {
-          async signInSuccessWithAuthResult() {
-            console.log('Usuario logueado con Google')
-            const user = await getCurrentUser() // Obtiene el usuario actual
-            if (user) {
-              // TODO Hacer el setUser con los datos del usuario registrado/logueado
-              functions.createUserDocument(user, user.displayName, '', '')
+    change_email() {
+      console.log('Try to update email of ' + this.user.uid)
+      const userLogged = this.user
+      if (userLogged) {
+        // Actualizamos el documento en firebase
+        const docRef = db.collection('accounts').doc(userLogged.uid)
+        docRef
+          .get()
+          .then(function(doc) {
+            if (doc.exists) {
+              console.log('Updating document')
+              // Actualizamos los valores del documento
+              docRef.update({
+                email: 'test@hotmail.com'
+                // email: 'juanlis96@hotmail.com'
+              })
+            } else {
+              console.log('No such document!')
             }
-          }
-        }
-        // tosUrl and privacyPolicyUrl accept either url string or a callback
-        // function.
-        // Terms of service url/callback.
-        // tosUrl: '<your-tos-url>',
-        // Privacy policy url/callback.
-        // privacyPolicyUrl: function() {
-        //  window.location.assign('<your-privacy-policy-url>')
-        // }
+          })
+          .catch(function(error) {
+            console.log('Error getting document:', error)
+          })
       }
-      const ui =
-        firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(auth)
-      // The start method will wait until the DOM is loaded.
-      ui.start('#firebaseui-auth-container', uiConfig)
+    },
+    change_name() {
+      console.log('Try to update email of ' + this.user.uid)
+      const userLogged = this.user
+      if (userLogged) {
+        // Actualizamos el documento en firebase
+        const docRef = db.collection('accounts').doc(userLogged.uid)
+        docRef
+          .get()
+          .then(function(doc) {
+            if (doc.exists) {
+              console.log('Updating document')
+              // Actualizamos los valores del documento
+              docRef.update({
+                name: 'Juuuuuuuan'
+                // name: 'Juan de Lis'
+              })
+            } else {
+              console.log('No such document!')
+            }
+          })
+          .catch(function(error) {
+            console.log('Error getting document:', error)
+          })
+      }
+    },
+
+    click_fileInput() {
+      this.$refs.fileInput.click()
+    },
+
+    async onFileChange(event) {
+      const files = event.target.files
+      const newImage = files[0]
+
+      const filename = newImage.name
+      if (filename.lastIndexOf('.') <= 0) {
+        return alert('Invalid type file! ')
+      }
+
+      const storageRef = storage.ref('profileImages/' + this.user.uid)
+      const snapshot = await storageRef.put(newImage)
+
+      const downloadURL = await snapshot.ref.getDownloadURL()
+      console.log('File available at', downloadURL)
+      this.updateUserImage(downloadURL)
     }
   }
 }
 </script>
-
-<style src="~/node_modules/firebaseui/dist/firebaseui.css"></style>
-
-<style>
-input,
-select {
-  color: black;
-  background-color: white;
-  margin: 4px 4px 4px 3px;
-  border-radius: 5px;
-  padding: 2px;
-  padding-left: 5px;
-}
-
-input[type='submit'] {
-  background-color: #cacaca;
-  color: black;
-  padding: 7px 10px;
-}
-
-.labelForm {
-  font-weight: bold;
-}
-</style>
-
-<!--
-<script>
-const registerForm = new Vue({
-  el: '#registerForm',
-  data: {
-    errors: [],
-    nombre: null,
-    edad: null,
-    movie: null
-  },
-  methods: {
-    checkForm: function(e) {
-      if (this.nombre && this.edad) {
-        return true
-      }
-
-      this.errors = []
-
-      if (!this.nombre) {
-        this.errors.push('Nombre requerido.')
-      }
-      if (!this.edad) {
-        this.errors.push('Edad requerida.')
-      }
-
-      e.preventDefault()
-    }
-  }
-})
-</script>
--->
