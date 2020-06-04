@@ -4,16 +4,16 @@
       :id="id"
       :name="name"
       :accept="accept"
-      v-on:change="fileChanged"
       :multiple="multiple"
       type="file"
+      @change="fileChanged"
     />
     <label
       v-if="ripple"
       :id="`label${id}`"
+      v-ripple
       :for="id"
       :class="`v-btn ${classes}${color2} upload-btn`"
-      v-ripple
     >
       <slot name="icon-left" />
       {{ icon ? '' : title }}

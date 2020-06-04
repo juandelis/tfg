@@ -291,10 +291,10 @@ export const actions = {
         following: firestore.FieldValue.arrayUnion(idUserToFollow)
       })
       // Add userLogged to followers array of userToFollow
-      const docRef2 = await db.collection('accounts').doc(idUserToFollow)
+      /* const docRef2 = await db.collection('accounts').doc(idUserToFollow)
       docRef2.update({
         followers: firestore.FieldValue.arrayUnion(userLogged.uid)
-      })
+      }) */
     }
   },
 
@@ -307,10 +307,10 @@ export const actions = {
         following: firestore.FieldValue.arrayRemove(idUserToUnfollow)
       })
       // Remove userLogged from followers array of idUserToUnfollow
-      const docRef2 = await db.collection('accounts').doc(idUserToUnfollow)
+      /* const docRef2 = await db.collection('accounts').doc(idUserToUnfollow)
       docRef2.update({
         followers: firestore.FieldValue.arrayRemove(userLogged.uid)
-      })
+      }) */
     }
   },
 

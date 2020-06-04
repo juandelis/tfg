@@ -10,7 +10,7 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
-    "public": "pages",
+    "public": "dist",
     "ignore": [
       "firebase.json",
       "**/.*",
