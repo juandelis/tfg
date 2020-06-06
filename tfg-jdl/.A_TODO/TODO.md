@@ -10,10 +10,9 @@ user.js
   --onSnapShot en user.js al documento del user cuando se inicia sesion
   --funciones de follow y unfollow
       --poner restricciones en las reglas para controlar que solo modificas tu array de seguidos
-      --comparar array anterior con nuevo, operador ==
-      --no se puede modificar tu array de seguidores, solo el de seguidos
       --El array del otro usuario puedes modificarlo pero solo para añadir/quitar tu id
-      --quitar commit del store cuando esté sincronizado con onSnapShot
+      Realizar la modificacion en tu doc y el del otro usuario como transaccion, o ambas o ninguna
+      Cloud functions para modificar el array del otro usuario
   borrar usuario
       quitarle de followers followed
       borrar sus publicaciones

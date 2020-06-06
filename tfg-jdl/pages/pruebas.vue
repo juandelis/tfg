@@ -55,11 +55,11 @@
         <br />
       </v-card>
 
-      <v-btn nuxt @click="change_email()">
-        CAMBIAR CORREO
+      <v-btn nuxt @click="follow()">
+        FOLLOW
       </v-btn>
-      <v-btn nuxt @click="change_name()">
-        CAMBIAR NOMBRE
+      <v-btn nuxt @click="unfollow()">
+        UNFOLLOW
       </v-btn>
     </v-flex>
   </v-layout>
@@ -68,6 +68,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { db, storage } from '~/services/fireinit'
+import { firestore } from 'firebase'
 
 export default {
   data() {
@@ -82,7 +83,7 @@ export default {
   },
   mounted: function() {},
   methods: {
-    ...mapActions('user', ['updateUserImage', 'unfollow', 'showUser']),
+    ...mapActions('user', ['updateUserImage', 'showUser']),
 
     change_email() {
       console.log('Try to update email of ' + this.user.uid)
@@ -132,6 +133,44 @@ export default {
           .catch(function(error) {
             console.log('Error getting document:', error)
           })
+      }
+    },
+
+    async follow() {
+      console.log('Try to follow')
+      const userLogged = this.user
+      if (userLogged) {
+        // Add userToFollow to following array of userLogged
+        const docRef = await db.collection('accounts').doc(userLogged.uid)
+        docRef.update({
+          following: firestore.FieldValue.arrayUnion(
+            'Hw3uHVdZ5sRuAB4xvrF6XNag9S82'
+          )
+        })
+        // Add userLogged to followers array of userToFollow
+        const docRef2 = await db.doc('accounts/Hw3uHVdZ5sRuAB4xvrF6XNag9S82')
+        docRef2.update({
+          followers: firestore.FieldValue.arrayUnion(userLogged.uid)
+        })
+      }
+    },
+
+    async unfollow() {
+      console.log('Try to unfollow')
+      const userLogged = this.user
+      if (userLogged) {
+        // Add userToFollow to following array of userLogged
+        const docRef = await db.collection('accounts').doc(userLogged.uid)
+        docRef.update({
+          following: firestore.FieldValue.arrayRemove(
+            'Hw3uHVdZ5sRuAB4xvrF6XNag9S82'
+          )
+        })
+        // Add userLogged to followers array of userToFollow
+        const docRef2 = await db.doc('accounts/Hw3uHVdZ5sRuAB4xvrF6XNag9S82')
+        docRef2.update({
+          followers: firestore.FieldValue.arrayRemove(userLogged.uid)
+        })
       }
     },
 
