@@ -27,7 +27,9 @@ export const state = () => ({
   },
   afterLogin: '/', // donde dirigirse una vez complete el login (por defecto el inicio)
   listeningAuth: false,
-  unsuscribe: null // guardará la funcion para dejar de escuchar cambios
+  unsubscribeUser: null, // guardará la funcion para dejar de escuchar cambios de User
+  unsubscribeFollowers: null, // guardará la funcion para dejar de escuchar cambios en Followers
+  unsubscribeFollowing: null // guardará la funcion para dejar de escuchar cambios en Following
 })
 
 export const getters = {
@@ -35,10 +37,7 @@ export const getters = {
 }
 
 export const mutations = {
-  setUser(
-    state,
-    { id, name, email, birth, genre, info, image, following, followers }
-  ) {
+  setUser(state, { id, name, email, birth, genre, info, image }) {
     state.user.uid = id
     state.user.name = name
     state.user.email = email
@@ -46,8 +45,6 @@ export const mutations = {
     state.user.genre = genre
     state.user.info = info
     state.user.image = image || 'default-profile.png'
-    state.user.followers = followers
-    state.user.following = following
   },
   clearUser(state) {
     state.user.uid = null
@@ -60,6 +57,20 @@ export const mutations = {
     state.user.followers = []
     state.user.following = []
   },
+  setUnsubscribeUser(state, unsubscribeUserFunction) {
+    state.unsubscribeUser = unsubscribeUserFunction
+  },
+  setUnsubscribeFollowers(state, unsubscribeFollowersFunction) {
+    state.unsubscribeFollowers = unsubscribeFollowersFunction
+  },
+  setUnsubscribeFollowing(state, unsubscribeFollowingFunction) {
+    state.unsubscribeFollowing = unsubscribeFollowingFunction
+  },
+  clearUnsubscribes(state) {
+    state.unsubscribeUser = null
+    state.unsubscribeFollowers = null
+    state.unsubscribeFollowing = null
+  },
   updateUserData(state, { name, birth, genre, info }) {
     state.user.name = name
     state.user.birth = birth
@@ -68,6 +79,13 @@ export const mutations = {
   },
   updateImage(state, image) {
     state.user.image = image
+  },
+  addFollower(state, newFollower) {
+    state.user.followers.push(newFollower)
+  },
+  removeFollower(state, oldFollower) {
+    const index = state.user.followers.indexOf(oldFollower)
+    state.user.followers.splice(index, 1)
   },
   addFollowing(state, newFollowing) {
     state.user.following.push(newFollowing)
@@ -78,9 +96,6 @@ export const mutations = {
     /* state.user.following = state.user.following.filter(
       item => item !== idUserToUnfollow
     ) */
-  },
-  updateFollowers(state, followers) {
-    state.user.followers = followers
   },
   setListeningAuth(state, listening) {
     state.listeningAuth = listening
@@ -95,12 +110,82 @@ export const actions = {
     console.log('test')
   },
 
-  startListeningToUser({ state, dispatch }, userDoc) {
+  startListeningToFollowers({ state, commit }, userId) {
+    // Nos ponemos en escucha de los documentos follow que tienen al user como destino (Followers)
+    commit(
+      'setUnsubscribeFollowers',
+      db
+        .collection('follows')
+        .where('dest', '==', userId)
+        .onSnapshot(followersSnapshot => {
+          // este código se ejecutará cuando se detecten cambios en los followers
+          followersSnapshot.docChanges().forEach(change => {
+            const followData = change.doc.data()
+            // Follower añadido
+            if (change.type === 'added') commit('addFollower', followData.ori)
+            // Follower borrado
+            if (change.type === 'removed')
+              commit('removeFollower', followData.ori)
+          })
+        })
+    )
+    console.log('startListeningToFollowers')
+  },
+
+  stopListeningToFollowers({ state }) {
+    // Dejar de escuchar a cambios en los followers
+    state.unsubscribeFollowers()
+    console.log('stopListeningToFollowers')
+  },
+
+  startListeningToFollowing({ state, commit }, userId) {
+    // Nos ponemos en escucha de los documentos follow que tienen al user como destino (Following)
+    commit(
+      'setUnsubscribeFollowing',
+      db
+        .collection('follows')
+        .where('ori', '==', userId)
+        .onSnapshot(followingSnapshot => {
+          // este código se ejecutará cuando se detecten cambios en los following
+          followingSnapshot.docChanges().forEach(change => {
+            const followData = change.doc.data()
+            // Follower añadido
+            if (change.type === 'added') commit('addFollowing', followData.dest)
+            // Follower borrado
+            if (change.type === 'removed')
+              commit('removeFollowing', followData.dest)
+          })
+        })
+    )
+    console.log('startListeningToFollowing')
+  },
+
+  stopListeningToFollowing({ state }) {
+    // Dejar de escuchar a cambios en los following
+    state.unsubscribeFollowing()
+    console.log('stopListeningToFollowing')
+  },
+
+  startListeningToUser({ state, commit }, userDoc) {
     // Nos ponemos en escucha del documento del usuario
-    state.unsubscribe = userDoc.onSnapshot(userDocSnapshot => {
-      // funcion que se ejecutará cuando se detecten cambios en el documento del usuario
-      dispatch('updateUser', userDocSnapshot)
-    })
+    commit(
+      'setUnsubscribeUser',
+      userDoc.onSnapshot(userDocSnapshot => {
+        // Borrar el viejo user
+        commit('clearUser')
+        // Guardar el nuevo user
+        const userData = userDocSnapshot.data()
+        commit('setUser', {
+          id: userDocSnapshot.id,
+          name: userData.name,
+          email: userData.email,
+          birth: userData.birth,
+          genre: userData.genre,
+          info: userData.info,
+          image: userData.image
+        })
+      })
+    )
     console.log('startListeningToUser')
   },
 
@@ -108,26 +193,8 @@ export const actions = {
     // Limpiar el user
     commit('clearUser')
     // Dejar de escuchar a cambios
-    state.unsubscribe()
+    state.unsubscribeUser()
     console.log('stopListeningToUser')
-  },
-
-  updateUser({ commit, rootState }, userDocSnapshot) {
-    // Borrar el viejo user
-    commit('clearUser')
-    // Guardar el nuevo user
-    const userData = userDocSnapshot.data()
-    commit('setUser', {
-      id: userDocSnapshot.id,
-      name: userData.name,
-      email: userData.email,
-      birth: userData.birth,
-      genre: userData.genre,
-      info: userData.info,
-      image: userData.image,
-      following: userData.following,
-      followers: userData.followers
-    })
   },
 
   async initAuth({ state, commit, dispatch }) {
@@ -137,13 +204,17 @@ export const actions = {
         console.log('Cambio Auth state')
         if (user) {
           // Login: buscamos el documento y empezamos a escuchar sus cambios
-          const userDoc = db.collection('accounts').doc(user.uid)
+          const userDoc = db.doc('accounts/' + user.uid)
           userDoc
             .get()
             .then(function(doc) {
               if (doc.exists) {
                 dispatch('startListeningToUser', userDoc)
                 console.log('startListeningToUser de initAuth')
+                dispatch('startListeningToFollowers', user.uid)
+                console.log('startListeningToFollowers de initAuth')
+                dispatch('startListeningToFollowing', user.uid)
+                console.log('startListeningToFollowing de initAuth')
               } else {
                 // No existe el documento del usuario loggeado
               }
@@ -152,10 +223,15 @@ export const actions = {
               console.log('Error getting document: ', error)
             })
         } else {
-          // Logout: limpiamos store y dejamos de escuchar cambios
-          commit('clearUser')
+          // Logout: Dejamos de escuchar cambios y limpiamos store
+          dispatch('stopListeningToFollowing')
+          console.log('stopListeningToFollowing de initAuth')
+          dispatch('stopListeningToFollowers')
+          console.log('stopListeningToFollowers de initAuth')
           dispatch('stopListeningToUser')
           console.log('stopListeningToUser de initAuth')
+          commit('clearUnsubscribes')
+          commit('clearUser')
         }
       })
       const user = await getCurrentUser() // Obtiene el usuario si no se cerrá sesión
@@ -214,6 +290,11 @@ export const actions = {
                   .then(function() {
                     // Con el usuario loggeado y documento creado empezamos a escuchar
                     dispatch('startListeningToUser', userDocRef)
+                    console.log('startListeningToUser de signup')
+                    dispatch('startListeningToFollowers', user.uid)
+                    console.log('startListeningToFollowers de signup')
+                    dispatch('startListeningToFollowing', user.uid)
+                    console.log('startListeningToFollowing de signup')
                   })
                   .catch(function(error) {
                     console.log('Error creando el documento: ' + error)
@@ -282,32 +363,53 @@ export const actions = {
     }
   },
 
-  async follow({ state, commit, dispatch }, idUserToFollow) {
+  follow({ state, commit, dispatch }, idUserToFollow) {
     const userLogged = state.user
     if (userLogged) {
+      db.collection('follows').add({
+        date: firestore.Timestamp.now(),
+        dest: idUserToFollow,
+        ori: userLogged.uid
+      })
+      /*
       // Add userToFollow to following array of userLogged
       const docRef = await db.collection('accounts').doc(userLogged.uid)
       docRef.update({
         following: firestore.FieldValue.arrayUnion(idUserToFollow)
       })
       // Add userLogged to followers array of userToFollow
-      /* const docRef2 = await db.collection('accounts').doc(idUserToFollow)
+      const docRef2 = await db.collection('accounts').doc(idUserToFollow)
       docRef2.update({
         followers: firestore.FieldValue.arrayUnion(userLogged.uid)
       }) */
     }
   },
 
-  async unfollow({ state, commit, dispatch }, idUserToUnfollow) {
+  unfollow({ state, commit, dispatch }, idUserToUnfollow) {
     const userLogged = state.user
     if (userLogged) {
+      db.collection('follows')
+        .where('ori', '==', userLogged.uid)
+        .where('dest', '==', idUserToUnfollow)
+        .get()
+        .then(querySnapshot => {
+          querySnapshot.forEach(doc => {
+            doc.ref.delete().catch(function(error) {
+              console.error('Error removing follow document: ', error)
+            })
+          })
+        })
+        .catch(function(error) {
+          console.log('Error getting follow document: ', error)
+        })
+      /*
       // Remove idUserToUnfollow from following array of userLogged
       const docRef = await db.collection('accounts').doc(userLogged.uid)
       docRef.update({
         following: firestore.FieldValue.arrayRemove(idUserToUnfollow)
       })
       // Remove userLogged from followers array of idUserToUnfollow
-      /* const docRef2 = await db.collection('accounts').doc(idUserToUnfollow)
+      const docRef2 = await db.collection('accounts').doc(idUserToUnfollow)
       docRef2.update({
         followers: firestore.FieldValue.arrayRemove(userLogged.uid)
       }) */

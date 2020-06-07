@@ -85,26 +85,26 @@
         <br />
         <hr />
 
-        <div v-for="(user, i) in users" :key="i">
+        <div v-for="(useri, i) in users" :key="i">
           <br />
           <v-card>
             <v-avatar size="70">
-              <img :src="user.image" alt="User profile photo" />
+              <img :src="useri.image" alt="User profile photo" />
             </v-avatar>
-            <v-btn flat color="white" large round @click="showUser(user.id)">
-              {{ user.name }} <br />
-              {{ user.email }}
+            <v-btn flat color="white" large round @click="showUser(useri.id)">
+              {{ useri.name }} <br />
+              {{ useri.email }}
             </v-btn>
             <v-btn
-              v-if="user.followed"
+              v-if="user.following.includes(useri.id)"
               color="orange"
               outline
               round
-              @click="unfollow(user.id)"
+              @click="unfollow(useri.id)"
             >
               DEJAR DE SEGUIR
             </v-btn>
-            <v-btn v-else color="green" outline round @click="follow(user.id)">
+            <v-btn v-else color="green" outline round @click="follow(useri.id)">
               SEGUIR
             </v-btn>
           </v-card>
