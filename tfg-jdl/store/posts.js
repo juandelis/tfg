@@ -76,6 +76,17 @@ export const actions = {
     console.log('test posts.js')
   },
 
+  createPostDocument(body, creatorId, creatorName, date) {
+    db.collection('posts').add({
+      body: body,
+      creatorId: creatorId,
+      creatorName: creatorName,
+      date: date,
+      dislikes: [],
+      likes: []
+    })
+  },
+
   clearPosts({ state, commit, dispatch }) {
     commit('clearPosts')
   },

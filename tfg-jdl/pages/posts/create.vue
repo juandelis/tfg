@@ -50,9 +50,8 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import { firestore } from 'firebase'
-import functions from '~/assets/functions'
 
 export default {
   data: () => ({}),
@@ -61,11 +60,12 @@ export default {
     ...mapState('user', ['user'])
   },
   methods: {
+    ...mapActions('posts', ['createPostDocument']),
     click_submit() {
       this.$refs.button_post.click()
     },
     create_post() {
-      functions.createPostDocument(
+      this.createPostDocument(
         this.$refs.body.value,
         this.user.uid,
         this.user.name,
