@@ -27,7 +27,7 @@ export const state = () => ({
     followers: [],
     following: []
   },
-  unsuscribe: null // guardará la funcion para dejar de escuchar (se invocará en beforeDestroy)
+  unsubscribeUserToShow: null // guardará la funcion para dejar de escuchar (se invocará en beforeDestroy)
 })
 
 export const getters = {}
@@ -75,6 +75,14 @@ export const mutations = {
 
   updateUserToShowFollowed(state, followed) {
     state.userToShow.followed = followed
+  },
+
+  setUnsubscribeUserToShow(state, unsubscribeUserToShow) {
+    state.unsubscribeUserToShow = unsubscribeUserToShow
+  },
+
+  clearUnsubscribeUserToShow(state) {
+    state.unsubscribeUserToShow = null
   }
 }
 
@@ -87,44 +95,42 @@ export const actions = {
     commit('clearUserToShow')
   },
 
-  async startListeningToUserToShow({ state, dispatch }, idUserToShow) {
+  async startListeningToUserToShow({ state, commit, rootState }, idUserToShow) {
     const userToShowDoc = await db.collection('accounts').doc(idUserToShow)
     // Nos ponemos en escucha del documento del usuario
-    state.unsubscribe = userToShowDoc.onSnapshot(userToShowDocSnapshot => {
-      // funcion que se ejecutará cuando se detecten cambios en el documento del usuario
-      dispatch('updateUserToShow', userToShowDocSnapshot)
-    })
+    commit(
+      'setUnsubscribeUserToShow',
+      userToShowDoc.onSnapshot(userToShowDocSnapshot => {
+        // Borrar el viejo userToShow
+        commit('clearUserToShow')
+        // Guardar el nuevo userToShow
+        const userToShowId = userToShowDocSnapshot.id
+        const userToShowData = userToShowDocSnapshot.data()
+        if (userToShowData) {
+          commit('setUserToShow', {
+            id: userToShowId,
+            name: userToShowData.name,
+            email: userToShowData.email,
+            birth: userToShowData.birth,
+            genre: userToShowData.genre,
+            info: userToShowData.info,
+            image: userToShowData.image,
+            followed: rootState.user.user.following.includes(userToShowId),
+            following: userToShowData.following,
+            followers: userToShowData.followers
+          })
+        } else {
+          console.log('No data found for user ' + userToShowId)
+        }
+      })
+    )
   },
 
   stopListeningToUserToShow({ state, commit }) {
     // Limpiar el userToShow
     commit('clearUserToShow')
     // Dejar de escuchar a cambios
-    state.unsubscribe()
-  },
-
-  updateUserToShow({ commit, rootState }, userToShowDocSnapshot) {
-    // Borrar el viejo userToShow
-    commit('clearUserToShow')
-
-    // Guardar el nuevo userToShow
-    const userToShowId = userToShowDocSnapshot.id
-    const userToShowData = userToShowDocSnapshot.data()
-    if (userToShowData) {
-      commit('setUserToShow', {
-        id: userToShowId,
-        name: userToShowData.name,
-        email: userToShowData.email,
-        birth: userToShowData.birth,
-        genre: userToShowData.genre,
-        info: userToShowData.info,
-        image: userToShowData.image,
-        followed: rootState.user.user.following.includes(userToShowId),
-        following: userToShowData.following,
-        followers: userToShowData.followers
-      })
-    } else {
-      console.log('No data found for user ' + userToShowId)
-    }
+    state.unsubscribeUserToShow()
+    commit('clearUnsubscribeUserToShow')
   }
 }

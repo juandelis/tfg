@@ -5,18 +5,11 @@ import { db } from '~/services/fireinit'
 
 export const state = () => ({
   users: [],
-  unsuscribe: null // guardará la funcion para dejar de escuchar (se invocará en beforeDestroy)
-  /* users: {
-    uid: null,
-    name: '',
-    email: '',
-    image: ''
-    followed: false
-  } */
+  unsubscribeUsers: null // guardará la funcion para dejar de escuchar (se invocará en beforeDestroy)
 })
 
 export const getters = {
-  numUsers: (state, getters, rootState) => state.users.length
+  numUsers: (state, getters) => state.users.length
 }
 
 export const mutations = {
@@ -54,6 +47,12 @@ export const mutations = {
       state.users.splice(0, state.users.length)
       // state.users.length = 0
     }
+  },
+  setUnsubscribeUsers(state, unsubscribeUsers) {
+    state.unsubscribeUsers = unsubscribeUsers
+  },
+  clearUnsubscribeUsers(state) {
+    state.unsubscribeUsers = null
   }
 }
 
@@ -66,24 +65,29 @@ export const actions = {
     commit('clearUsers')
   },
 
-  async startListeningToUsers({ state, dispatch, rootState }, payload) {
+  async startListeningToUsers({ state, dispatch, commit }, payload) {
     const usersCollection = await db.collection('accounts')
     // Nos ponemos en escucha de la colleccion de accounts
-    state.unsubscribe = usersCollection.onSnapshot(usersSnapshot => {
-      // funcion que se ejecutará cuando se detecten cambios en usersCollection
-      dispatch('updateUsers', {
-        usersSnapshot: usersSnapshot,
-        name: payload.name,
-        email: payload.email,
-        relation: payload.relation
+    commit(
+      'setUnsubscribeUsers',
+      usersCollection.onSnapshot(usersSnapshot => {
+        // Funcion que se ejecutará cuando se detecten cambios en usersCollection
+        dispatch('updateUsers', {
+          usersSnapshot: usersSnapshot,
+          name: payload.name,
+          email: payload.email,
+          relation: payload.relation
+        })
       })
-    })
+    )
   },
 
   stopListeningToUsers({ state, commit }) {
+    // Limpiar el array de users
     commit('clearUsers')
     // Dejar de escuchar a cambios
-    state.unsubscribe()
+    state.unsubscribeUsers()
+    commit('clearUnsubscribeUsers')
   },
 
   updateUsers({ state, commit, rootState }, payload) {

@@ -127,10 +127,7 @@ export default {
       this.following = []
       for (const item of this.user.following) {
         console.log('User: ', item)
-        const docUserFollowed = await db
-          .collection('accounts')
-          .doc(item)
-          .get()
+        const docUserFollowed = await db.doc('accounts/' + item).get()
         if (docUserFollowed.exists) {
           this.following.push({
             uid: docUserFollowed.id,
@@ -142,10 +139,7 @@ export default {
       this.followers = []
       for (const item of this.user.followers) {
         console.log('User: ', item)
-        const docUserFollower = await db
-          .collection('accounts')
-          .doc(item)
-          .get()
+        const docUserFollower = await db.doc('accounts/' + item).get()
         if (docUserFollower.exists) {
           this.followers.push({
             uid: docUserFollower.id,
