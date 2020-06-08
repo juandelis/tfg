@@ -55,7 +55,20 @@
               })
             "
           />
-          No me gustan
+          No me gustan &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <input
+            v-model="type"
+            type="radio"
+            value="notValued"
+            @input="
+              searchPosts({
+                creator: creator,
+                date: date,
+                type: 'notValued'
+              })
+            "
+          />
+          Sin valorar
         </p>
         <!--<br /><br />
           <v-btn @click="searchPosts({ creator: creator, date: date })">

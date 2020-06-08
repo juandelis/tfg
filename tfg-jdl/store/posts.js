@@ -133,7 +133,11 @@ export const actions = {
                   .split('T')[0] === payload.date) &&
             (payload.type === 'all' ||
               (payload.type === 'liked' && postData.likes.includes(user)) ||
-              (payload.type === 'disliked' && postData.dislikes.includes(user)))
+              (payload.type === 'disliked' &&
+                postData.dislikes.includes(user)) ||
+              (payload.type === 'notValued' &&
+                !postData.likes.includes(user) &&
+                !postData.dislikes.includes(user)))
           ) {
             commit('pushPost', {
               id: change.doc.id,
@@ -197,7 +201,10 @@ export const actions = {
               .split('T')[0] === payload.date) &&
         (payload.type === 'all' ||
           (payload.type === 'liked' && postData.likes.includes(user)) ||
-          (payload.type === 'disliked' && postData.dislikes.includes(user)))
+          (payload.type === 'disliked' && postData.dislikes.includes(user)) ||
+          (payload.type === 'notValued' &&
+            !postData.likes.includes(user) &&
+            !postData.dislikes.includes(user)))
       ) {
         commit('pushPost', {
           id: postDoc.id,
