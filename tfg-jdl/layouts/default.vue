@@ -93,9 +93,9 @@ export default {
           to: '/'
         },
         {
-          icon: 'bubble_chart',
-          title: 'Inspire',
-          to: '/inspire'
+          icon: 'people_outline',
+          title: 'Usuarios',
+          to: '/users'
         },
         {
           icon: 'build',
@@ -116,11 +116,6 @@ export default {
           icon: 'recent_actors',
           title: 'Mis publicaciones',
           to: '/posts/myposts'
-        },
-        {
-          icon: 'people_outline',
-          title: 'Usuarios',
-          to: '/users'
         },
         {
           icon: 'account_circle',
