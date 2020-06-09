@@ -1,7 +1,7 @@
 <template>
   <v-layout justify-center>
     <v-flex text-xs-center xs12 sm8 md6>
-      <v-card color="#4A4E57">
+      <v-card color="#4A4E57" min-width="600px">
         <br />
         <h1 align="center">ACCESO</h1>
         <br />
@@ -46,7 +46,7 @@
 
       <br /><br /><br /><br />
 
-      <v-card color="#413E35">
+      <v-card color="#413E35" min-width="600px">
         <br />
         <h1 align="center">REGISTRO</h1>
         <br />
