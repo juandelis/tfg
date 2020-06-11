@@ -3,17 +3,6 @@ import { db } from '~/services/fireinit'
 // import functions from '~/assets/functions'
 // import { firestore } from 'firebase'
 
-/* function createUserDocument(user) {
-  return firebase
-    .database()
-    .ref(`accounts/${user.uid}`)
-    .set({
-      username: user.displayName || user.email.split('@')[0], // use part of the email as a username
-      email: user.email,
-      image: user.newImage || '/images/default-profile.png' // supply a default profile image for all users
-    })
-} */
-
 export const state = () => ({
   userToShow: {
     id: null, // no null si está logueado
@@ -23,7 +12,6 @@ export const state = () => ({
     genre: '',
     info: '',
     image: '',
-    followed: false,
     followers: [],
     following: []
   },
@@ -35,18 +23,7 @@ export const getters = {}
 export const mutations = {
   setUserToShow(
     state,
-    {
-      id,
-      name,
-      email,
-      birth,
-      genre,
-      info,
-      image,
-      followed,
-      following,
-      followers
-    }
+    { id, name, email, birth, genre, info, image, following, followers }
   ) {
     state.userToShow.id = id
     state.userToShow.name = name
@@ -55,7 +32,6 @@ export const mutations = {
     state.userToShow.genre = genre
     state.userToShow.info = info
     state.userToShow.image = image
-    state.userToShow.followed = followed
     state.userToShow.followers = followers
     state.userToShow.following = following
   },
@@ -68,13 +44,8 @@ export const mutations = {
     state.userToShow.genre = ''
     state.userToShow.info = ''
     state.userToShow.image = ''
-    state.userToShow.followed = false
     state.userToShow.followers = []
     state.userToShow.following = []
-  },
-
-  updateUserToShowFollowed(state, followed) {
-    state.userToShow.followed = followed
   },
 
   setUnsubscribeUserToShow(state, unsubscribeUserToShow) {
@@ -115,7 +86,6 @@ export const actions = {
             genre: userToShowData.genre,
             info: userToShowData.info,
             image: userToShowData.image,
-            followed: rootState.user.user.following.includes(userToShowId),
             following: userToShowData.following,
             followers: userToShowData.followers
           })

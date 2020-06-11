@@ -87,26 +87,49 @@
 
         <div v-for="(useri, i) in users" :key="i">
           <br />
-          <v-card>
-            <v-avatar size="70">
-              <img :src="useri.image" alt="User profile photo" />
-            </v-avatar>
-            <v-btn flat color="white" large round @click="showUser(useri.id)">
-              {{ useri.name }} <br />
-              {{ useri.email }}
-            </v-btn>
-            <v-btn
-              v-if="user.following.includes(useri.id)"
-              color="orange"
-              outline
-              round
-              @click="unfollow(useri.id)"
-            >
-              DEJAR DE SEGUIR
-            </v-btn>
-            <v-btn v-else color="green" outline round @click="follow(useri.id)">
-              SEGUIR
-            </v-btn>
+          <v-card elevation="10" color="#444444">
+            <v-layout justify-center>
+              <v-spacer /><v-spacer /><v-spacer />
+              <v-flex align-content-center>
+                <v-img
+                  :src="useri.image"
+                  alt="User avatar"
+                  width="82px"
+                  height="96px"
+                  style="border-radius:50%; border:5px solid #444444"
+                />
+                <!--<v-avatar size="80">
+                <img :src="useri.image" alt="User profile photo" />
+              </v-avatar>-->
+              </v-flex>
+              <v-flex align-content-center>
+                <v-btn flat color="white" round @click="showUser(useri.id)">
+                  {{ useri.name }}
+                </v-btn>
+                <br />
+                <v-btn
+                  v-if="user.following.includes(useri.id)"
+                  color="orange"
+                  outline
+                  round
+                  small
+                  @click="unfollow_aux(useri.id)"
+                >
+                  DEJAR DE SEGUIR
+                </v-btn>
+                <v-btn
+                  v-else
+                  color="green"
+                  outline
+                  round
+                  small
+                  @click="follow_aux(useri.id)"
+                >
+                  SEGUIR
+                </v-btn>
+              </v-flex>
+              <v-spacer /><v-spacer /><v-spacer />
+            </v-layout>
           </v-card>
         </div>
         <br />
@@ -116,7 +139,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapGetters, mapState, mapActions } from 'vuex'
 
 export default {
   data() {
@@ -130,6 +153,7 @@ export default {
   middleware: 'autenticado',
 
   computed: {
+    ...mapGetters('users', ['numUsers']),
     ...mapState('user', ['user']),
     ...mapState('users', ['users'])
   },
@@ -152,7 +176,35 @@ export default {
       'startListeningToUsers',
       'stopListeningToUsers',
       'searchUsers'
-    ])
+    ]),
+
+    follow_aux(idUserToFollow) {
+      this.follow(idUserToFollow)
+      // Ejecutar de nuevo la busqueda de usuarios con algo de delay
+      if (this.relation !== 'all') {
+        setTimeout(() => {
+          this.searchUsers({
+            name: this.name,
+            email: this.email,
+            relation: this.relation
+          })
+        }, 200)
+      }
+    },
+
+    unfollow_aux(idUserToUnfollow) {
+      this.unfollow(idUserToUnfollow)
+      // Ejecutar de nuevo la busqueda de usuarios con algo de delay
+      if (this.relation !== 'all') {
+        setTimeout(() => {
+          this.searchUsers({
+            name: this.name,
+            email: this.email,
+            relation: this.relation
+          })
+        }, 200)
+      }
+    }
   }
 }
 </script>

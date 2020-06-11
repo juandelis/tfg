@@ -4,7 +4,8 @@ import { firestore } from 'firebase'
 
 export const state = () => ({
   posts: [],
-  unsuscribe: null // guardará la funcion para dejar de escuchar (se invocará en beforeDestroy)
+  creatorId: null,
+  unsubscribePosts: null // guardará la funcion para dejar de escuchar (se invocará en beforeDestroy)
 })
 
 export const getters = {
@@ -34,30 +35,16 @@ export const mutations = {
       })
     }
   },
-  updatePost(
-    state,
-    { id, creatorName, creatorId, tittle, body, date, uid, likes, dislikes }
-  ) {
+  updatePost(state, { id, likes, dislikes }) {
     const index = state.posts.findIndex(item => item.id === id)
     if (state.posts[index]) {
-      // Borramos el antiguo post e insertamos el nuevo en su lugar
-      state.posts.splice(index, 1, {
-        id: id,
-        creatorName: creatorName,
-        creatorId: creatorId,
-        tittle: tittle,
-        body: body,
-        date: date,
-        likes: likes,
-        liked: likes.includes(uid),
-        num_likes: likes.length,
-        dislikes: dislikes,
-        disliked: dislikes.includes(uid),
-        num_dislikes: dislikes.length
-      })
+      // Actualizamos sus likes y dislikes
+      state.posts[index].likes = likes
+      state.posts[index].dislikes = dislikes
     }
   },
-  removePost(state, { index }) {
+  removePost(state, id) {
+    const index = state.posts.findIndex(item => item.id === id)
     if (state.posts[index]) {
       // Borramos el post
       state.posts.splice(index, 1)
@@ -68,6 +55,12 @@ export const mutations = {
       // Borramos todos los posts
       state.posts.splice(0, state.posts.length)
     }
+  },
+  setCreatorId(state, id) {
+    state.creatorId = id
+  },
+  setUnsubscribePosts(state, unsubscribePostsFunction) {
+    state.unsubscribePosts = unsubscribePostsFunction
   }
 }
 
@@ -91,121 +84,136 @@ export const actions = {
     commit('clearPosts')
   },
 
-  async startListeningToPosts({ state, commit, dispatch }, payload) {
-    // TODO: aplicar filtro en la query
-    const postsCollection = await db.collection('posts').orderBy('date', 'desc')
+  async startListeningToPosts({ state, rootState, commit }, payload) {
+    let postsCollection = null
+    // Obtenemos todos los posts o los del usuario indicado
+    if (payload.creatorId === undefined) {
+      postsCollection = await db.collection('posts').orderBy('date', 'desc')
+    } else {
+      commit('setCreatorId', payload.creatorId)
+      postsCollection = await db
+        .collection('posts')
+        .where('creatorId', '==', payload.creatorId)
+        .orderBy('date', 'desc')
+    }
     // Nos ponemos en escucha de la colleccion de posts
-    state.unsubscribe = postsCollection.onSnapshot(postsSnapshot => {
-      // funcion que se ejecutará cuando se detecten cambios en postsCollection
-      dispatch('updatePosts', {
-        postsSnapshot: postsSnapshot,
-        creator: payload.creator,
-        date: payload.date,
-        type: payload.type
-      })
-    })
-  },
-
-  stopListeningToPosts({ state, commit, dispatch }) {
-    commit('clearPosts')
-    // Dejar de escuchar a cambios
-    state.unsubscribe()
-  },
-
-  updatePosts({ state, rootState, commit, dispatch }, payload) {
-    // Cargar los nuevos posts, modificar los cambiados y quitar los borrados
-    payload.postsSnapshot.docChanges().forEach(change => {
-      const postData = change.doc.data()
-      const user = rootState.user.user.uid
-      // Ignoramos posts del usuario loggeado
-      if (postData.creatorId !== user) {
-        // Posts añadidos
-        if (change.type === 'added') {
+    commit(
+      'setUnsubscribePosts',
+      postsCollection.onSnapshot(postsSnapshot => {
+        postsSnapshot.docChanges().forEach(change => {
+          // Código que se ejecuta para cada cambio en postsCollection
+          const postData = change.doc.data()
+          const userLogged = rootState.user.user
+          // Filtramos los posts obtenidos
           if (
-            postData.creatorName
-              .toUpperCase()
-              .includes(payload.creator.toUpperCase()) &&
+            // Si no estamos en un usuario concreto, filtramos por usuarios seguidos
+            (payload.creatorId === undefined
+              ? userLogged.following.includes(postData.creatorId)
+              : true) &&
+            // Filtro de fecha (si la ha introducido)
             (payload.date === ''
               ? true
               : postData.date
                   .toDate()
                   .toISOString()
                   .split('T')[0] === payload.date) &&
+            // Filtro de valoracion de los posts
             (payload.type === 'all' ||
-              (payload.type === 'liked' && postData.likes.includes(user)) ||
+              (payload.type === 'liked' &&
+                postData.likes.includes(userLogged.uid)) ||
               (payload.type === 'disliked' &&
-                postData.dislikes.includes(user)) ||
+                postData.dislikes.includes(userLogged.uid)) ||
               (payload.type === 'notValued' &&
-                !postData.likes.includes(user) &&
-                !postData.dislikes.includes(user)))
+                !postData.likes.includes(userLogged.uid) &&
+                !postData.dislikes.includes(userLogged.uid)))
           ) {
-            commit('pushPost', {
-              id: change.doc.id,
-              creatorName: postData.creatorName,
-              creatorId: postData.creatorId,
-              tittle: postData.tittle,
-              body: postData.body,
-              date: postData.date.toDate().toLocaleDateString('es-ES'),
-              uid: rootState.user.user.uid,
-              likes: postData.likes,
-              dislikes: postData.dislikes
-            })
+            // Posts añadidos
+            if (change.type === 'added') {
+              commit('pushPost', {
+                id: change.doc.id,
+                creatorName: postData.creatorName,
+                creatorId: postData.creatorId,
+                tittle: postData.tittle,
+                body: postData.body,
+                date: postData.date.toDate().toLocaleDateString('es-ES'),
+                uid: rootState.user.user.uid,
+                likes: postData.likes,
+                dislikes: postData.dislikes
+              })
+            }
+            // Posts modificados
+            else if (change.type === 'modified') {
+              commit('updatePost', {
+                id: change.doc.id,
+                likes: postData.likes,
+                dislikes: postData.dislikes
+              })
+            }
+            // Posts borrados
+            else if (change.type === 'removed') {
+              commit('removePost', change.doc.id)
+            }
           }
-        }
-        // Posts modificados
-        else if (change.type === 'modified') {
-          commit('updatePost', {
-            id: change.doc.id,
-            creatorName: postData.creatorName,
-            creatorId: postData.creatorId,
-            tittle: postData.tittle,
-            body: postData.body,
-            date: postData.date.toDate().toLocaleDateString('es-ES'),
-            uid: rootState.user.user.uid,
-            likes: postData.likes,
-            dislikes: postData.dislikes
-          })
-        }
-        // Posts borrados
-        else if (change.type === 'removed') {
-          const index = state.posts.findIndex(item => item.id === change.doc.id)
-          commit('removePost', { index: index })
-        }
-      }
-    })
+        })
+      })
+    )
+  },
+
+  stopListeningToPosts({ state, commit, dispatch }) {
+    // Dejar de escuchar a cambios
+    state.unsubscribePosts()
+    // Limpiar store
+    commit('clearPosts')
+    commit('setCreatorId', null)
+    commit('setUnsubscribePosts', null)
   },
 
   async searchPosts({ state, rootState, commit, dispatch }, payload) {
     // Limpiar array de posts
     commit('clearPosts')
 
-    const postsCollection = await db
-      .collection('posts')
-      .orderBy('date', 'desc')
-      .get()
+    let postsCollection = null
+    // Obtenemos todos los posts o los del usuario indicado
+    if (state.creatorId === null) {
+      postsCollection = await db
+        .collection('posts')
+        .orderBy('date', 'desc')
+        .get()
+    } else {
+      postsCollection = await db
+        .collection('posts')
+        .where('creatorId', '==', state.creatorId)
+        .orderBy('date', 'desc')
+        .get()
+    }
 
     postsCollection.forEach(postDoc => {
       const postData = postDoc.data()
-      const user = rootState.user.user.uid
-      // Ignoramos posts del usuario loggeado
+      const userLogged = rootState.user.user
+      // Filtramos los posts obtenidos
       if (
-        postData.creatorId !== user &&
-        postData.creatorName
-          .toUpperCase()
-          .includes(payload.creator.toUpperCase()) &&
+        // Si no estamos en un usuario concreto, filtramos por usuarios seguidos
+        (state.creatorId === null
+          ? userLogged.following.includes(postData.creatorId)
+          : true) &&
+        // Filtro de fecha (si la ha introducido)
         (payload.date === ''
           ? true
           : postData.date
               .toDate()
               .toISOString()
               .split('T')[0] === payload.date) &&
+        // Filtro de valoracion de los posts
         (payload.type === 'all' ||
-          (payload.type === 'liked' && postData.likes.includes(user)) ||
-          (payload.type === 'disliked' && postData.dislikes.includes(user)) ||
+          (payload.type === 'liked' &&
+            postData.likes.includes(userLogged.uid)) ||
+          (payload.type === 'disliked' &&
+            postData.dislikes.includes(userLogged.uid)) ||
           (payload.type === 'notValued' &&
-            !postData.likes.includes(user) &&
-            !postData.dislikes.includes(user)))
+            !postData.likes.includes(userLogged.uid) &&
+            !postData.dislikes.includes(userLogged.uid)))
       ) {
+        // Ignoramos posts del usuario loggeado
         commit('pushPost', {
           id: postDoc.id,
           creatorName: postData.creatorName,
