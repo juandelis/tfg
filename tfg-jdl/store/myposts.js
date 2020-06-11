@@ -91,7 +91,7 @@ export const actions = {
     state.unsubscribe()
   },
 
-  updatePosts({ state, rootState, commit, dispatch }, payload) {
+  updatePosts({ state, commit, dispatch }, payload) {
     // Cargar los nuevos posts, modificar los cambiados y quitar los borrados
     payload.postsSnapshot.docChanges().forEach(change => {
       const postData = change.doc.data()

@@ -88,7 +88,7 @@ export default {
 
   computed: {
     ...mapState('user', ['user']),
-    ...mapState('myposts', ['posts'])
+    ...mapState('myPosts', ['posts'])
   },
 
   mounted: function() {
@@ -100,7 +100,7 @@ export default {
   },
 
   methods: {
-    ...mapActions('myposts', [
+    ...mapActions('myPosts', [
       'startListeningToPosts',
       'stopListeningToPosts',
       'searchPosts'
