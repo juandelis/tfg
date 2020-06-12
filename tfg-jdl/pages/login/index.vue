@@ -61,39 +61,22 @@
             signup({
               email: email,
               password: password,
-              name: name,
-              birth: birth,
-              genre: genre
+              name: name
             })
           "
         >
           <br />
 
           <p>
-            <label class="labelForm" for="name">Nombre y apellidos</label>
+            <label class="labelForm" for="name">Nombre de usuario </label>
             <input
               id="name"
               v-model="name"
               type="text"
               name="name"
-              size="40"
-              maxlength="40"
+              maxlength="20"
               required
             />
-          </p>
-
-          <p>
-            <label class="labelForm" for="birth">Fecha de nacimiento</label>
-            <input id="birth" v-model="birth" type="date" name="birth" />
-
-            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-
-            <label class="labelForm" for="genre">Género</label>
-            <select id="genre" v-model="genre" name="genre">
-              <option>Masculino</option>
-              <option>Femenino</option>
-              <option>Otro</option>
-            </select>
           </p>
 
           <p>

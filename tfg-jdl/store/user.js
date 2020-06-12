@@ -278,12 +278,7 @@ export const actions = {
                 // Creamos el documento
                 userDocRef
                   .set({
-                    birth: payload.birth,
                     email: user.email,
-                    following: [],
-                    followers: [],
-                    genre: payload.genre,
-                    info: '', // info personal por defecto vacía, editable luego
                     image: '/default-profile.png', // imagen por defecto, editable luego
                     name: payload.name
                   })

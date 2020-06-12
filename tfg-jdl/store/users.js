@@ -13,26 +13,22 @@ export const getters = {
 }
 
 export const mutations = {
-  pushUser(state, { id, name, email, image, followed }) {
+  pushUser(state, { id, name, image }) {
     if (id) {
       state.users.push({
         id: id,
         name: name,
-        email: email,
-        image: image,
-        followed: followed
+        image: image
       })
     }
   },
-  updateUser(state, { index, id, name, email, image, followed }) {
+  updateUser(state, { index, id, name, image }) {
     if (state.users[index]) {
       // Borramos el antiguo user e insertamos el nuevo en su lugar
       state.users.splice(index, 1, {
         id: id,
         name: name,
-        email: email,
-        image: image,
-        followed: followed
+        image: image
       })
     }
   },
@@ -75,7 +71,6 @@ export const actions = {
         dispatch('updateUsers', {
           usersSnapshot: usersSnapshot,
           name: payload.name,
-          email: payload.email,
           relation: payload.relation
         })
       })
@@ -95,60 +90,45 @@ export const actions = {
     payload.usersSnapshot.docChanges().forEach(change => {
       const userLogged = rootState.user.user
       // Ignoramos cambios en el usuario loggeado (estos estarán en user.js)
-      if (change.doc.id !== rootState.user.user.uid) {
+      if (change.doc.id !== userLogged.uid) {
         const userData = change.doc.data()
-        // Users añadidos
-        if (change.type === 'added') {
-          if (payload.relation === 'all') {
-            if (
-              userData.name
-                .toLowerCase()
-                .includes(payload.name.toLowerCase()) &&
-              userData.email.toLowerCase().includes(payload.email.toLowerCase()) // str.normalize("NFD").replace(/[\u0300-\u036f]/g, "") to remove accents
-            ) {
-              commit('pushUser', {
-                id: change.doc.id,
-                name: userData.name,
-                email: userData.email,
-                image: userData.image,
-                followed: userLogged.following.includes(change.doc.id)
-              })
-            }
-          } else {
-            const followed = payload.relation === 'followed'
-            if (
-              userLogged.following.includes(change.doc.id) === followed &&
-              userData.name
-                .toLowerCase()
-                .includes(payload.name.toLowerCase()) &&
-              userData.email.toLowerCase().includes(payload.email.toLowerCase())
-            ) {
-              commit('pushUser', {
-                id: change.doc.id,
-                name: userData.name,
-                email: userData.email,
-                image: userData.image,
-                followed: userLogged.following.includes(change.doc.id)
-              })
-            }
+        if (
+          // Filtro nombre de usuario
+          userData.name.toLowerCase().includes(payload.name.toLowerCase()) &&
+          // Filtros relacion Follow
+          (payload.relation === 'all' ||
+            (payload.relation === 'followed' &&
+              userLogged.following.includes(change.doc.id)) ||
+            (payload.relation === 'notFollowed' &&
+              !userLogged.following.includes(change.doc.id)))
+        ) {
+          // Users añadidos
+          if (change.type === 'added') {
+            commit('pushUser', {
+              id: change.doc.id,
+              name: userData.name,
+              image: userData.image
+            })
           }
-        }
-        // Users modificados
-        if (change.type === 'modified') {
-          const index = state.users.findIndex(item => item.id === change.doc.id)
-          commit('updateUser', {
-            index: index,
-            id: change.doc.id,
-            name: userData.name,
-            email: userData.email,
-            image: userData.image,
-            followed: userLogged.following.includes(change.doc.id)
-          })
-        }
-        // Users borrados
-        if (change.type === 'removed') {
-          const index = state.users.findIndex(item => item.id === change.doc.id)
-          commit('deleteUser', { index: index })
+          // Users modificados
+          if (change.type === 'modified') {
+            const index = state.users.findIndex(
+              item => item.id === change.doc.id
+            )
+            commit('updateUser', {
+              index: index,
+              id: change.doc.id,
+              name: userData.name,
+              image: userData.image
+            })
+          }
+          // Users borrados
+          if (change.type === 'removed') {
+            const index = state.users.findIndex(
+              item => item.id === change.doc.id
+            )
+            commit('deleteUser', { index: index })
+          }
         }
       }
     })
@@ -161,36 +141,24 @@ export const actions = {
     const usersCollection = await db.collection('accounts').get()
 
     usersCollection.forEach(userDoc => {
-      const userData = userDoc.data()
       const userLogged = rootState.user.user
-      if (payload.relation === 'all') {
+      // Ignoramos al usuario logueado
+      if (userDoc.id !== userLogged.uid) {
+        const userData = userDoc.data()
         if (
-          userDoc.id !== userLogged.uid &&
+          // Filtro nombre de usuario
           userData.name.toLowerCase().includes(payload.name.toLowerCase()) &&
-          userData.email.toLowerCase().includes(payload.email.toLowerCase()) // str.normalize("NFD").replace(/[\u0300-\u036f]/g, "") to remove accents
+          // Filtros relacion Follow
+          (payload.relation === 'all' ||
+            (payload.relation === 'followed' &&
+              userLogged.following.includes(userDoc.id)) ||
+            (payload.relation === 'notFollowed' &&
+              !userLogged.following.includes(userDoc.id)))
         ) {
           commit('pushUser', {
             id: userDoc.id,
             name: userData.name,
-            email: userData.email,
-            image: userData.image,
-            followed: userLogged.following.includes(userDoc.id)
-          })
-        }
-      } else {
-        const followed = payload.relation === 'followed'
-        if (
-          userDoc.id !== userLogged.uid &&
-          userLogged.following.includes(userDoc.id) === followed &&
-          userData.name.toLowerCase().includes(payload.name.toLowerCase()) &&
-          userData.email.toLowerCase().includes(payload.email.toLowerCase())
-        ) {
-          commit('pushUser', {
-            id: userDoc.id,
-            name: userData.name,
-            email: userData.email,
-            image: userData.image,
-            followed: userLogged.following.includes(userDoc.id)
+            image: userData.image
           })
         }
       }

@@ -14,27 +14,7 @@
           <input
             v-model="name"
             type="search"
-            @input="
-              searchUsers({
-                name: name,
-                email: email,
-                relation: relation
-              })
-            "
-          />
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <label class="labelForm"> Correo </label>
-          <input
-            v-model="email"
-            type="email"
-            size="30"
-            @input="
-              searchUsers({
-                name: name,
-                email: email,
-                relation: relation
-              })
-            "
+            @input="searchUsers({ name: name, relation: relation })"
           />
         </p>
 
@@ -45,39 +25,21 @@
             v-model="relation"
             type="radio"
             value="all"
-            @input="
-              searchUsers({
-                name: name,
-                email: email,
-                relation: 'all'
-              })
-            "
+            @input="searchUsers({ name: name, relation: 'all' })"
           />
           Todos &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <input
             v-model="relation"
             type="radio"
             value="followed"
-            @input="
-              searchUsers({
-                name: name,
-                email: email,
-                relation: 'followed'
-              })
-            "
+            @input="searchUsers({ name: name, relation: 'followed' })"
           />
           Seguidos &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <input
             v-model="relation"
             type="radio"
             value="notFollowed"
-            @input="
-              searchUsers({
-                name: name,
-                email: email,
-                relation: 'notFollowed'
-              })
-            "
+            @input="searchUsers({ name: name, relation: 'notFollowed' })"
           />
           No seguidos
         </p>
@@ -94,9 +56,9 @@
                 <v-img
                   :src="useri.image"
                   alt="User avatar"
-                  width="82px"
-                  height="96px"
-                  style="border-radius:50%; border:5px solid #444444"
+                  width="85px"
+                  height="95px"
+                  style="border-radius:45%; border:5px solid #444444"
                 />
                 <!--<v-avatar size="80">
                 <img :src="useri.image" alt="User profile photo" />
@@ -104,7 +66,7 @@
               </v-flex>
               <v-flex align-content-center>
                 <v-btn flat color="white" round @click="showUser(useri.id)">
-                  {{ useri.name }}
+                  <h2>{{ useri.name }}</h2>
                 </v-btn>
                 <br />
                 <v-btn
@@ -145,7 +107,6 @@ export default {
   data() {
     return {
       name: '',
-      email: '',
       relation: 'all'
     }
   },
@@ -161,7 +122,6 @@ export default {
   mounted: function() {
     this.startListeningToUsers({
       name: this.name,
-      email: this.email,
       relation: this.relation
     })
   },
@@ -185,7 +145,6 @@ export default {
         setTimeout(() => {
           this.searchUsers({
             name: this.name,
-            email: this.email,
             relation: this.relation
           })
         }, 200)
@@ -199,7 +158,6 @@ export default {
         setTimeout(() => {
           this.searchUsers({
             name: this.name,
-            email: this.email,
             relation: this.relation
           })
         }, 200)
