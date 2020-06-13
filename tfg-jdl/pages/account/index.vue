@@ -2,43 +2,22 @@
   <v-layout justify-center>
     <v-flex text-xs-center xs12 sm9 md7 lg8>
       <v-card>
-        <h1 align="center">MI PERFIL</h1>
+        <h1 align="center">MI PERFIL - {{ user.name }}</h1>
         <hr />
         <br />
-        <v-layout row>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <v-flex grow>
-            <h3 align="left">NOMBRE: &nbsp; {{ user.name }}</h3>
-            <br />
-            <h3 align="left">FECHA NACIMIENTO: &nbsp; {{ user.birth }}</h3>
-            <br />
-            <h3 align="left">GENERO: &nbsp; {{ user.genre }}</h3>
-            <br />
-            <h3 align="left">
-              DESCRIPCIÓN PERSONAL / AFICIONES: &nbsp;
-            </h3>
-            <h4 align="left" style="max-width: 325px">
-              {{ user.info }} &nbsp;
-            </h4>
-            <br />
-            <v-btn nuxt to="/account/edit">
-              EDITAR
-            </v-btn>
-            <v-btn nuxt to="/account/password">
-              CAMBIAR CONTRASEÑA
-            </v-btn>
-          </v-flex>
+        <v-layout>
+          <v-spacer />
           <v-flex shrink>
-            <v-card min-width="220px">
+            <v-card min-width="160px">
               <img
                 :src="user.image"
                 alt="User profile photo"
-                width="200px"
-                height="240px"
+                width="150px"
+                height="180px"
               />
               <br />
               <v-btn nuxt @click="click_fileInput()">
-                CAMBIAR IMAGEN PERFIL
+                CAMBIAR AVATAR
               </v-btn>
               <input
                 ref="fileInput"
@@ -49,7 +28,68 @@
               />
             </v-card>
           </v-flex>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <v-spacer />
+          <v-flex shrink>
+            <br />
+            <form
+              id="passwordForm"
+              method="post"
+              @submit.prevent="update_password()"
+            >
+              <p>
+                <label class="labelForm" for="name">Antigua contraseña</label>
+                <input
+                  id="oldPassword"
+                  ref="oldPassword"
+                  type="password"
+                  name="oldPassword"
+                  size="25"
+                  minlength="6"
+                  required
+                />
+              </p>
+
+              <p>
+                <label class="labelForm" for="name">Nueva contraseña</label>
+                <input
+                  id="password"
+                  ref="password"
+                  type="password"
+                  name="password"
+                  size="25"
+                  minlength="6"
+                  required
+                />
+              </p>
+
+              <p>
+                <label class="labelForm" for="name">Repetir contraseña</label>
+                <input
+                  id="password2"
+                  ref="password2"
+                  type="password"
+                  name="password2"
+                  size="25"
+                  minlength="6"
+                  required
+                />
+              </p>
+
+              <p>
+                <input
+                  id="button_password"
+                  ref="submit_passwordForm"
+                  type="submit"
+                  value=" ACEPTAR "
+                  style="display:none"
+                />
+                <v-btn nuxt @click="click_submit()">
+                  CAMBIAR CONTRASEÑA
+                </v-btn>
+              </p>
+            </form>
+          </v-flex>
+          <v-spacer />
         </v-layout>
 
         <br />
@@ -103,8 +143,8 @@
 </template>
 
 <script>
+import firebase, { db, storage, getCurrentUser } from '~/services/fireinit'
 import { mapState, mapActions } from 'vuex'
-import { db, storage } from '~/services/fireinit'
 
 export default {
   data() {
@@ -150,40 +190,51 @@ export default {
       }
     },
 
-    /* async getUsers() {
-      this.followers = []
-      this.following = []
-      const usersSnapshot = await db.collection('accounts').get()
-      const userLogged = this.user
-      usersSnapshot.forEach(eachUserDoc => {
-        const eachUserData = eachUserDoc.data()
-        if (eachUserDoc.id !== userLogged.uid) {
-          if (userLogged.following.includes(eachUserDoc.id)) {
-            this.following.push({
-              uid: eachUserDoc.id,
-              name: eachUserData.name,
-              email: eachUserData.email,
-              followed: true
-            })
-          }
-          if (userLogged.followers.includes(eachUserDoc.id)) {
-            this.followers.push({
-              uid: eachUserDoc.id,
-              name: eachUserData.name,
-              email: eachUserData.email,
-              followed: userLogged.following.includes(eachUserDoc.id)
-            })
-          }
-        }
-      })
-    }, */
-
     unfollowUser(idUserToUnfollow, index) {
       // unfollow method in user.js (store)
       this.unfollow(idUserToUnfollow)
 
       // Remove user from following array (here in default.data) to see changes
       this.following.splice(index, 1)
+    },
+
+    click_submit() {
+      this.$refs.submit_passwordForm.click()
+    },
+
+    async update_password() {
+      const newPassword = this.$refs.password.value
+      const newPassword2 = this.$refs.password2.value
+      const oldPassword = this.$refs.oldPassword.value
+
+      if (newPassword === newPassword2) {
+        const user = await getCurrentUser()
+        const email = user.email
+        const credential = firebase.auth.EmailAuthProvider.credential(
+          email,
+          oldPassword
+        )
+
+        user
+          .reauthenticateAndRetrieveDataWithCredential(credential)
+          .then(function() {
+            // User re-authenticated.
+            user
+              .updatePassword(newPassword)
+              .then(function() {
+                this.$router.push('/account')
+                return alert(' Contraseña actualizada correctamente ')
+              })
+              .catch(function(error) {
+                return alert('Error updating passsword:', error)
+              })
+          })
+          .catch(function(error) {
+            return alert('Antigua contraseña incorrecta. ', error)
+          })
+      } else {
+        return alert(' Repite correctamente la nueva contraseña ')
+      }
     },
 
     click_fileInput() {
