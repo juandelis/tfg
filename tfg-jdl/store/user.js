@@ -207,8 +207,8 @@ export const actions = {
     if (!state.listeningAuth) {
       commit('setListeningAuth', true)
       auth.onAuthStateChanged(user => {
-        console.log('Cambio Auth state')
         if (user) {
+          console.log('Login de initAuth')
           // Login: buscamos el documento y empezamos a escuchar sus cambios
           const userDoc = db.doc('accounts/' + user.uid)
           userDoc
@@ -216,19 +216,32 @@ export const actions = {
             .then(function(doc) {
               if (doc.exists) {
                 dispatch('startListeningToUser', userDoc)
-                console.log('startListeningToUser de initAuth')
                 dispatch('startListeningToFollowers', user.uid)
-                console.log('startListeningToFollowers de initAuth')
                 dispatch('startListeningToFollowing', user.uid)
-                console.log('startListeningToFollowing de initAuth')
               } else {
-                // No existe el documento del usuario loggeado
+                // Si todavía no existe el documento del user logueado lo creamos
+                userDoc
+                  .set({
+                    email: user.email,
+                    image: '/default-profile.png', // imagen por defecto, editable luego
+                    name: user.displayName
+                  })
+                  .then(function() {
+                    // Con el usuario loggeado y su documento creado empezamos a escuchar
+                    dispatch('startListeningToUser', userDoc)
+                    dispatch('startListeningToFollowers', user.uid)
+                    dispatch('startListeningToFollowing', user.uid)
+                  })
+                  .catch(function(error) {
+                    console.log('Error creando el documento: ' + error)
+                  })
               }
             })
             .catch(function(error) {
               console.log('Error getting document: ', error)
             })
         } else {
+          console.log('Logout de initAuth')
           // Logout: Dejamos de escuchar cambios y limpiamos store
           dispatch('stopListeningToFollowing')
           console.log('stopListeningToFollowing de initAuth')

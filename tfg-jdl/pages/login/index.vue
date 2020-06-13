@@ -119,9 +119,8 @@
 
 <script>
 import { mapGetters, mapState, mapActions } from 'vuex'
-import firebase, { auth, getCurrentUser } from '~/services/fireinit'
+import firebase, { auth } from '~/services/fireinit'
 import * as firebaseui from 'firebaseui'
-import functions from '~/assets/functions'
 
 export default {
   // middleware: 'autenticado', // poner en todas las páginas que requieran autenticacion, menos esta!
@@ -179,10 +178,11 @@ export default {
       window.recaptchaVerifier.render()
 
       const uiConfig = {
+        signInFlow: 'popup',
         // signInSuccessUrl: '<url-to-redirect-to-on-success>', //En Nuxt esto sería un problema, ya que firebase-ui no usa vue-route
         signInOptions: [
           // Leave the lines as is for the providers you want to offer your users.
-          // firebase.auth.EmailAuthProvider.PROVIDER_ID,
+          firebase.auth.EmailAuthProvider.PROVIDER_ID,
           firebase.auth.GoogleAuthProvider.PROVIDER_ID
           // firebase.auth.FacebookAuthProvider.PROVIDER_ID,
           // firebase.auth.TwitterAuthProvider.PROVIDER_ID
@@ -191,23 +191,10 @@ export default {
           // firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
         ],
         callbacks: {
-          async signInSuccessWithAuthResult() {
-            console.log('Usuario logueado con Google')
-            const user = await getCurrentUser() // Obtiene el usuario actual
-            if (user) {
-              // TODO Hacer el setUser con los datos del usuario registrado/logueado
-              functions.createUserDocument(user, user.displayName, '', '')
-            }
+          signInSuccessWithAuthResult() {
+            return false
           }
         }
-        // tosUrl and privacyPolicyUrl accept either url string or a callback
-        // function.
-        // Terms of service url/callback.
-        // tosUrl: '<your-tos-url>',
-        // Privacy policy url/callback.
-        // privacyPolicyUrl: function() {
-        //  window.location.assign('<your-privacy-policy-url>')
-        // }
       }
       const ui =
         firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(auth)
