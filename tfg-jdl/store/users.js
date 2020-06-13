@@ -22,19 +22,16 @@ export const mutations = {
       })
     }
   },
-  updateUser(state, { index, id, name, image }) {
+  updateUser(state, { id, name, image }) {
+    const index = state.users.findIndex(item => item.id === id)
     if (state.users[index]) {
-      // Borramos el antiguo user e insertamos el nuevo en su lugar
-      state.users.splice(index, 1, {
-        id: id,
-        name: name,
-        image: image
-      })
+      state.users[index].name = name
+      state.users[index].image = image
     }
   },
-  deleteUser(state, { index }) {
+  deleteUser(state, id) {
+    const index = state.users.findIndex(item => item.id === id)
     if (state.users[index]) {
-      // Borramos el user
       state.users.splice(index, 1)
     }
   },
@@ -61,12 +58,11 @@ export const actions = {
     commit('clearUsers')
   },
 
-  async startListeningToUsers({ state, dispatch, commit }, payload) {
-    const usersCollection = await db.collection('accounts')
+  startListeningToUsers({ dispatch, commit }, payload) {
     // Nos ponemos en escucha de la colleccion de accounts
     commit(
       'setUnsubscribeUsers',
-      usersCollection.onSnapshot(usersSnapshot => {
+      db.collection('accounts').onSnapshot(usersSnapshot => {
         // Funcion que se ejecutará cuando se detecten cambios en usersCollection
         dispatch('updateUsers', {
           usersSnapshot: usersSnapshot,
@@ -112,11 +108,7 @@ export const actions = {
           }
           // Users modificados
           if (change.type === 'modified') {
-            const index = state.users.findIndex(
-              item => item.id === change.doc.id
-            )
             commit('updateUser', {
-              index: index,
               id: change.doc.id,
               name: userData.name,
               image: userData.image
@@ -124,44 +116,45 @@ export const actions = {
           }
           // Users borrados
           if (change.type === 'removed') {
-            const index = state.users.findIndex(
-              item => item.id === change.doc.id
-            )
-            commit('deleteUser', { index: index })
+            commit('deleteUser', change.doc.id)
           }
         }
       }
     })
   },
 
-  async searchUsers({ commit, rootState }, payload) {
+  searchUsers({ commit, rootState }, payload) {
     // Limpiar array de users
     commit('clearUsers')
-
-    const usersCollection = await db.collection('accounts').get()
-
-    usersCollection.forEach(userDoc => {
-      const userLogged = rootState.user.user
-      // Ignoramos al usuario logueado
-      if (userDoc.id !== userLogged.uid) {
-        const userData = userDoc.data()
-        if (
-          // Filtro nombre de usuario
-          userData.name.toLowerCase().includes(payload.name.toLowerCase()) &&
-          // Filtros relacion Follow
-          (payload.relation === 'all' ||
-            (payload.relation === 'followed' &&
-              userLogged.following.includes(userDoc.id)) ||
-            (payload.relation === 'notFollowed' &&
-              !userLogged.following.includes(userDoc.id)))
-        ) {
-          commit('pushUser', {
-            id: userDoc.id,
-            name: userData.name,
-            image: userData.image
-          })
-        }
-      }
-    })
+    // Obtener users filtrados
+    db.collection('accounts')
+      .get()
+      .then(usersCollection => {
+        usersCollection.forEach(userDoc => {
+          const userLogged = rootState.user.user
+          // Ignoramos al usuario logueado
+          if (userDoc.id !== userLogged.uid) {
+            const userData = userDoc.data()
+            if (
+              // Filtro nombre de usuario
+              userData.name
+                .toLowerCase()
+                .includes(payload.name.toLowerCase()) &&
+              // Filtros relacion Follow
+              (payload.relation === 'all' ||
+                (payload.relation === 'followed' &&
+                  userLogged.following.includes(userDoc.id)) ||
+                (payload.relation === 'notFollowed' &&
+                  !userLogged.following.includes(userDoc.id)))
+            ) {
+              commit('pushUser', {
+                id: userDoc.id,
+                name: userData.name,
+                image: userData.image
+              })
+            }
+          }
+        })
+      })
   }
 }
