@@ -35,12 +35,17 @@ export const mutations = {
       })
     }
   },
-  updatePost(state, { id, likes, dislikes }) {
+  updatePost(state, { uid, id, likes, dislikes }) {
     const index = state.posts.findIndex(item => item.id === id)
     if (state.posts[index]) {
-      // Actualizamos sus likes y dislikes
+      // Actualizamos sus likes
       state.posts[index].likes = likes
+      state.posts[index].liked = likes.includes(uid)
+      state.posts[index].num_likes = likes.length
+      // Actualizamos sus dislikes
       state.posts[index].dislikes = dislikes
+      state.posts[index].disliked = dislikes.includes(uid)
+      state.posts[index].num_dislikes = dislikes.length
     }
   },
   removePost(state, id) {
@@ -145,6 +150,7 @@ export const actions = {
             else if (change.type === 'modified') {
               commit('updatePost', {
                 id: change.doc.id,
+                uid: userLogged.uid,
                 likes: postData.likes,
                 dislikes: postData.dislikes
               })
