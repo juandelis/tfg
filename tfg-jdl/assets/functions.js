@@ -1,36 +1,32 @@
 import { db } from '~/services/fireinit'
 
 const functions = {
-  createUserDocument(user, name, birth, genre, info, image) {
-    const docRef = db.collection('accounts').doc(user.uid)
-    docRef
-      .get()
-      .then(function(doc) {
-        if (doc.exists) {
-          // Ya existe el documento de este usuario
-          console.log('Document already exists:', doc.data())
-        } else {
-          // Creamos el documento
-          docRef
-            .set({
-              birth: birth,
-              email: user.email,
-              following: [],
-              followers: [],
-              genre: genre,
-              info: info || '', // info personal por defecto vacía, editable luego
-              image: image || '/default-profile.png', // imagen por defecto, editable luego
-              name: name
-              // TODO CAMPOS QUE SEAN NECESARIOS
-              // username: user.email.split('@')[0] // parte del email como username
-            })
-            .catch(function(error) {
-              console.log('Error creando el documento: ' + error)
-            })
-        }
+  createPost(creatorId, creatorName, body, date) {
+    db.collection('posts')
+      .add({
+        creatorId: creatorId,
+        creatorName: creatorName,
+        body: body,
+        date: date,
+        dislikes: [],
+        likes: []
+      })
+      .then(function() {
+        console.log('Post document successfully created!')
       })
       .catch(function(error) {
-        console.log('Error getting document:', error)
+        console.error('Error creating post document: ', error)
+      })
+  },
+
+  deletePost(idPostToDelete) {
+    db.doc('posts/' + idPostToDelete)
+      .delete()
+      .then(function() {
+        console.log('Post document successfully deleted!')
+      })
+      .catch(function(error) {
+        console.error('Error removing post document: ', error)
       })
   }
 }

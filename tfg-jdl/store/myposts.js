@@ -1,6 +1,4 @@
 import { db } from '~/services/fireinit'
-// import { firestore } from 'firebase'
-// import functions from '~/assets/functions'
 
 export const state = () => ({
   posts: [],
@@ -169,10 +167,5 @@ export const actions = {
         })
       }
     })
-  },
-
-  deletePost({ state, rootState, commit, dispatch }, idPostToDelete) {
-    // TODO: Borrar doc post
-    console.log('TODO: Borrar doc post')
   }
 }

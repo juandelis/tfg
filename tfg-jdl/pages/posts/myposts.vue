@@ -64,7 +64,7 @@
               <v-spacer />
             </v-card>
             <v-spacer /><v-spacer /><v-spacer /><v-spacer />
-            <v-btn icon @click="deletePost(post.id)">
+            <v-btn icon @click="deletePost_aux(post.id)">
               <v-icon>delete_forever</v-icon>
             </v-btn>
           </v-card-title>
@@ -77,6 +77,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import functions from '~/assets/functions'
 
 export default {
   data: () => ({
@@ -104,7 +105,11 @@ export default {
       'startListeningToPosts',
       'stopListeningToPosts',
       'searchPosts'
-    ])
+    ]),
+
+    deletePost_aux(idPostToDelete) {
+      functions.deletePost(idPostToDelete)
+    }
   }
 }
 </script>
