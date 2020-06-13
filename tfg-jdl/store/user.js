@@ -166,24 +166,30 @@ export const actions = {
     console.log('stopListeningToFollowing')
   },
 
-  startListeningToUser({ state, commit }, userDoc) {
+  startListeningToUser({ state, commit, dispatch }, userDoc) {
     // Nos ponemos en escucha del documento del usuario
     commit(
       'setUnsubscribeUser',
       userDoc.onSnapshot(userDocSnapshot => {
-        // Borrar el viejo user
-        commit('clearUser')
-        // Guardar el nuevo user
-        const userData = userDocSnapshot.data()
-        commit('setUser', {
-          id: userDocSnapshot.id,
-          name: userData.name,
-          email: userData.email,
-          birth: userData.birth,
-          genre: userData.genre,
-          info: userData.info,
-          image: userData.image
-        })
+        if (!userDocSnapshot.exists) {
+          // El user logged ha sido borrado
+          console.log('El user logged ha sido borrado')
+          dispatch('logout')
+        } else {
+          // Borrar el viejo user
+          commit('clearUser')
+          // Guardar el nuevo user
+          const userData = userDocSnapshot.data()
+          commit('setUser', {
+            id: userDocSnapshot.id,
+            name: userData.name,
+            email: userData.email,
+            birth: userData.birth,
+            genre: userData.genre,
+            info: userData.info,
+            image: userData.image
+          })
+        }
       })
     )
     console.log('startListeningToUser')

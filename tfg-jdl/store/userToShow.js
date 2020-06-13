@@ -66,31 +66,35 @@ export const actions = {
     commit('clearUserToShow')
   },
 
-  async startListeningToUserToShow({ state, commit, rootState }, idUserToShow) {
-    const userToShowDoc = await db.collection('accounts').doc(idUserToShow)
+  startListeningToUserToShow({ state, commit, rootState }, idUserToShow) {
     // Nos ponemos en escucha del documento del usuario
     commit(
       'setUnsubscribeUserToShow',
-      userToShowDoc.onSnapshot(userToShowDocSnapshot => {
-        // Borrar el viejo userToShow
-        commit('clearUserToShow')
-        // Guardar el nuevo userToShow
-        const userToShowId = userToShowDocSnapshot.id
-        const userToShowData = userToShowDocSnapshot.data()
-        if (userToShowData) {
-          commit('setUserToShow', {
-            id: userToShowId,
-            name: userToShowData.name,
-            email: userToShowData.email,
-            birth: userToShowData.birth,
-            genre: userToShowData.genre,
-            info: userToShowData.info,
-            image: userToShowData.image,
-            following: userToShowData.following,
-            followers: userToShowData.followers
-          })
+      db.doc('accounts/' + idUserToShow).onSnapshot(userToShowDocSnapshot => {
+        if (!userToShowDocSnapshot.exists) {
+          // El usuario no existe o ha sido borrado
+          this.$router.push('/users')
         } else {
-          console.log('No data found for user ' + userToShowId)
+          // Borrar el viejo userToShow
+          commit('clearUserToShow')
+          // Guardar el nuevo userToShow
+          const userToShowId = userToShowDocSnapshot.id
+          const userToShowData = userToShowDocSnapshot.data()
+          if (userToShowData) {
+            commit('setUserToShow', {
+              id: userToShowId,
+              name: userToShowData.name,
+              email: userToShowData.email,
+              birth: userToShowData.birth,
+              genre: userToShowData.genre,
+              info: userToShowData.info,
+              image: userToShowData.image,
+              following: userToShowData.following,
+              followers: userToShowData.followers
+            })
+          } else {
+            console.log('No data found for user ' + userToShowId)
+          }
         }
       })
     )
