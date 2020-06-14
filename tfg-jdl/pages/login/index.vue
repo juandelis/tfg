@@ -18,15 +18,15 @@
           <br />
           <p>
             <label class="labelForm" for="correo"> Correo electrónico </label>
-            <input v-model="email_log" type="email" name="correo" required />
+            <input id="correo" v-model="email_log" type="email" required />
           </p>
 
           <p>
             <label class="labelForm" for="password_log"> Contraseña </label>
             <input
+              id="password_log"
               v-model="password_log"
               type="password"
-              name="password_log"
               minlength="6"
               required
             />
@@ -73,7 +73,6 @@
               id="name"
               v-model="name"
               type="text"
-              name="name"
               maxlength="20"
               required
             />
@@ -81,15 +80,15 @@
 
           <p>
             <label class="labelForm" for="email"> Correo electrónico </label>
-            <input v-model="email" type="email" name="email" required />
+            <input id="email" v-model="email" type="email" required />
 
             &nbsp; &nbsp; &nbsp; &nbsp;
 
             <label class="labelForm" for="password"> Contraseña </label>
             <input
+              id="password"
               v-model="password"
               type="password"
-              name="password"
               minlength="6"
               required
             />
