@@ -74,7 +74,11 @@
               <v-spacer /><v-spacer /><v-spacer /><v-spacer /><v-spacer /><v-spacer /><v-spacer />
               <v-card>
                 &nbsp;&nbsp;&nbsp;&nbsp; {{ post.num_likes }}
-                <v-btn v-if="!post.liked" icon @click="like(post.id)">
+                <v-btn
+                  v-if="!post.liked"
+                  icon
+                  @click="like({ postId: post.id, disliked: post.disliked })"
+                >
                   <v-icon>thumb_up</v-icon>
                 </v-btn>
                 <v-btn v-else color="#878787" icon @click="unlike(post.id)">
@@ -84,7 +88,11 @@
               <v-spacer />
               <v-card>
                 &nbsp;&nbsp;&nbsp;&nbsp; {{ post.num_dislikes }}
-                <v-btn v-if="!post.disliked" icon @click="dislike(post.id)">
+                <v-btn
+                  v-if="!post.disliked"
+                  icon
+                  @click="dislike({ postId: post.id, liked: post.liked })"
+                >
                   <v-icon>thumb_down</v-icon>
                 </v-btn>
                 <v-btn v-else color="#878787" icon @click="undislike(post.id)">

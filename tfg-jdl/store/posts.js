@@ -224,14 +224,16 @@ export const actions = {
     })
   },
 
-  async like({ state, rootState, commit, dispatch }, idPostToLike) {
+  async like({ state, rootState, commit, dispatch }, payload) {
     const userLogged = rootState.user.user
     if (userLogged) {
+      const docRef = await db.collection('posts').doc(payload.postId)
       // Remove user id from dislikes of post
-      const docRef = await db.collection('posts').doc(idPostToLike)
-      docRef.update({
-        dislikes: firestore.FieldValue.arrayRemove(userLogged.uid)
-      })
+      if (payload.disliked) {
+        docRef.update({
+          dislikes: firestore.FieldValue.arrayRemove(userLogged.uid)
+        })
+      }
       // Add user id to likes of post
       docRef.update({
         likes: firestore.FieldValue.arrayUnion(userLogged.uid)
@@ -242,22 +244,24 @@ export const actions = {
   async unlike({ state, rootState, commit, dispatch }, idPostToLike) {
     const userLogged = rootState.user.user
     if (userLogged) {
-      // Remove user id from likes of post
       const docRef = await db.collection('posts').doc(idPostToLike)
+      // Remove user id from likes of post
       docRef.update({
         likes: firestore.FieldValue.arrayRemove(userLogged.uid)
       })
     }
   },
 
-  async dislike({ state, rootState, commit, dispatch }, idPostToDislike) {
+  async dislike({ state, rootState, commit, dispatch }, payload) {
     const userLogged = rootState.user.user
     if (userLogged) {
+      const docRef = await db.collection('posts').doc(payload.postId)
       // Remove user id from likes of post
-      const docRef = await db.collection('posts').doc(idPostToDislike)
-      docRef.update({
-        likes: firestore.FieldValue.arrayRemove(userLogged.uid)
-      })
+      if (payload.liked) {
+        docRef.update({
+          likes: firestore.FieldValue.arrayRemove(userLogged.uid)
+        })
+      }
       // Add user id to dislikes of post
       docRef.update({
         dislikes: firestore.FieldValue.arrayUnion(userLogged.uid)
@@ -268,8 +272,8 @@ export const actions = {
   async undislike({ state, rootState, commit, dispatch }, idPostToDislike) {
     const userLogged = rootState.user.user
     if (userLogged) {
-      // Remove user id from dislikes of post
       const docRef = await db.collection('posts').doc(idPostToDislike)
+      // Remove user id from dislikes of post
       docRef.update({
         dislikes: firestore.FieldValue.arrayRemove(userLogged.uid)
       })
