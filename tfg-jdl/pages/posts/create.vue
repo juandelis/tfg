@@ -17,8 +17,7 @@
         >
           <p>
             <textarea
-              ref="body"
-              name="body"
+              v-model="body"
               rows="7"
               cols="55"
               maxlength="333"
@@ -55,7 +54,9 @@ import { firestore } from 'firebase'
 import functions from '~/assets/functions'
 
 export default {
-  data: () => ({}),
+  data: () => ({
+    body: ''
+  }),
   middleware: 'autenticado',
   computed: {
     ...mapState('user', ['user'])
@@ -68,7 +69,7 @@ export default {
       functions.createPost(
         this.user.uid,
         this.user.name,
-        this.$refs.body.value,
+        this.body,
         firestore.Timestamp.now()
       )
       this.$router.push('/posts/myposts')
