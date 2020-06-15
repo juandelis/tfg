@@ -29,7 +29,7 @@
             </v-card>
           </v-flex>
           <v-spacer />
-          <v-flex shrink>
+          <v-flex v-if="provider == 'password'" shrink>
             <br />
             <form
               id="passwordForm"
@@ -88,6 +88,16 @@
                 </v-btn>
               </p>
             </form>
+          </v-flex>
+          <v-flex v-if="provider == 'google.com'" shrink>
+            <br /><br />
+            No puede cambiar la contraseña pues ha iniciado sesión con Google
+            <br /><br />
+            Acceda a su cuenta de Google para cambiar su contraseña ahí
+            <br /><br />
+            <v-btn nuxt disabled>
+              CAMBIAR CONTRASEÑA
+            </v-btn>
           </v-flex>
           <v-spacer />
         </v-layout>
@@ -150,7 +160,8 @@ export default {
   data() {
     return {
       followers: [],
-      following: []
+      following: [],
+      provider: ''
     }
   },
   middleware: 'autenticado',
@@ -158,10 +169,27 @@ export default {
     ...mapState('user', ['user'])
   },
   mounted: function() {
+    this.getProvider()
     this.getUsers()
   },
   methods: {
     ...mapActions('user', ['updateUserImage', 'unfollow', 'showUser']),
+
+    async getProvider() {
+      const user = await getCurrentUser()
+      let providerAux = ''
+      if (user != null) {
+        user.providerData.forEach(function(profile) {
+          console.log('Sign-in provider: ' + profile.providerId)
+          console.log('  Provider-specific UID: ' + profile.uid)
+          console.log('  Name: ' + profile.displayName)
+          console.log('  Email: ' + profile.email)
+          console.log('  Photo URL: ' + profile.photoURL)
+          providerAux = profile.providerId
+        })
+        this.provider = providerAux
+      }
+    },
 
     async getUsers() {
       this.following = []
