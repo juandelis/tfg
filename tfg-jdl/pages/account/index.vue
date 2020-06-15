@@ -16,9 +16,6 @@
                 height="180px"
               />
               <br />
-              <v-btn nuxt @click="click_fileInput()">
-                CAMBIAR AVATAR
-              </v-btn>
               <input
                 ref="fileInput"
                 type="file"
@@ -26,6 +23,13 @@
                 accept="image/*"
                 @change="onFileChange"
               />
+              <v-btn nuxt @click="click_fileInput()">
+                CAMBIAR AVATAR
+              </v-btn>
+              <br />
+              <v-btn nuxt @click="delete_image()">
+                QUITAR AVATAR
+              </v-btn>
             </v-card>
           </v-flex>
           <v-spacer />
@@ -268,22 +272,54 @@ export default {
     click_fileInput() {
       this.$refs.fileInput.click()
     },
-
-    async onFileChange(event) {
+    onFileChange(event) {
       const files = event.target.files
       const newImage = files[0]
 
-      const filename = newImage.name
-      if (filename.lastIndexOf('.') <= 0) {
-        return alert('Invalid type file! ')
+      if (newImage) {
+        const filename = newImage.name
+        if (filename.lastIndexOf('.') <= 0) {
+          return alert('Invalid type file! ')
+        }
+
+        storage
+          .ref('profileImages/' + this.user.uid)
+          .put(newImage)
+          .then(snapshot => {
+            snapshot.ref.getDownloadURL().then(
+              foundURL => {
+                console.log('File available at ', foundURL)
+                this.updateUserImage(foundURL)
+              },
+              error => {
+                console.log('Error getting DownloadURL. ', error)
+              }
+            )
+          })
+          .catch(function(error) {
+            return alert('Error insertando nueva imagen en storage. ', error)
+          })
       }
+    },
+    delete_image() {
+      // Borramos si no tiene la imagen por defecto
+      if (this.user.image === '/default-profile.png') {
+        console.log('Ya tiene la imagen por defecto ')
+      } else {
+        // Borramos imagen del storage
+        storage
+          .ref('profileImages/' + this.user.uid)
+          .delete()
+          .then(function() {
+            console.log('File deleted successfully. ')
+          })
+          .catch(function(error) {
+            console.log('Error deleting image from storage. ', error)
+          })
 
-      const storageRef = storage.ref('profileImages/' + this.user.uid)
-      const snapshot = await storageRef.put(newImage)
-
-      const downloadURL = await snapshot.ref.getDownloadURL()
-      console.log('File available at', downloadURL)
-      this.updateUserImage(downloadURL)
+        // Volver a imagen por defecto
+        this.updateUserImage('/default-profile.png')
+      }
     }
   }
 }
