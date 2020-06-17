@@ -96,7 +96,9 @@ export const actions = {
             (payload.relation === 'followed' &&
               userLogged.following.includes(change.doc.id)) ||
             (payload.relation === 'notFollowed' &&
-              !userLogged.following.includes(change.doc.id)))
+              !userLogged.following.includes(change.doc.id)) ||
+            (payload.relation === 'follower' &&
+              userLogged.followers.includes(change.doc.id)))
         ) {
           // Users añadidos
           if (change.type === 'added') {
@@ -145,7 +147,9 @@ export const actions = {
                 (payload.relation === 'followed' &&
                   userLogged.following.includes(userDoc.id)) ||
                 (payload.relation === 'notFollowed' &&
-                  !userLogged.following.includes(userDoc.id)))
+                  !userLogged.following.includes(userDoc.id)) ||
+                (payload.relation === 'follower' &&
+                  userLogged.followers.includes(userDoc.id)))
             ) {
               commit('pushUser', {
                 id: userDoc.id,

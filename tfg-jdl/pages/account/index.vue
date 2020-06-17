@@ -108,56 +108,12 @@
 
         <br />
       </v-card>
-
-      <br /><br />
-
-      <v-layout row justify-center>
-        <v-flex grow>
-          <v-card>
-            <h1 align="center">SEGUIDORES ( {{ followers.length }} )</h1>
-            <hr />
-            <br />
-            <div v-for="(follower, i) in followers" :key="i">
-              <v-btn flat color="white" round @click="showUser(follower.uid)">
-                {{ i + 1 }} -&nbsp;{{ follower.name }}&nbsp; --- &nbsp;
-                {{ follower.email }}
-              </v-btn>
-            </div>
-            <br />
-          </v-card>
-        </v-flex>
-
-        &nbsp;&nbsp;&nbsp;&nbsp;
-
-        <v-flex grow>
-          <v-card>
-            <h1 align="center">SEGUIDOS ( {{ following.length }} )</h1>
-            <hr />
-            <br />
-            <div v-for="(followed, j) in following" :key="j">
-              <v-btn flat color="white" round @click="showUser(followed.uid)">
-                {{ j + 1 }} -&nbsp;{{ followed.name }}&nbsp; --- &nbsp;
-                {{ followed.email }}
-              </v-btn>
-              <v-btn
-                color="orange"
-                outline
-                round
-                @click="unfollowUser(followed.uid, j)"
-              >
-                DEJAR DE SEGUIR
-              </v-btn>
-            </div>
-            <br />
-          </v-card>
-        </v-flex>
-      </v-layout>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
-import firebase, { db, storage, getCurrentUser } from '~/services/fireinit'
+import firebase, { storage, getCurrentUser } from '~/services/fireinit'
 import { mapState, mapActions } from 'vuex'
 
 export default {
@@ -174,60 +130,13 @@ export default {
   },
   mounted: function() {
     this.getProvider()
-    this.getUsers()
   },
   methods: {
     ...mapActions('user', ['updateUserImage', 'unfollow', 'showUser']),
 
     async getProvider() {
       const user = await getCurrentUser()
-      let providerAux = ''
-      if (user != null) {
-        user.providerData.forEach(function(profile) {
-          console.log('Sign-in provider: ' + profile.providerId)
-          console.log('  Provider-specific UID: ' + profile.uid)
-          console.log('  Name: ' + profile.displayName)
-          console.log('  Email: ' + profile.email)
-          console.log('  Photo URL: ' + profile.photoURL)
-          providerAux = profile.providerId
-        })
-        this.provider = providerAux
-      }
-    },
-
-    async getUsers() {
-      this.following = []
-      for (const item of this.user.following) {
-        console.log('User: ', item)
-        const docUserFollowed = await db.doc('accounts/' + item).get()
-        if (docUserFollowed.exists) {
-          this.following.push({
-            uid: docUserFollowed.id,
-            name: docUserFollowed.data().name,
-            email: docUserFollowed.data().email
-          })
-        }
-      }
-      this.followers = []
-      for (const item of this.user.followers) {
-        console.log('User: ', item)
-        const docUserFollower = await db.doc('accounts/' + item).get()
-        if (docUserFollower.exists) {
-          this.followers.push({
-            uid: docUserFollower.id,
-            name: docUserFollower.data().name,
-            email: docUserFollower.data().email
-          })
-        }
-      }
-    },
-
-    unfollowUser(idUserToUnfollow, index) {
-      // unfollow method in user.js (store)
-      this.unfollow(idUserToUnfollow)
-
-      // Remove user from following array (here in default.data) to see changes
-      this.following.splice(index, 1)
+      if (user != null) this.provider = user.providerData[0].providerId
     },
 
     click_submit() {

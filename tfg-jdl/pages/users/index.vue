@@ -3,7 +3,7 @@
     <v-flex text-xs-center xs12 sm9 md7>
       <v-card>
         <br />
-        <h1 align="center">USUARIOS</h1>
+        <h1 align="center">USUARIOS ({{ numUsers }})</h1>
 
         <br />
         <hr />
@@ -41,7 +41,14 @@
             value="notFollowed"
             @input="searchUsers({ name: name, relation: 'notFollowed' })"
           />
-          No seguidos
+          No seguidos &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <input
+            v-model="relation"
+            type="radio"
+            value="follower"
+            @input="searchUsers({ name: name, relation: 'follower' })"
+          />
+          Seguidores
         </p>
 
         <br />
