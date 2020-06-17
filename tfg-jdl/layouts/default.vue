@@ -98,11 +98,6 @@ export default {
           to: '/users'
         },
         {
-          icon: 'build',
-          title: 'PRUEBAS',
-          to: '/pruebas'
-        },
-        {
           icon: 'description',
           title: 'Publicaciones',
           to: '/posts'
@@ -113,7 +108,7 @@ export default {
           to: '/posts/create'
         },
         {
-          icon: 'recent_actors',
+          icon: 'folder_shared',
           title: 'Mis publicaciones',
           to: '/posts/myposts'
         },
