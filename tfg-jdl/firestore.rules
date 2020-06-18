@@ -8,11 +8,6 @@ service cloud.firestore {
 
 
     match /accounts/{document} {
-    	// Test
-      function test() {
-        return ['a', 'b'].toSet() == ['b', 'a'].toSet();
-      }
-
       // True if the user is in its own document
       function ownUserDocument() {
         return (request.auth.uid == document);
@@ -52,7 +47,6 @@ service cloud.firestore {
         			 (request.resource.data.creatorId == resource.data.creatorId) &&
                (request.resource.data.creatorName == resource.data.creatorName) &&
         			 (request.resource.data.date == resource.data.date) &&
-               (request.resource.data.tittle == resource.data.tittle) &&
                (
             		// Add uid to the likes
             		((request.resource.data.likes.size() == resource.data.likes.size()+1) &&
