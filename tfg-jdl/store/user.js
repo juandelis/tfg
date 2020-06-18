@@ -378,12 +378,12 @@ export const actions = {
   },
 
   follow({ state, commit, dispatch }, idUserToFollow) {
-    const userLogged = state.user
-    if (userLogged) {
+    const userLoggedId = state.user.uid
+    if (userLoggedId) {
       db.collection('follows').add({
         date: firestore.Timestamp.now(),
         dest: idUserToFollow,
-        ori: userLogged.uid
+        ori: userLoggedId
       })
       /*
       // Add userToFollow to following array of userLogged
@@ -400,10 +400,10 @@ export const actions = {
   },
 
   unfollow({ state, commit, dispatch }, idUserToUnfollow) {
-    const userLogged = state.user
-    if (userLogged) {
+    const userLoggedId = state.user.uid
+    if (userLoggedId) {
       db.collection('follows')
-        .where('ori', '==', userLogged.uid)
+        .where('ori', '==', userLoggedId)
         .where('dest', '==', idUserToUnfollow)
         .get()
         .then(querySnapshot => {
