@@ -27,14 +27,14 @@
                 CAMBIAR AVATAR
               </v-btn>
               <br />
-              <v-btn nuxt @click="delete_image()">
+              <v-btn nuxt @click="deleteUserImage()">
                 QUITAR AVATAR
               </v-btn>
             </v-card>
           </v-flex>
           <v-spacer />
           <v-flex v-if="provider == 'password'" shrink>
-            <br />
+            <br /><br />
             <form
               id="passwordForm"
               method="post"
@@ -113,7 +113,7 @@
 </template>
 
 <script>
-import firebase, { storage, getCurrentUser } from '~/services/fireinit'
+import firebase, { getCurrentUser } from '~/services/fireinit'
 import { mapState, mapActions } from 'vuex'
 
 export default {
@@ -132,7 +132,7 @@ export default {
     this.getProvider()
   },
   methods: {
-    ...mapActions('user', ['updateUserImage', 'unfollow', 'showUser']),
+    ...mapActions('user', ['updateUserImage', 'deleteUserImage']),
 
     async getProvider() {
       const user = await getCurrentUser()
@@ -184,50 +184,10 @@ export default {
     onFileChange(event) {
       const files = event.target.files
       const newImage = files[0]
-
       if (newImage) {
         const filename = newImage.name
-        if (filename.lastIndexOf('.') <= 0) {
-          return alert('Invalid type file! ')
-        }
-
-        storage
-          .ref('profileImages/' + this.user.uid)
-          .put(newImage)
-          .then(snapshot => {
-            snapshot.ref.getDownloadURL().then(
-              foundURL => {
-                console.log('File available at ', foundURL)
-                this.updateUserImage(foundURL)
-              },
-              error => {
-                console.log('Error getting DownloadURL. ', error)
-              }
-            )
-          })
-          .catch(function(error) {
-            return alert('Error insertando nueva imagen en storage. ', error)
-          })
-      }
-    },
-    delete_image() {
-      // Borramos si no tiene la imagen por defecto
-      if (this.user.image === '/default-profile.png') {
-        console.log('Ya tiene la imagen por defecto ')
-      } else {
-        // Borramos imagen del storage
-        storage
-          .ref('profileImages/' + this.user.uid)
-          .delete()
-          .then(function() {
-            console.log('File deleted successfully. ')
-          })
-          .catch(function(error) {
-            console.log('Error deleting image from storage. ', error)
-          })
-
-        // Volver a imagen por defecto
-        this.updateUserImage('/default-profile.png')
+        if (filename.lastIndexOf('.') <= 0) return alert('Invalid type file! ')
+        else this.updateUserImage(newImage)
       }
     }
   }

@@ -1,4 +1,4 @@
-import { auth, getCurrentUser, db } from '~/services/fireinit'
+import { auth, getCurrentUser, db, storage } from '~/services/fireinit'
 // import firebase from 'firebase'
 // import functions from '~/assets/functions'
 import { firestore } from 'firebase'
@@ -331,49 +331,52 @@ export const actions = {
       })
   },
 
-  updateAccount({ state, commit, dispatch }, payload) {
-    console.log('UPDATE ' + state.user.uid)
-    const userLogged = state.user
-    if (userLogged) {
-      // Buscamos y actualizamos el documento en firebase
-      const docRef = db.collection('accounts').doc(userLogged.uid)
-      docRef
-        .get()
-        .then(function(doc) {
-          if (doc.exists) {
-            docRef.update({
-              birth: payload.birth,
-              genre: payload.genre,
-              info: payload.info,
-              name: payload.name
-            })
-          } else {
-            console.log('No such document!')
-          }
+  updateUserImage({ state }, newImage) {
+    const userLoggedId = state.user.uid
+    if (userLoggedId) {
+      // Actualizamos la imagen en storage y su url en el doc del user
+      storage
+        .ref('profileImages/' + userLoggedId)
+        .put(newImage)
+        .then(snapshot => {
+          snapshot.ref.getDownloadURL().then(
+            foundURL => {
+              db.collection('accounts')
+                .doc(userLoggedId)
+                .update({ image: foundURL })
+            },
+            error => {
+              console.log('Error getting DownloadURL. ', error)
+            }
+          )
         })
         .catch(function(error) {
-          console.log('Error getting document:', error)
+          return alert('Error insertando nueva imagen en storage. ', error)
         })
     }
   },
 
-  updateUserImage({ state, commit, dispatch }, newImage) {
-    const userLogged = state.user
-    if (userLogged) {
-      // Buscamos y actualizamos el documento en firebase
-      const docRef = db.collection('accounts').doc(userLogged.uid)
-      docRef
-        .get()
-        .then(function(doc) {
-          if (doc.exists) {
-            docRef.update({ image: newImage })
-          } else {
-            console.log('No such document!')
-          }
-        })
-        .catch(function(error) {
-          console.log('Error getting document:', error)
-        })
+  deleteUserImage({ state }) {
+    const userLoggedId = state.user.uid
+    if (userLoggedId) {
+      // No borramos si ya tiene la imagen por defecto
+      if (state.user.image === '/default-profile.png') {
+        console.log('No se puede borrar la imagen por defecto. ')
+      } else {
+        // Borramos imagen del storage
+        storage
+          .ref('profileImages/' + userLoggedId)
+          .delete()
+          .then(function() {
+            // Volver a imagen por defecto
+            db.collection('accounts')
+              .doc(userLoggedId)
+              .update({ image: '/default-profile.png' })
+          })
+          .catch(function(error) {
+            console.log('Error deleting image from storage. ', error)
+          })
+      }
     }
   },
 
