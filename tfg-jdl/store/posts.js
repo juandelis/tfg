@@ -228,16 +228,18 @@ export const actions = {
     const userLogged = rootState.user.user
     if (userLogged) {
       const docRef = await db.collection('posts').doc(payload.postId)
-      // Remove user id from dislikes of post
       if (payload.disliked) {
+        // Remove user id from dislikes and add it to likes
         docRef.update({
-          dislikes: firestore.FieldValue.arrayRemove(userLogged.uid)
+          dislikes: firestore.FieldValue.arrayRemove(userLogged.uid),
+          likes: firestore.FieldValue.arrayUnion(userLogged.uid)
+        })
+      } else {
+        // Just add user id to likes of post
+        docRef.update({
+          likes: firestore.FieldValue.arrayUnion(userLogged.uid)
         })
       }
-      // Add user id to likes of post
-      docRef.update({
-        likes: firestore.FieldValue.arrayUnion(userLogged.uid)
-      })
     }
   },
 
@@ -256,16 +258,18 @@ export const actions = {
     const userLogged = rootState.user.user
     if (userLogged) {
       const docRef = await db.collection('posts').doc(payload.postId)
-      // Remove user id from likes of post
       if (payload.liked) {
+        // Remove user id from likes and add it to dislikes
         docRef.update({
-          likes: firestore.FieldValue.arrayRemove(userLogged.uid)
+          likes: firestore.FieldValue.arrayRemove(userLogged.uid),
+          dislikes: firestore.FieldValue.arrayUnion(userLogged.uid)
+        })
+      } else {
+        // Just add user id to dislikes of post
+        docRef.update({
+          dislikes: firestore.FieldValue.arrayUnion(userLogged.uid)
         })
       }
-      // Add user id to dislikes of post
-      docRef.update({
-        dislikes: firestore.FieldValue.arrayUnion(userLogged.uid)
-      })
     }
   },
 
