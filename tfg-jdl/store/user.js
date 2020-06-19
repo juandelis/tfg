@@ -279,58 +279,6 @@ export const actions = {
     this.$router.push('/')
   },
 
-  signup({ commit, dispatch }, payload) {
-    auth
-      .createUserWithEmailAndPassword(payload.email, payload.password)
-      .then(async function() {
-        const user = await getCurrentUser() // Obtiene el usuario actual
-        const userDocRef = db.collection('accounts').doc(user.uid)
-        if (user) {
-          // Creamos el documento en firebase del usuario registrado
-          userDocRef
-            .get()
-            .then(function(doc) {
-              if (doc.exists) {
-                // Ya existe el documento de este usuario
-                console.log('Document already exists:', doc.data())
-              } else {
-                // Creamos el documento
-                userDocRef
-                  .set({
-                    email: user.email,
-                    image: '/default-profile.png', // imagen por defecto, editable luego
-                    name: payload.name
-                  })
-                  .then(function() {
-                    // Con el usuario loggeado y documento creado empezamos a escuchar
-                    dispatch('startListeningToUser', userDocRef)
-                    console.log('startListeningToUser de signup')
-                    dispatch('startListeningToFollowers', user.uid)
-                    console.log('startListeningToFollowers de signup')
-                    dispatch('startListeningToFollowing', user.uid)
-                    console.log('startListeningToFollowing de signup')
-                  })
-                  .catch(function(error) {
-                    console.log('Error creando el documento: ' + error)
-                  })
-              }
-            })
-            .catch(function(error) {
-              console.log('Error getting document:', error)
-            })
-        }
-      })
-      .catch(function(error) {
-        // Handle Errors here.
-        if (error.code === 'auth/weak-password') {
-          alert('CONTRASEÑA DEMASIADO DÉBIL')
-        } else if (error.code === 'auth/email-already-in-use') {
-          console.log('EL USUARIO YA EXISTE')
-        }
-        // ...
-      })
-  },
-
   updateUserImage({ state }, newImage) {
     const userLoggedId = state.user.uid
     if (userLoggedId) {

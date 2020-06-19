@@ -1,116 +1,14 @@
 <template>
   <v-layout justify-center>
     <v-flex text-xs-center xs12 sm8 md6>
-      <v-card color="#4A4E57" min-width="600px">
+      <v-card color="#444B3A">
         <br />
-        <h1 align="center">ACCESO</h1>
+        <h1 align="center">ACCESO / REGISTRO</h1>
         <br />
-
         <hr />
-
-        <form
-          id="loginform"
-          action="/"
-          method="post"
-          target="_self"
-          @submit.prevent="login({ email: email_log, password: password_log })"
-        >
-          <br />
-          <p>
-            <label class="labelForm" for="correo"> Correo electrónico </label>
-            <input id="correo" v-model="email_log" type="email" required />
-          </p>
-
-          <p>
-            <label class="labelForm" for="password_log"> Contraseña </label>
-            <input
-              id="password_log"
-              v-model="password_log"
-              type="password"
-              minlength="6"
-              required
-            />
-          </p>
-
-          <p>
-            <input id="button_login" type="submit" value=" INICIAR SESION " />
-            <br />
-            <v-btn flat color="blue" small round nuxt to="/login/password">
-              ¿Olvidaste tu contraseña?
-            </v-btn>
-          </p>
-        </form>
+        <br />
         <div id="firebaseui-auth-container" />
         <br />
-      </v-card>
-
-      <br /><br /><br /><br />
-
-      <v-card color="#413E35" min-width="600px">
-        <br />
-        <h1 align="center">REGISTRO</h1>
-        <br />
-
-        <hr />
-        <form
-          id="registerForm"
-          action="/"
-          method="post"
-          target="_self"
-          @submit.prevent="
-            signup({
-              email: email,
-              password: password,
-              name: name
-            })
-          "
-        >
-          <br />
-
-          <p>
-            <label class="labelForm" for="name">Nombre de usuario </label>
-            <input
-              id="name"
-              v-model="name"
-              type="text"
-              maxlength="20"
-              required
-            />
-          </p>
-
-          <p>
-            <label class="labelForm" for="email"> Correo electrónico </label>
-            <input id="email" v-model="email" type="email" required />
-
-            &nbsp; &nbsp; &nbsp; &nbsp;
-
-            <label class="labelForm" for="password"> Contraseña </label>
-            <input
-              id="password"
-              v-model="password"
-              type="password"
-              minlength="6"
-              required
-            />
-          </p>
-
-          <div id="recaptcha" align="center" />
-
-          <p>
-            <input
-              id="button_register"
-              ref="button_register"
-              type="submit"
-              value=" ACEPTAR "
-              style="display:none"
-            />
-            <v-btn v-show="reCAPTCHA_verified" @click="click_submit()">
-              ACEPTAR
-            </v-btn>
-          </p>
-
-          <br />
-        </form>
       </v-card>
     </v-flex>
   </v-layout>
@@ -128,10 +26,7 @@ export default {
     password_log: '',
     email: '',
     password: '',
-    name: '',
-    birth: '',
-    genre: '',
-    reCAPTCHA_verified: false
+    name: ''
   }),
   computed: {
     ...mapGetters('user', ['logged']),
@@ -161,20 +56,6 @@ export default {
 
     showLogin() {
       this.initAuth()
-      window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
-        'recaptcha',
-        {
-          callback: response => {
-            // reCAPTCHA solved, allow signIn button.
-            this.reCAPTCHA_verified = true
-          },
-          'expired-callback': () => {
-            // Response expired. SignIn button hides again
-            this.reCAPTCHA_verified = false
-          }
-        }
-      )
-      window.recaptchaVerifier.render()
 
       const uiConfig = {
         signInFlow: 'popup',
