@@ -2,7 +2,14 @@
   <v-layout justify-center>
     <v-flex text-xs-center xs12 sm9 md7 lg8>
       <v-card>
-        <h1 align="center">MI PERFIL - {{ user.name }}</h1>
+        <v-layout>
+          <v-spacer />
+          <h1 align="center">MI PERFIL - {{ user.name }}</h1>
+          <v-spacer />
+          <v-btn icon nuxt to="/account/delete">
+            <v-icon>delete_forever</v-icon>
+          </v-btn>
+        </v-layout>
         <hr />
         <br />
         <v-layout>

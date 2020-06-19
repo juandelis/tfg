@@ -173,8 +173,10 @@ export const actions = {
       userDoc.onSnapshot(userDocSnapshot => {
         if (!userDocSnapshot.exists) {
           // El user logged ha sido borrado
-          console.log('El user logged ha sido borrado')
-          dispatch('logout')
+          console.log('El doc del user logged ha sido borrado')
+          setTimeout(() => {
+            dispatch('logout')
+          }, 500)
         } else {
           // Borrar el viejo user
           commit('clearUser')
@@ -224,7 +226,7 @@ export const actions = {
                   .set({
                     email: user.email,
                     image: '/default-profile.png', // imagen por defecto, editable luego
-                    name: user.displayName
+                    name: user.displayName || '????'
                   })
                   .then(function() {
                     // Con el usuario loggeado y su documento creado empezamos a escuchar
