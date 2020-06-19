@@ -12,6 +12,8 @@ import { createStore } from './store.js'
 
 /* Plugins */
 
+import nuxt_plugin_workbox_e09b6f4a from 'nuxt_plugin_workbox_e09b6f4a' // Source: .\\workbox.js (mode: 'client')
+import nuxt_plugin_nuxticons_1b7dccae from 'nuxt_plugin_nuxticons_1b7dccae' // Source: .\\nuxt-icons.js (mode: 'all')
 import nuxt_plugin_vuetify_e5914fcc from 'nuxt_plugin_vuetify_e5914fcc' // Source: ..\\plugins\\vuetify (mode: 'all')
 
 // Component: <ClientOnly>
@@ -55,7 +57,7 @@ async function createApp (ssrContext) {
   // here we inject the router and store to all child components,
   // making them available everywhere as `this.$router` and `this.$store`.
   const app = {
-    head: {"title":"tfg-jdl","meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"hid":"description","name":"description","content":"Nuxt+Firebase app for degree final proyect"}],"link":[{"rel":"icon","type":"image\u002Fx-icon","href":"\u002Ffavicon.ico"},{"rel":"stylesheet","href":"https:\u002F\u002Ffonts.googleapis.com\u002Fcss?family=Roboto:300,400,500,700|Material+Icons"}],"style":[],"script":[]},
+    head: {"title":"tfg-jdl","meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"hid":"description","name":"description","content":"Nuxt+Firebase app for degree final proyect"},{"hid":"mobile-web-app-capable","name":"mobile-web-app-capable","content":"yes"},{"hid":"apple-mobile-web-app-title","name":"apple-mobile-web-app-title","content":"tfg-jdl"},{"hid":"author","name":"author","content":"Juan de Lis"},{"hid":"theme-color","name":"theme-color","content":"#fff"},{"hid":"og:type","name":"og:type","property":"og:type","content":"website"},{"hid":"og:title","name":"og:title","property":"og:title","content":"tfg-jdl"},{"hid":"og:site_name","name":"og:site_name","property":"og:site_name","content":"tfg-jdl"},{"hid":"og:description","name":"og:description","property":"og:description","content":"Nuxt+Firebase app for degree final proyect"}],"link":[{"rel":"stylesheet","href":"https:\u002F\u002Ffonts.googleapis.com\u002Fcss?family=Roboto:300,400,500,700|Material+Icons"},{"rel":"manifest","href":"\u002F_nuxt\u002Fmanifest.52512a34.json"}],"style":[],"script":[],"htmlAttrs":{"lang":"en"}},
 
     store,
     router,
@@ -169,6 +171,14 @@ async function createApp (ssrContext) {
   }
 
   // Plugin execution
+
+  if (process.client && typeof nuxt_plugin_workbox_e09b6f4a === 'function') {
+    await nuxt_plugin_workbox_e09b6f4a(app.context, inject)
+  }
+
+  if (typeof nuxt_plugin_nuxticons_1b7dccae === 'function') {
+    await nuxt_plugin_nuxticons_1b7dccae(app.context, inject)
+  }
 
   if (typeof nuxt_plugin_vuetify_e5914fcc === 'function') {
     await nuxt_plugin_vuetify_e5914fcc(app.context, inject)
