@@ -190,11 +190,16 @@ export default {
     },
     onFileChange(event) {
       const files = event.target.files
-      const newImage = files[0]
-      if (newImage) {
-        const filename = newImage.name
-        if (filename.lastIndexOf('.') <= 0) return alert('Invalid type file! ')
-        else this.updateUserImage(newImage)
+      const newFile = files[0]
+      if (newFile) {
+        const fileType = newFile.type
+        if (
+          fileType.localeCompare('image/png') === 0 ||
+          fileType.localeCompare('image/jpg') === 0 ||
+          fileType.localeCompare('image/jpeg') === 0
+        )
+          return this.updateUserImage(newFile)
+        else alert('Invalid type file! ')
       }
     }
   }
