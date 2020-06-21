@@ -19,8 +19,6 @@ export const state = () => ({
     uid: null, // no null si está logueado
     name: '',
     email: '',
-    birth: '',
-    genre: '',
     image: '',
     followers: [],
     following: []
@@ -37,22 +35,16 @@ export const getters = {
 }
 
 export const mutations = {
-  setUser(state, { id, name, email, birth, genre, info, image }) {
+  setUser(state, { id, name, email, image }) {
     state.user.uid = id
     state.user.name = name
     state.user.email = email
-    state.user.birth = birth
-    state.user.genre = genre
-    state.user.info = info
     state.user.image = image || 'default-profile.png'
   },
   clearUser(state) {
     state.user.uid = null
     state.user.name = ''
     state.user.email = ''
-    state.user.birth = ''
-    state.user.genre = ''
-    state.user.info = ''
     state.user.image = ''
     state.user.followers = []
     state.user.following = []
@@ -71,11 +63,8 @@ export const mutations = {
     state.unsubscribeFollowers = null
     state.unsubscribeFollowing = null
   },
-  updateUserData(state, { name, birth, genre, info }) {
+  updateUserData(state, name) {
     state.user.name = name
-    state.user.birth = birth
-    state.user.genre = genre
-    state.user.info = info
   },
   updateImage(state, image) {
     state.user.image = image
@@ -186,9 +175,6 @@ export const actions = {
             id: userDocSnapshot.id,
             name: userData.name,
             email: userData.email,
-            birth: userData.birth,
-            genre: userData.genre,
-            info: userData.info,
             image: userData.image
           })
         }
