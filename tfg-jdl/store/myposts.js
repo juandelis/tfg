@@ -10,13 +10,12 @@ export const getters = {
 }
 
 export const mutations = {
-  pushPost(state, { id, creatorName, tittle, body, date, likes, dislikes }) {
+  pushPost(state, { id, creatorName, body, date, likes, dislikes }) {
     // const userLogged = rootState.user.user
     if (id) {
       state.posts.push({
         id: id,
         creatorName: creatorName,
-        tittle: tittle,
         body: body,
         date: date,
         likes: likes,
@@ -26,14 +25,13 @@ export const mutations = {
       })
     }
   },
-  updatePost(state, { id, creatorName, tittle, body, date, likes, dislikes }) {
+  updatePost(state, { id, creatorName, body, date, likes, dislikes }) {
     const index = state.posts.findIndex(item => item.id === id)
     if (state.posts[index]) {
       // Borramos el antiguo post e insertamos el nuevo en su lugar
       state.posts.splice(index, 1, {
         id: id,
         creatorName: creatorName,
-        tittle: tittle,
         body: body,
         date: date,
         likes: likes,
@@ -107,7 +105,6 @@ export const actions = {
           commit('pushPost', {
             id: change.doc.id,
             creatorName: postData.creatorName,
-            tittle: postData.tittle,
             body: postData.body,
             date: postData.date.toDate().toLocaleDateString('es-ES'),
             likes: postData.likes,
@@ -120,7 +117,6 @@ export const actions = {
         commit('updatePost', {
           id: change.doc.id,
           creatorName: postData.creatorName,
-          tittle: postData.tittle,
           body: postData.body,
           date: postData.date.toDate().toLocaleDateString('es-ES'),
           likes: postData.likes,
@@ -159,7 +155,6 @@ export const actions = {
         commit('pushPost', {
           id: postDoc.id,
           creatorName: postData.creatorName,
-          tittle: postData.tittle,
           body: postData.body,
           date: postData.date.toDate().toLocaleDateString('es-ES'),
           likes: postData.likes,
