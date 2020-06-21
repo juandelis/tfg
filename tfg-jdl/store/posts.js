@@ -15,7 +15,7 @@ export const getters = {
 export const mutations = {
   pushPost(
     state,
-    { uid, id, creatorName, creatorId, tittle, body, date, likes, dislikes }
+    { uid, id, creatorName, creatorId, body, date, likes, dislikes }
   ) {
     // const userLogged = rootState.user.user
     if (id) {
@@ -23,7 +23,6 @@ export const mutations = {
         id: id,
         creatorName: creatorName,
         creatorId: creatorId,
-        tittle: tittle,
         body: body,
         date: date,
         likes: likes,
@@ -127,7 +126,6 @@ export const actions = {
                 id: change.doc.id,
                 creatorName: postData.creatorName,
                 creatorId: postData.creatorId,
-                tittle: postData.tittle,
                 body: postData.body,
                 date: postData.date.toDate().toLocaleDateString('es-ES'),
                 uid: rootState.user.user.uid,
@@ -213,7 +211,6 @@ export const actions = {
           id: postDoc.id,
           creatorName: postData.creatorName,
           creatorId: postData.creatorId,
-          tittle: postData.tittle,
           body: postData.body,
           date: postData.date.toDate().toLocaleDateString('es-ES'),
           uid: rootState.user.user.uid,
