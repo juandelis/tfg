@@ -8,9 +8,6 @@ export const state = () => ({
     id: null, // no null si está logueado
     name: '',
     email: '',
-    birth: '',
-    genre: '',
-    info: '',
     image: '',
     followers: [],
     following: []
@@ -23,14 +20,11 @@ export const getters = {}
 export const mutations = {
   setUserToShow(
     state,
-    { id, name, email, birth, genre, info, image, following, followers }
+    { id, name, email, image, following, followers }
   ) {
     state.userToShow.id = id
     state.userToShow.name = name
     state.userToShow.email = email
-    state.userToShow.birth = birth
-    state.userToShow.genre = genre
-    state.userToShow.info = info
     state.userToShow.image = image
     state.userToShow.followers = followers
     state.userToShow.following = following
@@ -40,9 +34,6 @@ export const mutations = {
     state.userToShow.id = null
     state.userToShow.name = ''
     state.userToShow.email = ''
-    state.userToShow.birth = ''
-    state.userToShow.genre = ''
-    state.userToShow.info = ''
     state.userToShow.image = ''
     state.userToShow.followers = []
     state.userToShow.following = []
@@ -85,9 +76,6 @@ export const actions = {
               id: userToShowId,
               name: userToShowData.name,
               email: userToShowData.email,
-              birth: userToShowData.birth,
-              genre: userToShowData.genre,
-              info: userToShowData.info,
               image: userToShowData.image,
               following: userToShowData.following,
               followers: userToShowData.followers
