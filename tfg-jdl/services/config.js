@@ -1,5 +1,4 @@
 // fichero con la configuración de firebase
-
 export const FirebaseConfig = {
   apiKey: 'AIzaSyCYmAGlxpXscmWDPz-zvmzEOmxFe_wr5gE',
   authDomain: 'tfg-jdl.firebaseapp.com',
