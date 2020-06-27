@@ -28,6 +28,17 @@ const functions = {
       .catch(function(error) {
         console.error('Error removing post document: ', error)
       })
+  },
+
+  deleteUser(idUserToDelete) {
+    db.doc('accounts/' + idUserToDelete)
+      .delete()
+      .then(function() {
+        console.log('USER DOCUMENT SUCCESSFULLY DELETED!')
+      })
+      .catch(function(error) {
+        console.error('Error deleting user document: ', error)
+      })
   }
 }
 

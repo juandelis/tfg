@@ -29,8 +29,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
-// import { db, getCurrentUser } from '~/services/fireinit'
-import { db } from '~/services/fireinit'
+import functions from '~/assets/functions'
 
 export default {
   data: () => ({
@@ -43,44 +42,8 @@ export default {
   methods: {
     ...mapActions('user', ['updateAccount', 'updateUserImage']),
 
-    delete_user(password) {
-      console.log('password: ' + password)
-
-      // TODO: Comprobar si es cuenta de Google y ver como obtener credential
-      /* const user = await getCurrentUser()
-      const credential = firebase.auth.EmailAuthProvider.credential(
-        user.email,
-        password
-      ) */
-
-      // TODO: Eliminar documento del user en Firestore
-      db.doc('accounts/' + this.user.uid)
-        .delete()
-        .then(function() {
-          console.log('USER DOCUMENT SUCCESSFULLY DELETED!')
-          // Reauthenticate para poder eliminar el user de Firebase Authentication
-          /* user
-            .reauthenticateAndRetrieveDataWithCredential(credential)
-            .then(function() {
-              console.log('reauthenticating SUCCESSFULLY COMPLETED!')
-              // Eliminar usuario de Firebase Authentication
-              user
-                .delete()
-                .then(function() {
-                  console.log('USER DELETED CORRECTLY')
-                  this.$router.push('/')
-                })
-                .catch(function(error) {
-                  return alert('Error deleting user:', error)
-                })
-            })
-            .catch(function(error) {
-              return alert('Error reauthenticating:', error)
-            }) */
-        })
-        .catch(function(error) {
-          console.error('Error deleting user document: ', error)
-        })
+    delete_user() {
+      functions.deleteUser(this.user.uid)
     }
   }
 }
