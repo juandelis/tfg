@@ -1,5 +1,4 @@
 import { FirebaseConfig } from '~/services/config'
-// copia en /services/config.js el fichero .json con la configuración de firebase
 import * as firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/firestore'
@@ -7,7 +6,8 @@ import 'firebase/storage'
 
 firebase.initializeApp(FirebaseConfig)
 
-export const GoogleProvider = new firebase.auth.GoogleAuthProvider()
+export const emailProvider = new firebase.auth.EmailAuthProvider.PROVIDER_ID()
+export const googleProvider = new firebase.auth.GoogleAuthProvider.PROVIDER_ID()
 
 export const auth = firebase.auth()
 
