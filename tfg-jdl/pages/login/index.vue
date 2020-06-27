@@ -62,8 +62,8 @@ export default {
         // signInSuccessUrl: '<url-to-redirect-to-on-success>', //En Nuxt esto sería un problema, ya que firebase-ui no usa vue-route
         signInOptions: [
           // Declare in fireinit.js the providers you want to offer your users.
-          emailProvider,
-          googleProvider
+          emailProvider.PROVIDER_ID,
+          googleProvider.PROVIDER_ID
         ],
         callbacks: {
           signInSuccessWithAuthResult() {
