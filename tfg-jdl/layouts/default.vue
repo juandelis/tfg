@@ -64,15 +64,6 @@
         <nuxt />
       </v-container>
     </v-content>
-
-    <v-footer :fixed="fixed" app>
-      <v-btn class="align-middle" color="white" flat nuxt to="/contacto">
-        Contacto
-      </v-btn>
-      <v-spacer />
-      &copy; 2020 GAMER CREW
-      <v-spacer />
-    </v-footer>
   </v-app>
 </template>
 

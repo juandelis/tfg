@@ -1,71 +1,44 @@
 <template>
-  <v-layout column justify-center align-center>
-    <v-flex xs12 sm8 md6>
-      <div class="text-xs-center">
-        <img
-          src="/images/GamersCrew.png"
-          alt="GAMER/CREW"
-          class="mb-5"
-          height="600"
-          width="800"
-        />
-      </div>
-
+  <v-layout align-center justify-center>
+    <v-flex xs10 sm7 md7>
       <v-card>
-        <v-card-title class="headline">
-          GAMER/CREW
+        <v-card-title class="headline justify-center">
+          <v-avatar tile size="60">
+            <img src="icon.png" alt="app icon" />
+          </v-avatar>
+          &nbsp;&nbsp;&nbsp;
+          <h1>GamersTalk</h1>
+          &nbsp;&nbsp;&nbsp;
+          <v-avatar tile size="60">
+            <img src="icon.png" alt="app icon" />
+          </v-avatar>
         </v-card-title>
+        <hr />
+        <v-card-text>
+          <h3>
+            Bienvenido a la nueva red social para aficionados a los videojuegos,
+            dónde podrás crear publicaciones breves de texto para tus seguidores
+            y valorar las publicaciones del resto de usuarios.
+          </h3>
+          <br />
+          <h3>
+            Tan sólo debes rellenar un sencillo registro (email, contraseña y
+            nombre de usuario) o acceder con tu cuenta de Google y ya podrás
+            disfrutar por completo de la aplicación: buscar usuarios a los que
+            seguir, empezar a escribir publicaciones, añadir un avatar a tu
+            perfil y mucho más...
+          </h3>
+        </v-card-text>
       </v-card>
       <br />
-
       <v-card>
-        <v-card-title class="headline">
-          GAMER/CREW
-        </v-card-title>
-
         <v-card-text>
-          <p>
-            Vuetify is a progressive Material Design component framework for
-            Vue.js. It was designed to empower developers to create amazing
-            applications.
-          </p>
-          <p>
-            For more information on Vuetify, check out the
-            <a href="https://vuetifyjs.com" target="_blank">documentation</a>.
-          </p>
-          <p>
-            If you have questions, please join the official
-            <a href="https://chat.vuetifyjs.com/" target="_blank" title="chat"
-              >discord</a
-            >.
-          </p>
-          <p>
-            Find a bug? Report it on the github
-            <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              title="contribute"
-              >issue board</a
-            >.
-          </p>
-          <p>
-            Thank you for developing with Vuetify and I look forward to bringing
-            more exciting features in the future.
-          </p>
+          La aplicación ha sido desarrollada por Juan de Lis como TFG de
+          ingeniería informática para la Universidad Autónoma de Madrid.
+          Cualquier duda o consulta contactar con:<br />
+          · &nbsp;juanlis96@gmail.com<br />
+          · &nbsp;juan.lis@estudiante.uam.es
         </v-card-text>
-
-        <hr class="my-3" />
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="green" flat nuxt to="/login">
-            LOGIN
-          </v-btn>
-          <v-btn color="orange" flat nuxt to="/login/register">
-            REGISTER
-          </v-btn>
-          <v-spacer />
-        </v-card-actions>
-        <br />
       </v-card>
     </v-flex>
   </v-layout>
