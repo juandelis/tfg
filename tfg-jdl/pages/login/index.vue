@@ -16,7 +16,7 @@
 
 <script>
 import { mapGetters, mapState, mapActions } from 'vuex'
-import { auth, emailProvider, googleProvider } from '~/services/fireinit'
+import firebase, { auth } from '~/services/fireinit'
 import * as firebaseui from 'firebaseui'
 
 export default {
@@ -61,9 +61,11 @@ export default {
         signInFlow: 'popup',
         // signInSuccessUrl: '<url-to-redirect-to-on-success>', //En Nuxt esto sería un problema, ya que firebase-ui no usa vue-route
         signInOptions: [
-          // Declare in fireinit.js the providers you want to offer your users.
-          emailProvider.PROVIDER_ID,
-          googleProvider.PROVIDER_ID
+          // Leave the lines as is for the providers you want to offer your users.
+          firebase.auth.EmailAuthProvider.PROVIDER_ID,
+          firebase.auth.GoogleAuthProvider.PROVIDER_ID
+          // firebase.auth.PhoneAuthProvider.PROVIDER_ID,
+          // firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
         ],
         callbacks: {
           signInSuccessWithAuthResult() {

@@ -6,9 +6,6 @@ import 'firebase/storage'
 
 firebase.initializeApp(FirebaseConfig)
 
-export const emailProvider = new firebase.auth.EmailAuthProvider()
-export const googleProvider = new firebase.auth.GoogleAuthProvider()
-
 export const auth = firebase.auth()
 
 export const db = firebase.firestore()
