@@ -1,15 +1,52 @@
 <template>
   <v-layout align-center justify-center>
-    <v-flex xs10 sm7 md7>
+    <v-flex xs11 sm7 md7 lg8 xl8>
       <v-card>
         <v-card-title class="headline justify-center">
-          <v-avatar tile size="60">
+          <v-avatar
+            tile
+            :size="
+              $vuetify.breakpoint.xs
+                ? 30
+                : $vuetify.breakpoint.sm
+                ? 40
+                : $vuetify.breakpoint.md
+                ? 50
+                : $vuetify.breakpoint.lg
+                ? 60
+                : $vuetify.breakpoint.lg
+                ? 70
+                : 50
+            "
+          >
             <img src="icon.png" alt="app icon" />
           </v-avatar>
           &nbsp;&nbsp;&nbsp;
-          <h1>GamersTalk</h1>
+          <h3 v-if="$vuetify.breakpoint.xs || $vuetify.breakpoint.sm">
+            GamersTalk
+          </h3>
+          <h2 v-else-if="$vuetify.breakpoint.md">GamersTalk md</h2>
+          <h1 v-else-if="$vuetify.breakpoint.lg || $vuetify.breakpoint.xl">
+            GamersTalk
+          </h1>
+          <h1 v-else>GamersTalk</h1>
           &nbsp;&nbsp;&nbsp;
-          <v-avatar tile size="60">
+          <v-avatar
+            tile
+            :size="
+              $vuetify.breakpoint.xs
+                ? 30
+                : $vuetify.breakpoint.sm
+                ? 40
+                : $vuetify.breakpoint.md
+                ? 50
+                : $vuetify.breakpoint.lg
+                ? 60
+                : $vuetify.breakpoint.lg
+                ? 70
+                : 50
+            "
+          >
             <img src="icon.png" alt="app icon" />
           </v-avatar>
         </v-card-title>
