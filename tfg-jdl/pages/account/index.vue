@@ -1,10 +1,10 @@
 <template>
   <v-layout justify-center>
-    <v-flex text-xs-center xs12 sm9 md7 lg8>
+    <v-flex text-xs-center xs10 sm9 md7>
       <v-card>
         <v-layout>
           <v-spacer />
-          <h1 align="center">MI PERFIL - {{ user.name }}</h1>
+          <h1>{{ user.name }}</h1>
           <v-spacer />
           <v-btn icon nuxt to="/account/delete">
             <v-icon>delete_forever</v-icon>
@@ -12,16 +12,11 @@
         </v-layout>
         <hr />
         <br />
-        <v-layout>
-          <v-spacer />
+        <v-layout align-center :column="$vuetify.breakpoint.name === 'xs'">
+          <v-spacer />&nbsp;
           <v-flex shrink>
-            <v-card min-width="160px">
-              <img
-                :src="user.image"
-                alt="User profile photo"
-                width="150px"
-                height="180px"
-              />
+            <v-card max-width="200px">
+              <img :src="user.image" alt="User profile photo" width="90%" />
               <br />
               <input
                 ref="fileInput"
@@ -40,8 +35,8 @@
             </v-card>
           </v-flex>
           <v-spacer />
+          <br /><br />
           <v-flex v-if="provider == 'password'" shrink>
-            <br /><br />
             <form
               id="passwordForm"
               method="post"
@@ -100,7 +95,7 @@
               </p>
             </form>
           </v-flex>
-          <v-flex v-if="provider == 'google.com'" shrink>
+          <v-flex v-else-if="provider == 'google.com'" shrink>
             <br /><br />
             No puede cambiar la contraseña pues ha iniciado sesión con Google
             <br /><br />
@@ -109,6 +104,11 @@
             <v-btn nuxt disabled>
               CAMBIAR CONTRASEÑA
             </v-btn>
+          </v-flex>
+          <v-flex v-else shrink>
+            <br /><br />
+            Proveedor de autenticación no detectado
+            <br /><br />
           </v-flex>
           <v-spacer />
         </v-layout>
