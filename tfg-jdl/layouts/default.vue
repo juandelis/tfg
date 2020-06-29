@@ -74,7 +74,7 @@ export default {
   data() {
     return {
       dark: true,
-      drawer: true,
+      drawer: !(this.$vuetify.breakpoint.xs || this.$vuetify.breakpoint.sm),
       clipped: true,
       miniVariant: false,
       items: [
