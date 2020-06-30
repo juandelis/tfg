@@ -1,6 +1,9 @@
 {
   "functions": {
     "predeploy": [
+      "cd functions",
+      "npm --prefix \"$RESOURCE_DIR\" run lint -- --fix",
+      "cd ..",
       "npm --prefix \"$RESOURCE_DIR\" run lint"
     ],
     "source": "functions"
@@ -10,6 +13,7 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
+    "site": "gamerstalk",
     "public": "dist",
     "ignore": [
       "firebase.json",

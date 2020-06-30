@@ -6,5 +6,5 @@ export const FirebaseConfig = {
   projectId: 'tfg-jdl',
   storageBucket: 'tfg-jdl.appspot.com',
   messagingSenderId: '409622511361',
-  appId: '1:409622511361:web:9ab79fb806cebf25'
+  appId: '1:409622511361:web:9135a534e4b61da7c36500'
 }
