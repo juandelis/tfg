@@ -7,7 +7,7 @@
         <br />
 
         <hr />
-        <br />
+        <br /><br />
 
         <form
           id="editForm"
@@ -18,13 +18,24 @@
           <p>
             <textarea
               v-model="body"
-              rows="7"
-              cols="55"
+              rows="6"
+              :cols="
+                $vuetify.breakpoint.xs
+                  ? '30'
+                  : $vuetify.breakpoint.sm
+                  ? '50'
+                  : $vuetify.breakpoint.md
+                  ? '60'
+                  : $vuetify.breakpoint.lg
+                  ? '70'
+                  : $vuetify.breakpoint.xl
+                  ? '80'
+                  : '60'
+              "
               maxlength="333"
-              style="background-color:white; color:black; resize:none"
+              style="background-color:#505050; color:white; resize:none"
               required
-            >
-            </textarea>
+            />
           </p>
 
           <p>
@@ -39,7 +50,6 @@
             </v-btn>
           </p>
         </form>
-
         <br />
       </v-card>
 
