@@ -4,19 +4,14 @@ import { interopDefault } from './utils'
 import scrollBehavior from './router.scrollBehavior.js'
 
 const _47e4f73a = () => interopDefault(import('..\\pages\\account\\index.vue' /* webpackChunkName: "pages_account_index" */))
-const _743269d5 = () => interopDefault(import('..\\pages\\index2.vue' /* webpackChunkName: "pages_index2" */))
 const _e12d7316 = () => interopDefault(import('..\\pages\\inspire.vue' /* webpackChunkName: "pages_inspire" */))
-const _07e09084 = () => interopDefault(import('..\\pages\\login\\index.vue' /* webpackChunkName: "pages_login_index" */))
+const _59c98844 = () => interopDefault(import('..\\pages\\login.vue' /* webpackChunkName: "pages_login" */))
 const _7ed62514 = () => interopDefault(import('..\\pages\\posts\\index.vue' /* webpackChunkName: "pages_posts_index" */))
 const _d3b9b346 = () => interopDefault(import('..\\pages\\pruebas.vue' /* webpackChunkName: "pages_pruebas" */))
 const _16f60fbf = () => interopDefault(import('..\\pages\\users\\index.vue' /* webpackChunkName: "pages_users_index" */))
 const _1801a01a = () => interopDefault(import('..\\pages\\account\\delete.vue' /* webpackChunkName: "pages_account_delete" */))
-const _a4c3465c = () => interopDefault(import('..\\pages\\account\\edit.vue' /* webpackChunkName: "pages_account_edit" */))
-const _7f01e0e3 = () => interopDefault(import('..\\pages\\account\\password.vue' /* webpackChunkName: "pages_account_password" */))
-const _8bc9bc42 = () => interopDefault(import('..\\pages\\login\\password.vue' /* webpackChunkName: "pages_login_password" */))
 const _f8ba6fac = () => interopDefault(import('..\\pages\\posts\\create.vue' /* webpackChunkName: "pages_posts_create" */))
 const _6546a0e9 = () => interopDefault(import('..\\pages\\posts\\myposts.vue' /* webpackChunkName: "pages_posts_myposts" */))
-const _ebdb4708 = () => interopDefault(import('..\\pages\\posts\\_id.vue' /* webpackChunkName: "pages_posts__id" */))
 const _17f2f5e7 = () => interopDefault(import('..\\pages\\users\\_id.vue' /* webpackChunkName: "pages_users__id" */))
 const _dfbc35a6 = () => interopDefault(import('..\\pages\\index.vue' /* webpackChunkName: "pages_index" */))
 
@@ -41,16 +36,12 @@ export const routerOptions = {
     component: _47e4f73a,
     name: "account"
   }, {
-    path: "/index2",
-    component: _743269d5,
-    name: "index2"
-  }, {
     path: "/inspire",
     component: _e12d7316,
     name: "inspire"
   }, {
     path: "/login",
-    component: _07e09084,
+    component: _59c98844,
     name: "login"
   }, {
     path: "/posts",
@@ -69,18 +60,6 @@ export const routerOptions = {
     component: _1801a01a,
     name: "account-delete"
   }, {
-    path: "/account/edit",
-    component: _a4c3465c,
-    name: "account-edit"
-  }, {
-    path: "/account/password",
-    component: _7f01e0e3,
-    name: "account-password"
-  }, {
-    path: "/login/password",
-    component: _8bc9bc42,
-    name: "login-password"
-  }, {
     path: "/posts/create",
     component: _f8ba6fac,
     name: "posts-create"
@@ -88,10 +67,6 @@ export const routerOptions = {
     path: "/posts/myposts",
     component: _6546a0e9,
     name: "posts-myposts"
-  }, {
-    path: "/posts/:id",
-    component: _ebdb4708,
-    name: "posts-id"
   }, {
     path: "/users/:id",
     component: _17f2f5e7,
