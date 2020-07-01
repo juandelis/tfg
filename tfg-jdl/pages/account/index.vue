@@ -1,6 +1,6 @@
 <template>
   <v-layout justify-center>
-    <v-flex text-xs-center xs10 sm9 md7>
+    <v-flex text-xs-center xs11 sm9 md7>
       <v-card>
         <v-layout>
           <v-spacer />
@@ -12,7 +12,7 @@
         </v-layout>
         <hr />
         <br />
-        <v-layout align-center :column="$vuetify.breakpoint.name === 'xs'">
+        <v-layout align-center :column="$vuetify.breakpoint.xs">
           <v-spacer />&nbsp;
           <v-flex shrink>
             <v-card max-width="200px">

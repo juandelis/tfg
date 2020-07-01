@@ -14,7 +14,7 @@
                 ? 50
                 : $vuetify.breakpoint.lg
                 ? 60
-                : $vuetify.breakpoint.lg
+                : $vuetify.breakpoint.xl
                 ? 70
                 : 50
             "
@@ -42,7 +42,7 @@
                 ? 50
                 : $vuetify.breakpoint.lg
                 ? 60
-                : $vuetify.breakpoint.lg
+                : $vuetify.breakpoint.xl
                 ? 70
                 : 50
             "

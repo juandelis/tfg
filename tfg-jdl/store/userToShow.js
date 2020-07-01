@@ -18,10 +18,7 @@ export const state = () => ({
 export const getters = {}
 
 export const mutations = {
-  setUserToShow(
-    state,
-    { id, name, email, image, following, followers }
-  ) {
+  setUserToShow(state, { id, name, email, image, following, followers }) {
     state.userToShow.id = id
     state.userToShow.name = name
     state.userToShow.email = email
