@@ -75,7 +75,7 @@
           La aplicación ha sido desarrollada por Juan de Lis como TFG de
           ingeniería informática para la Universidad Autónoma de Madrid.
           Cualquier duda o consulta contactar con:<br />
-          · &nbsp;juanlis96@gmail.com<br />
+          · &nbsp;juandelis96@gmail.com<br />
           · &nbsp;juan.lis@estudiante.uam.es
         </v-card-text>
       </v-card>
