@@ -45,58 +45,70 @@
         <br />
       </v-card>
 
-      <br />
+      <br /><br />
 
-      <v-card>
-        <br />
-        <h1 align="center">SUS PUBLICACIONES</h1>
-        <br />
-        <hr />
-        <br />
-        <p>
-          <input
-            v-model="type"
-            type="radio"
-            value="all"
-            @input="searchPosts({ date: date, type: 'all' })"
-          />
-          Todas &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <input
-            v-model="type"
-            type="radio"
-            value="liked"
-            @input="searchPosts({ date: date, type: 'liked' })"
-          />
-          Me gustan &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <input
-            v-model="type"
-            type="radio"
-            value="disliked"
-            @input="searchPosts({ date: date, type: 'disliked' })"
-          />
-          No me gustan &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <input
-            v-model="type"
-            type="radio"
-            value="notValued"
-            @input="searchPosts({ date: date, type: 'notValued' })"
-          />
-          Sin valorar
-        </p>
-        <p>
-          <label for="date"> Fecha: </label> &nbsp;
-          <input
-            v-model="date"
-            type="date"
-            name="date"
-            @input="searchPosts({ date: date, type: type })"
-          />
+      <div class="pb-2">
+        <v-card>
           <br />
-        </p>
-        <hr />
-        <div v-for="(post, i) in posts" :key="i">
+          <h1 align="center">SUS PUBLICACIONES</h1>
           <br />
-          <v-card elevation="10" color="#444444">
+          <hr />
+          <br />
+          <p>
+            <input
+              v-model="type"
+              type="radio"
+              value="all"
+              @input="searchPosts({ date: date, type: 'all' })"
+            />
+            Todas &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input
+              v-model="type"
+              type="radio"
+              value="liked"
+              @input="searchPosts({ date: date, type: 'liked' })"
+            />
+            Me gustan &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <br v-if="$vuetify.breakpoint.xs || $vuetify.breakpoint.sm" />
+            <input
+              v-model="type"
+              type="radio"
+              value="disliked"
+              @input="searchPosts({ date: date, type: 'disliked' })"
+            />
+            No me gustan &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input
+              v-model="type"
+              type="radio"
+              value="notValued"
+              @input="searchPosts({ date: date, type: 'notValued' })"
+            />
+            Sin valorar
+          </p>
+          <p>
+            <label for="date"> Fecha: </label> &nbsp;
+            <input
+              v-model="date"
+              type="date"
+              name="date"
+              @input="searchPosts({ date: date, type: type })"
+            />
+          </p>
+          <br />
+        </v-card>
+      </div>
+
+      <div
+        id="userposts"
+        :style="{
+          maxHeight:
+            Math.max($vuetify.breakpoint.height - offsetTopUserPosts, 250) +
+            'px',
+          overflowY: 'scroll'
+        }"
+      >
+        <div v-for="(post, i) in posts" :key="i" style="padding: 10px">
+          <v-card elevation="10" color="#505050">
             <v-card-title>
               <v-btn flat round>
                 <v-icon>account_circle</v-icon>&nbsp;
@@ -144,8 +156,7 @@
             </v-card-title>
           </v-card>
         </div>
-        <br />
-      </v-card>
+      </div>
     </v-flex>
   </v-layout>
 </template>
@@ -159,7 +170,8 @@ export default {
       // TODO: dejar fecha de hoy
       // date: new Date().toISOString().substr(0, 10),
       date: '',
-      type: 'all'
+      type: 'all',
+      offsetTopUserPosts: 0
     }
   },
 
@@ -172,6 +184,15 @@ export default {
   },
 
   mounted: function() {
+    // Recorremos todos los padres acumulando sus distancias hasta el top
+    this.offsetTopUserPosts = 0
+    let element = document.getElementById('userposts')
+    while (element) {
+      this.offsetTopUserPosts +=
+        element.offsetTop - element.scrollTop + element.clientTop
+      element = element.offsetParent
+    }
+    // Empezamos a escuchar cambios en user y sus publicaciones
     this.startListeningToUserToShow(this.$route.params.id)
     this.startListeningToPosts({
       creatorId: this.$route.params.id,

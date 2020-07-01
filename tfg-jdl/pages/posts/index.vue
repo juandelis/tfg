@@ -1,62 +1,67 @@
 <template>
   <v-layout justify-center>
-    <v-flex text-xs-center xs12 sm9 md6>
-      <v-card>
-        <br />
-        <h1 align="center">PUBLICACIONES</h1>
-        <br />
-        <hr />
-        <br />
-        <p>
-          <input
-            v-model="type"
-            type="radio"
-            value="all"
-            @input="searchPosts({ date: date, type: 'all' })"
-          />
-          Todas &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <input
-            v-model="type"
-            type="radio"
-            value="liked"
-            @input="searchPosts({ date: date, type: 'liked' })"
-          />
-          Me gustan &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <input
-            v-model="type"
-            type="radio"
-            value="disliked"
-            @input="searchPosts({ date: date, type: 'disliked' })"
-          />
-          No me gustan &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <input
-            v-model="type"
-            type="radio"
-            value="notValued"
-            @input="searchPosts({ date: date, type: 'notValued' })"
-          />
-          Sin valorar
-        </p>
-        <p>
-          <label for="date"> Fecha: </label> &nbsp;
-          <input
-            v-model="date"
-            type="date"
-            name="date"
-            @input="searchPosts({ date: date, type: type })"
-          />
+    <v-flex text-xs-center xs12 sm9 md6 shrink>
+      <div class="pb-2">
+        <v-card>
           <br />
-        </p>
-        <!--<br /><br />
-          <v-btn @click="searchPosts({ date: date })">
-            BUSCAR
-          </v-btn>-->
-
-        <hr />
-
-        <div v-for="(post, i) in posts" :key="i">
+          <h1 align="center">PUBLICACIONES</h1>
           <br />
-          <v-card elevation="10" color="#444444">
+          <hr />
+          <br />
+          <p>
+            <input
+              v-model="type"
+              type="radio"
+              value="all"
+              @input="searchPosts({ date: date, type: 'all' })"
+            />
+            Todas &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input
+              v-model="type"
+              type="radio"
+              value="liked"
+              @input="searchPosts({ date: date, type: 'liked' })"
+            />
+            Me gustan &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <br v-if="$vuetify.breakpoint.xs" />
+            <input
+              v-model="type"
+              type="radio"
+              value="disliked"
+              @input="searchPosts({ date: date, type: 'disliked' })"
+            />
+            No me gustan &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input
+              v-model="type"
+              type="radio"
+              value="notValued"
+              @input="searchPosts({ date: date, type: 'notValued' })"
+            />
+            Sin valorar
+          </p>
+          <p>
+            <label for="date"> Fecha: </label> &nbsp;
+            <input
+              v-model="date"
+              type="date"
+              name="date"
+              @input="searchPosts({ date: date, type: type })"
+            />
+          </p>
+          <br />
+        </v-card>
+      </div>
+
+      <div
+        id="posts"
+        :style="{
+          maxHeight:
+            Math.max($vuetify.breakpoint.height - offsetTopPosts, 250) + 'px',
+          overflowY: 'scroll'
+        }"
+      >
+        <div v-for="(post, i) in posts" :key="i" style="padding: 10px">
+          <v-card elevation="10" color="#505050">
             <v-card-title>
               <v-btn flat round @click="showUser(post.creatorId)">
                 <v-icon>account_circle</v-icon>&nbsp;
@@ -104,8 +109,7 @@
             </v-card-title>
           </v-card>
         </div>
-        <br />
-      </v-card>
+      </div>
     </v-flex>
   </v-layout>
 </template>
@@ -118,7 +122,8 @@ export default {
     // TODO: dejar fecha de hoy
     // date: new Date().toISOString().substr(0, 10),
     date: '',
-    type: 'all'
+    type: 'all',
+    offsetTopPosts: 0
   }),
 
   middleware: 'autenticado',
@@ -129,6 +134,15 @@ export default {
   },
 
   mounted: function() {
+    // Recorremos todos los padres acumulando sus distancias hasta el top
+    this.offsetTopPosts = 0
+    let element = document.getElementById('posts')
+    while (element) {
+      this.offsetTopPosts +=
+        element.offsetTop - element.scrollTop + element.clientTop
+      element = element.offsetParent
+    }
+    // Empezamos a escuchar cambios en las publicaciones
     this.startListeningToPosts({
       date: this.date,
       type: this.type

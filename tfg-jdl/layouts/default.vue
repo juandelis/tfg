@@ -51,16 +51,11 @@
           ACCESO / REGISTRO
         </v-btn>
       </div>
-
-      <!--
-      <v-btn v-if="!logged" color="orange" flat nuxt to="/register">
-        REGISTER
-      </v-btn>
-       TODO USUARIO Y LOGIN/REGISTRO -->
+      <br /><br />
     </v-toolbar>
 
     <v-content>
-      <v-container>
+      <v-container pb-0>
         <nuxt />
       </v-container>
     </v-content>

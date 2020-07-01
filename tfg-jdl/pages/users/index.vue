@@ -1,6 +1,6 @@
 <template>
   <v-layout justify-center>
-    <v-flex text-xs-center xs12 sm9 md7>
+    <v-flex text-xs-center xs12 sm10 md8 lg6 xl5>
       <v-card>
         <br />
         <h1 align="center">USUARIOS ({{ numUsers }})</h1>
@@ -10,8 +10,9 @@
         <br /><br />
 
         <p>
-          <label class="labelForm"> Nombre </label>
+          <label for="name"> Nombre: </label> &nbsp;
           <input
+            id="name"
             v-model="name"
             type="search"
             @input="searchUsers({ name: name, relation: relation })"
@@ -35,6 +36,7 @@
             @input="searchUsers({ name: name, relation: 'followed' })"
           />
           Seguidos &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <br v-if="$vuetify.breakpoint.xs || $vuetify.breakpoint.sm" />
           <input
             v-model="relation"
             type="radio"
@@ -53,55 +55,57 @@
 
         <br />
         <hr />
-
-        <div v-for="(useri, i) in users" :key="i">
-          <br />
-          <v-card elevation="10" color="#444444">
-            <v-layout justify-center>
-              <v-spacer /><v-spacer /><v-spacer />
-              <v-flex align-content-center>
-                <v-img
-                  :src="useri.image"
-                  alt="User avatar"
-                  width="85px"
-                  height="95px"
-                  style="border-radius:45%; border:5px solid #444444"
-                />
-                <!--<v-avatar size="80">
-                <img :src="useri.image" alt="User profile photo" />
-              </v-avatar>-->
-              </v-flex>
-              <v-flex align-content-center>
-                <v-btn flat color="white" round @click="showUser(useri.id)">
-                  <h2>{{ useri.name }}</h2>
-                </v-btn>
-                <br />
-                <v-btn
-                  v-if="user.following.includes(useri.id)"
-                  color="orange"
-                  outline
-                  round
-                  small
-                  @click="unfollow_aux(useri.id)"
-                >
-                  DEJAR DE SEGUIR
-                </v-btn>
-                <v-btn
-                  v-else
-                  color="green"
-                  outline
-                  round
-                  small
-                  @click="follow_aux(useri.id)"
-                >
-                  SEGUIR
-                </v-btn>
-              </v-flex>
-              <v-spacer /><v-spacer /><v-spacer />
-            </v-layout>
-          </v-card>
-        </div>
         <br />
+        <div
+          id="users"
+          :style="{
+            maxHeight:
+              Math.max($vuetify.breakpoint.height - offsetTopUsers, 150) + 'px',
+            overflowY: 'scroll',
+            padding: '10px'
+          }"
+        >
+          <div v-for="(useri, i) in users" :key="i">
+            <v-card elevation="10" color="#484848">
+              <v-layout justify-center>
+                <v-spacer /><v-spacer /><v-spacer />
+                <v-flex>
+                  <v-avatar size="100">
+                    <img :src="useri.image" alt="User profile photo" />
+                  </v-avatar>
+                </v-flex>
+                <v-flex align-content-center>
+                  <v-btn flat color="white" round @click="showUser(useri.id)">
+                    <h2>{{ useri.name }}</h2>
+                  </v-btn>
+                  <br />
+                  <v-btn
+                    v-if="user.following.includes(useri.id)"
+                    color="orange"
+                    outline
+                    round
+                    small
+                    @click="unfollow_aux(useri.id)"
+                  >
+                    DEJAR DE SEGUIR
+                  </v-btn>
+                  <v-btn
+                    v-else
+                    color="green"
+                    outline
+                    round
+                    small
+                    @click="follow_aux(useri.id)"
+                  >
+                    SEGUIR
+                  </v-btn>
+                </v-flex>
+                <v-spacer /><v-spacer /><v-spacer />
+              </v-layout>
+            </v-card>
+            <br />
+          </div>
+        </div>
       </v-card>
     </v-flex>
   </v-layout>
@@ -114,7 +118,8 @@ export default {
   data() {
     return {
       name: '',
-      relation: 'all'
+      relation: 'all',
+      offsetTopUsers: 0
     }
   },
 
@@ -127,6 +132,15 @@ export default {
   },
 
   mounted: function() {
+    // Recorremos todos los padres acumulando sus distancias hasta el top
+    this.offsetTopUsers = 0
+    let element = document.getElementById('users')
+    while (element) {
+      this.offsetTopUsers +=
+        element.offsetTop - element.scrollTop + element.clientTop
+      element = element.offsetParent
+    }
+    // Empezamos a escuchar cambios en los usuarios
     this.startListeningToUsers({
       name: this.name,
       relation: this.relation
