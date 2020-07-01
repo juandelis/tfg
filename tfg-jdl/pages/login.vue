@@ -44,21 +44,14 @@ export default {
     this.showLogin()
   },
   methods: {
-    ...mapActions('user', ['initAuth', 'login', 'signup']),
-
-    click_submit() {
-      this.$refs.button_register.click()
-    },
-
-    change_password() {
-      this.$router.push('/login/password')
-    },
+    ...mapActions('user', ['initAuth']),
 
     showLogin() {
       this.initAuth()
 
       const uiConfig = {
         signInFlow: 'popup',
+        credentialHelper: firebaseui.auth.CredentialHelper.NONE,
         // signInSuccessUrl: '<url-to-redirect-to-on-success>', //En Nuxt esto sería un problema, ya que firebase-ui no usa vue-route
         signInOptions: [
           // Leave the lines as is for the providers you want to offer your users.
