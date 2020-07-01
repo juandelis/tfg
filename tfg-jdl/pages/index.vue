@@ -22,10 +22,12 @@
             <img src="icon.png" alt="app icon" />
           </v-avatar>
           &nbsp;&nbsp;&nbsp;
-          <h3 v-if="$vuetify.breakpoint.xs || $vuetify.breakpoint.sm">
+          <h3 v-if="$vuetify.breakpoint.xs">
             GamersTalk
           </h3>
-          <h2 v-else-if="$vuetify.breakpoint.md">GamersTalk md</h2>
+          <h2 v-else-if="$vuetify.breakpoint.md || $vuetify.breakpoint.sm">
+            GamersTalk
+          </h2>
           <h1 v-else-if="$vuetify.breakpoint.lg || $vuetify.breakpoint.xl">
             GamersTalk
           </h1>

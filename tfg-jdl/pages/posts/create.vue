@@ -23,11 +23,11 @@
                 $vuetify.breakpoint.xs
                   ? '30'
                   : $vuetify.breakpoint.sm
-                  ? '50'
+                  ? '45'
                   : $vuetify.breakpoint.md
-                  ? '60'
+                  ? '55'
                   : $vuetify.breakpoint.lg
-                  ? '70'
+                  ? '65'
                   : $vuetify.breakpoint.xl
                   ? '80'
                   : '60'
