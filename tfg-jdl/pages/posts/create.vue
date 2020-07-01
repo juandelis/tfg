@@ -1,6 +1,6 @@
 <template>
   <v-layout justify-center>
-    <v-flex text-xs-center xs12 sm10 md7 lg7 xl8>
+    <v-flex text-xs-center xs12 sm10 md8 lg7 xl7>
       <v-card>
         <br />
         <h1 align="center">NUEVA PUBLICACIÓN</h1>
