@@ -10,9 +10,9 @@ export const state = () => ({
     email: '',
     image: '',
     followers: [],
-    following: []
+    following: [],
   },
-  unsubscribeUserToShow: null // guardará la funcion para dejar de escuchar (se invocará en beforeDestroy)
+  unsubscribeUserToShow: null, // guardará la funcion para dejar de escuchar (se invocará en beforeDestroy)
 })
 
 export const getters = {}
@@ -42,7 +42,7 @@ export const mutations = {
 
   clearUnsubscribeUserToShow(state) {
     state.unsubscribeUserToShow = null
-  }
+  },
 }
 
 export const actions = {
@@ -58,7 +58,7 @@ export const actions = {
     // Nos ponemos en escucha del documento del usuario
     commit(
       'setUnsubscribeUserToShow',
-      db.doc('accounts/' + idUserToShow).onSnapshot(userToShowDocSnapshot => {
+      db.doc('accounts/' + idUserToShow).onSnapshot((userToShowDocSnapshot) => {
         if (!userToShowDocSnapshot.exists) {
           // El usuario no existe o ha sido borrado
           this.$router.push('/users')
@@ -75,7 +75,7 @@ export const actions = {
               email: userToShowData.email,
               image: userToShowData.image,
               following: userToShowData.following,
-              followers: userToShowData.followers
+              followers: userToShowData.followers,
             })
           } else {
             console.log('No data found for user ' + userToShowId)
@@ -91,5 +91,5 @@ export const actions = {
     // Dejar de escuchar a cambios
     state.unsubscribeUserToShow()
     commit('clearUnsubscribeUserToShow')
-  }
+  },
 }

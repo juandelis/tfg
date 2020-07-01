@@ -38,7 +38,7 @@
           SALIR
         </v-btn>
         <router-link to="/account">
-          <a style="color:white"> {{ user.email }} </a>
+          <a style="color: white;"> {{ user.email }} </a>
         </router-link>
         <v-btn icon flat nuxt to="/account">
           <v-avatar size="40">
@@ -76,40 +76,40 @@ export default {
         {
           icon: 'home',
           title: 'Inicio',
-          to: '/'
+          to: '/',
         },
         {
           icon: 'people_outline',
           title: 'Usuarios',
-          to: '/users'
+          to: '/users',
         },
         {
           icon: 'description',
           title: 'Publicaciones',
-          to: '/posts'
+          to: '/posts',
         },
         {
           icon: 'note_add',
           title: 'Publicar',
-          to: '/posts/create'
+          to: '/posts/create',
         },
         {
           icon: 'folder_shared',
           title: 'Mis publicaciones',
-          to: '/posts/myposts'
+          to: '/posts/myposts',
         },
         {
           icon: 'account_circle',
           title: 'Mi perfil',
-          to: '/account'
-        }
+          to: '/account',
+        },
       ],
-      fixed: false
+      fixed: false,
     }
   },
   computed: {
     ...mapGetters('user', ['logged']),
-    ...mapState('user', ['user'])
+    ...mapState('user', ['user']),
   },
   methods: {
     ...mapActions('user', ['logout']),
@@ -117,7 +117,7 @@ export default {
       // Guardamos la ruta actual para volver a ella después del login
       this.$store.commit('user/setAfterLogin', this.$nuxt.$route.path)
       this.$router.push('/login')
-    }
-  }
+    },
+  },
 }
 </script>

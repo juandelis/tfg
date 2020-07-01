@@ -5,32 +5,32 @@ import { db } from '~/services/fireinit'
 
 export const state = () => ({
   users: [],
-  unsubscribeUsers: null // guardará la funcion para dejar de escuchar (se invocará en beforeDestroy)
+  unsubscribeUsers: null, // guardará la funcion para dejar de escuchar (se invocará en beforeDestroy)
 })
 
 export const getters = {
-  numUsers: (state, getters) => state.users.length
+  numUsers: (state, getters) => state.users.length,
 }
 
 export const mutations = {
   pushUser(state, { id, name, image }) {
     if (id) {
       state.users.push({
-        id: id,
-        name: name,
-        image: image
+        id,
+        name,
+        image,
       })
     }
   },
   updateUser(state, { id, name, image }) {
-    const index = state.users.findIndex(item => item.id === id)
+    const index = state.users.findIndex((item) => item.id === id)
     if (state.users[index]) {
       state.users[index].name = name
       state.users[index].image = image
     }
   },
   deleteUser(state, id) {
-    const index = state.users.findIndex(item => item.id === id)
+    const index = state.users.findIndex((item) => item.id === id)
     if (state.users[index]) {
       state.users.splice(index, 1)
     }
@@ -46,7 +46,7 @@ export const mutations = {
   },
   clearUnsubscribeUsers(state) {
     state.unsubscribeUsers = null
-  }
+  },
 }
 
 export const actions = {
@@ -62,12 +62,12 @@ export const actions = {
     // Nos ponemos en escucha de la colleccion de accounts
     commit(
       'setUnsubscribeUsers',
-      db.collection('accounts').onSnapshot(usersSnapshot => {
+      db.collection('accounts').onSnapshot((usersSnapshot) => {
         // Funcion que se ejecutará cuando se detecten cambios en usersCollection
         dispatch('updateUsers', {
-          usersSnapshot: usersSnapshot,
+          usersSnapshot,
           name: payload.name,
-          relation: payload.relation
+          relation: payload.relation,
         })
       })
     )
@@ -83,7 +83,7 @@ export const actions = {
 
   updateUsers({ state, commit, rootState }, payload) {
     // Cargar los nuevos users, modificar los cambiados y quitar los borrados
-    payload.usersSnapshot.docChanges().forEach(change => {
+    payload.usersSnapshot.docChanges().forEach((change) => {
       const userLogged = rootState.user.user
       // Ignoramos cambios en el usuario loggeado (estos estarán en user.js)
       if (change.doc.id !== userLogged.uid) {
@@ -105,7 +105,7 @@ export const actions = {
             commit('pushUser', {
               id: change.doc.id,
               name: userData.name,
-              image: userData.image
+              image: userData.image,
             })
           }
           // Users modificados
@@ -113,7 +113,7 @@ export const actions = {
             commit('updateUser', {
               id: change.doc.id,
               name: userData.name,
-              image: userData.image
+              image: userData.image,
             })
           }
           // Users borrados
@@ -131,8 +131,8 @@ export const actions = {
     // Obtener users filtrados
     db.collection('accounts')
       .get()
-      .then(usersCollection => {
-        usersCollection.forEach(userDoc => {
+      .then((usersCollection) => {
+        usersCollection.forEach((userDoc) => {
           const userLogged = rootState.user.user
           // Ignoramos al usuario logueado
           if (userDoc.id !== userLogged.uid) {
@@ -154,11 +154,11 @@ export const actions = {
               commit('pushUser', {
                 id: userDoc.id,
                 name: userData.name,
-                image: userData.image
+                image: userData.image,
               })
             }
           }
         })
       })
-  }
+  },
 }

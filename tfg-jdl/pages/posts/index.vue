@@ -57,10 +57,10 @@
         :style="{
           maxHeight:
             Math.max($vuetify.breakpoint.height - offsetTopPosts, 250) + 'px',
-          overflowY: 'scroll'
+          overflowY: 'scroll',
         }"
       >
-        <div v-for="(post, i) in posts" :key="i" style="padding: 10px">
+        <div v-for="(post, i) in posts" :key="i" style="padding: 10px;">
           <v-card elevation="10" color="#505050">
             <v-card-title>
               <v-btn flat round @click="showUser(post.creatorId)">
@@ -123,17 +123,17 @@ export default {
     // date: new Date().toISOString().substr(0, 10),
     date: '',
     type: 'all',
-    offsetTopPosts: 0
+    offsetTopPosts: 0,
   }),
 
   middleware: 'autenticado',
 
   computed: {
     ...mapState('user', ['user']),
-    ...mapState('posts', ['posts'])
+    ...mapState('posts', ['posts']),
   },
 
-  mounted: function() {
+  mounted() {
     // Recorremos todos los padres acumulando sus distancias hasta el top
     this.offsetTopPosts = 0
     let element = document.getElementById('posts')
@@ -145,11 +145,11 @@ export default {
     // Empezamos a escuchar cambios en las publicaciones
     this.startListeningToPosts({
       date: this.date,
-      type: this.type
+      type: this.type,
     })
   },
 
-  beforeDestroy: function() {
+  beforeDestroy() {
     this.stopListeningToPosts()
   },
 
@@ -162,8 +162,8 @@ export default {
       'like',
       'dislike',
       'unlike',
-      'undislike'
-    ])
-  }
+      'undislike',
+    ]),
+  },
 }
 </script>

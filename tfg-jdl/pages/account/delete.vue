@@ -33,18 +33,18 @@ import functions from '~/assets/functions'
 
 export default {
   data: () => ({
-    password: ''
+    password: '',
   }),
   middleware: 'autenticado',
   computed: {
-    ...mapState('user', ['user'])
+    ...mapState('user', ['user']),
   },
   methods: {
     ...mapActions('user', ['updateAccount', 'updateUserImage']),
 
     delete_user() {
       functions.deleteUser(this.user.uid)
-    }
-  }
+    },
+  },
 }
 </script>

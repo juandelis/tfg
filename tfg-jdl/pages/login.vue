@@ -26,21 +26,21 @@ export default {
     password_log: '',
     email: '',
     password: '',
-    name: ''
+    name: '',
   }),
   computed: {
     ...mapGetters('user', ['logged']),
-    ...mapState('user', ['afterLogin'])
+    ...mapState('user', ['afterLogin']),
   },
   watch: {
     logged: {
       immediate: true,
       handler(logged) {
         if (logged) this.$router.push(this.afterLogin)
-      }
-    }
+      },
+    },
   },
-  mounted: function() {
+  mounted() {
     this.showLogin()
   },
   methods: {
@@ -56,22 +56,22 @@ export default {
         signInOptions: [
           // Leave the lines as is for the providers you want to offer your users.
           firebase.auth.EmailAuthProvider.PROVIDER_ID,
-          firebase.auth.GoogleAuthProvider.PROVIDER_ID
+          firebase.auth.GoogleAuthProvider.PROVIDER_ID,
           // firebase.auth.PhoneAuthProvider.PROVIDER_ID,
           // firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
         ],
         callbacks: {
           signInSuccessWithAuthResult() {
             return false
-          }
-        }
+          },
+        },
       }
       const ui =
         firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(auth)
       // The start method will wait until the DOM is loaded.
       ui.start('#firebaseui-auth-container', uiConfig)
-    }
-  }
+    },
+  },
 }
 </script>
 

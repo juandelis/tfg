@@ -30,7 +30,15 @@ interface Callbacks {
 
 interface SignInOption {
   provider: string;
+  hd?: string|RegExp;
 }
+
+interface SamlSignInOption extends SignInOption {
+  providerName?: string;
+  buttonColor: string;
+  iconUrl: string;
+}
+
 
 interface FederatedSignInOption extends SignInOption {
   authMethod?: string;
@@ -38,6 +46,25 @@ interface FederatedSignInOption extends SignInOption {
   scopes?: string[];
   customParameters?: object;
 }
+
+
+interface OAuthSignInOption extends SignInOption {
+  providerName?: string;
+  buttonColor: string;
+  iconUrl: string;
+  scopes?: string[];
+  customParameters?: object;
+  loginHintKey?: string;
+}
+
+
+interface OidcSignInOption extends SignInOption {
+  providerName?: string;
+  buttonColor: string;
+  iconUrl: string;
+  customParameters?: object;
+}
+
 
 interface ActionCodeSettings {
   url: string;
@@ -79,17 +106,25 @@ declare namespace firebaseui.auth {
     autoUpgradeAnonymousUsers?: boolean;
     callbacks?: Callbacks;
     credentialHelper?: CredentialHelperType;
+    immediateFederatedRedirect?: boolean;
     popupMode?: boolean;
     queryParameterForSignInSuccessUrl?: string;
     queryParameterForWidgetMode?: string;
     signInFlow?: string;
-    signInOptions?: Array<string
-      | FederatedSignInOption | EmailSignInOption | PhoneSignInOption>;
+    signInOptions?:
+        Array<string|FederatedSignInOption|EmailSignInOption|PhoneSignInOption|
+              SamlSignInOption|OAuthSignInOption|OidcSignInOption>;
     signInSuccessUrl?: string;
     siteName?: string;
     tosUrl?: (() => void) | string;
     privacyPolicyUrl?: (() => void) | string;
     widgetUrl?: string;
+  }
+
+  interface TenantConfig extends firebaseui.auth.Config {
+    displayName?: string;
+    buttonColor?: string;
+    iconUrl?: string;
   }
 
   class AuthUI {
@@ -124,6 +159,65 @@ declare namespace firebaseui.auth {
   class AnonymousAuthProvider {
     private constructor();
     static PROVIDER_ID: string;
+  }
+
+  interface ProjectConfig {
+    projectId: string;
+    apiKey: string;
+  }
+
+  interface SelectedTenantInfo {
+    email?: string;
+    tenantId: string|null;
+    providerIds: string[];
+  }
+
+  interface CIAPCallbacks {
+    signInUiShown?(tenantId: string|null): void;
+    selectTenantUiShown?(): void;
+    selectTenantUiHidden?(): void;
+    // tslint:disable-next-line:no-any firebase dependency not available.
+    beforeSignInSuccess?(currentUser: any): Promise<any>;
+  }
+
+  interface CIAPError {
+    httpErrorCode?: number;
+    code: string;
+    message: string;
+    reason?: Error;
+    retry?(): Promise<void>;
+    toJSON(): object;
+  }
+
+  interface CIAPHandlerConfig {
+    authDomain: string;
+    displayMode?: string;
+    tosUrl?: (() => void)|string;
+    privacyPolicyUrl?: (() => void)|string;
+    callbacks?: firebaseui.auth.CIAPCallbacks;
+    tenants: {[key: string]: firebaseui.auth.TenantConfig};
+  }
+
+  class FirebaseUiHandler {
+    constructor(
+        element: Element|string,
+        configs: {[key: string]: firebaseui.auth.CIAPHandlerConfig});
+    selectTenant(
+        projectConfig: firebaseui.auth.ProjectConfig,
+        tenantIds: string[]): Promise<firebaseui.auth.SelectedTenantInfo>;
+    // tslint:disable-next-line:no-any firebase dependency not available.
+    getAuth(apiKey: string, tenantId: string|null): any;
+    // tslint:disable-next-line:no-any firebase dependency not available.
+    startSignIn(auth: any, tenantInfo?: firebaseui.auth.SelectedTenantInfo):
+        Promise<any>;  // tslint:disable-line
+    reset(): Promise<void>;
+    completeSignOut(): Promise<void>;
+    showProgressBar(): void;
+    hideProgressBar(): void;
+    handleError(error: Error|firebaseui.auth.CIAPError): void;
+    languageCode: string | null;
+    // tslint:disable-next-line:no-any firebase dependency not available.
+    processUser(user: any): Promise<any>;
   }
 }
 

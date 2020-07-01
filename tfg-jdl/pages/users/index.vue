@@ -62,7 +62,7 @@
             maxHeight:
               Math.max($vuetify.breakpoint.height - offsetTopUsers, 150) + 'px',
             overflowY: 'scroll',
-            padding: '10px'
+            padding: '10px',
           }"
         >
           <div v-for="(useri, i) in users" :key="i">
@@ -119,7 +119,7 @@ export default {
     return {
       name: '',
       relation: 'all',
-      offsetTopUsers: 0
+      offsetTopUsers: 0,
     }
   },
 
@@ -128,10 +128,10 @@ export default {
   computed: {
     ...mapGetters('users', ['numUsers']),
     ...mapState('user', ['user']),
-    ...mapState('users', ['users'])
+    ...mapState('users', ['users']),
   },
 
-  mounted: function() {
+  mounted() {
     // Recorremos todos los padres acumulando sus distancias hasta el top
     this.offsetTopUsers = 0
     let element = document.getElementById('users')
@@ -143,11 +143,11 @@ export default {
     // Empezamos a escuchar cambios en los usuarios
     this.startListeningToUsers({
       name: this.name,
-      relation: this.relation
+      relation: this.relation,
     })
   },
 
-  beforeDestroy: function() {
+  beforeDestroy() {
     this.stopListeningToUsers()
   },
 
@@ -156,7 +156,7 @@ export default {
     ...mapActions('users', [
       'startListeningToUsers',
       'stopListeningToUsers',
-      'searchUsers'
+      'searchUsers',
     ]),
 
     follow_aux(idUserToFollow) {
@@ -166,7 +166,7 @@ export default {
         setTimeout(() => {
           this.searchUsers({
             name: this.name,
-            relation: this.relation
+            relation: this.relation,
           })
         }, 200)
       }
@@ -179,11 +179,11 @@ export default {
         setTimeout(() => {
           this.searchUsers({
             name: this.name,
-            relation: this.relation
+            relation: this.relation,
           })
         }, 200)
       }
-    }
-  }
+    },
+  },
 }
 </script>

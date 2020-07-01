@@ -1,15 +1,15 @@
-import { db } from '~/services/fireinit'
 import { firestore } from 'firebase'
+import { db } from '~/services/fireinit'
 // import functions from '~/assets/functions'
 
 export const state = () => ({
   posts: [],
   creatorId: null,
-  unsubscribePosts: null // guardará la funcion para dejar de escuchar (se invocará en beforeDestroy)
+  unsubscribePosts: null, // guardará la funcion para dejar de escuchar (se invocará en beforeDestroy)
 })
 
 export const getters = {
-  numPosts: (state, getters, rootState) => state.posts.length
+  numPosts: (state, getters, rootState) => state.posts.length,
 }
 
 export const mutations = {
@@ -20,22 +20,22 @@ export const mutations = {
     // const userLogged = rootState.user.user
     if (id) {
       state.posts.push({
-        id: id,
-        creatorName: creatorName,
-        creatorId: creatorId,
-        body: body,
-        date: date,
-        likes: likes,
+        id,
+        creatorName,
+        creatorId,
+        body,
+        date,
+        likes,
         liked: likes.includes(uid),
         num_likes: likes.length,
-        dislikes: dislikes,
+        dislikes,
         disliked: dislikes.includes(uid),
-        num_dislikes: dislikes.length
+        num_dislikes: dislikes.length,
       })
     }
   },
   updatePost(state, { uid, id, likes, dislikes }) {
-    const index = state.posts.findIndex(item => item.id === id)
+    const index = state.posts.findIndex((item) => item.id === id)
     if (state.posts[index]) {
       // Actualizamos sus likes
       state.posts[index].likes = likes
@@ -48,7 +48,7 @@ export const mutations = {
     }
   },
   removePost(state, id) {
-    const index = state.posts.findIndex(item => item.id === id)
+    const index = state.posts.findIndex((item) => item.id === id)
     if (state.posts[index]) {
       // Borramos el post
       state.posts.splice(index, 1)
@@ -65,7 +65,7 @@ export const mutations = {
   },
   setUnsubscribePosts(state, unsubscribePostsFunction) {
     state.unsubscribePosts = unsubscribePostsFunction
-  }
+  },
 }
 
 export const actions = {
@@ -92,8 +92,8 @@ export const actions = {
     // Nos ponemos en escucha de la colleccion de posts
     commit(
       'setUnsubscribePosts',
-      postsCollection.onSnapshot(postsSnapshot => {
-        postsSnapshot.docChanges().forEach(change => {
+      postsCollection.onSnapshot((postsSnapshot) => {
+        postsSnapshot.docChanges().forEach((change) => {
           // Código que se ejecuta para cada cambio en postsCollection
           const postData = change.doc.data()
           const userLogged = rootState.user.user
@@ -106,10 +106,8 @@ export const actions = {
             // Filtro de fecha (si la ha introducido)
             (payload.date === ''
               ? true
-              : postData.date
-                  .toDate()
-                  .toISOString()
-                  .split('T')[0] === payload.date) &&
+              : postData.date.toDate().toISOString().split('T')[0] ===
+                payload.date) &&
             // Filtro de valoracion de los posts
             (payload.type === 'all' ||
               (payload.type === 'liked' &&
@@ -130,7 +128,7 @@ export const actions = {
                 date: postData.date.toDate().toLocaleDateString('es-ES'),
                 uid: rootState.user.user.uid,
                 likes: postData.likes,
-                dislikes: postData.dislikes
+                dislikes: postData.dislikes,
               })
             }
             // Posts modificados
@@ -139,7 +137,7 @@ export const actions = {
                 id: change.doc.id,
                 uid: userLogged.uid,
                 likes: postData.likes,
-                dislikes: postData.dislikes
+                dislikes: postData.dislikes,
               })
             }
             // Posts borrados
@@ -180,7 +178,7 @@ export const actions = {
         .get()
     }
 
-    postsCollection.forEach(postDoc => {
+    postsCollection.forEach((postDoc) => {
       const postData = postDoc.data()
       const userLogged = rootState.user.user
       // Filtramos los posts obtenidos
@@ -192,10 +190,8 @@ export const actions = {
         // Filtro de fecha (si la ha introducido)
         (payload.date === ''
           ? true
-          : postData.date
-              .toDate()
-              .toISOString()
-              .split('T')[0] === payload.date) &&
+          : postData.date.toDate().toISOString().split('T')[0] ===
+            payload.date) &&
         // Filtro de valoracion de los posts
         (payload.type === 'all' ||
           (payload.type === 'liked' &&
@@ -215,7 +211,7 @@ export const actions = {
           date: postData.date.toDate().toLocaleDateString('es-ES'),
           uid: rootState.user.user.uid,
           likes: postData.likes,
-          dislikes: postData.dislikes
+          dislikes: postData.dislikes,
         })
       }
     })
@@ -229,12 +225,12 @@ export const actions = {
         // Remove user id from dislikes and add it to likes
         docRef.update({
           dislikes: firestore.FieldValue.arrayRemove(userLogged.uid),
-          likes: firestore.FieldValue.arrayUnion(userLogged.uid)
+          likes: firestore.FieldValue.arrayUnion(userLogged.uid),
         })
       } else {
         // Just add user id to likes of post
         docRef.update({
-          likes: firestore.FieldValue.arrayUnion(userLogged.uid)
+          likes: firestore.FieldValue.arrayUnion(userLogged.uid),
         })
       }
     }
@@ -246,7 +242,7 @@ export const actions = {
       const docRef = await db.collection('posts').doc(idPostToLike)
       // Remove user id from likes of post
       docRef.update({
-        likes: firestore.FieldValue.arrayRemove(userLogged.uid)
+        likes: firestore.FieldValue.arrayRemove(userLogged.uid),
       })
     }
   },
@@ -259,12 +255,12 @@ export const actions = {
         // Remove user id from likes and add it to dislikes
         docRef.update({
           likes: firestore.FieldValue.arrayRemove(userLogged.uid),
-          dislikes: firestore.FieldValue.arrayUnion(userLogged.uid)
+          dislikes: firestore.FieldValue.arrayUnion(userLogged.uid),
         })
       } else {
         // Just add user id to dislikes of post
         docRef.update({
-          dislikes: firestore.FieldValue.arrayUnion(userLogged.uid)
+          dislikes: firestore.FieldValue.arrayUnion(userLogged.uid),
         })
       }
     }
@@ -276,8 +272,8 @@ export const actions = {
       const docRef = await db.collection('posts').doc(idPostToDislike)
       // Remove user id from dislikes of post
       docRef.update({
-        dislikes: firestore.FieldValue.arrayRemove(userLogged.uid)
+        dislikes: firestore.FieldValue.arrayRemove(userLogged.uid),
       })
     }
-  }
+  },
 }

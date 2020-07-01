@@ -11,7 +11,7 @@
               alt="User avatar"
               width="120px"
               height="144px"
-              style="border-radius:30%"
+              style="border-radius: 30%;"
             />
           </v-flex>
           <v-spacer />
@@ -104,10 +104,10 @@
           maxHeight:
             Math.max($vuetify.breakpoint.height - offsetTopUserPosts, 250) +
             'px',
-          overflowY: 'scroll'
+          overflowY: 'scroll',
         }"
       >
-        <div v-for="(post, i) in posts" :key="i" style="padding: 10px">
+        <div v-for="(post, i) in posts" :key="i" style="padding: 10px;">
           <v-card elevation="10" color="#505050">
             <v-card-title>
               <v-btn flat round>
@@ -171,7 +171,7 @@ export default {
       // date: new Date().toISOString().substr(0, 10),
       date: '',
       type: 'all',
-      offsetTopUserPosts: 0
+      offsetTopUserPosts: 0,
     }
   },
 
@@ -180,10 +180,10 @@ export default {
   computed: {
     ...mapState('user', ['user']),
     ...mapState('userToShow', ['userToShow']),
-    ...mapState('posts', ['posts'])
+    ...mapState('posts', ['posts']),
   },
 
-  mounted: function() {
+  mounted() {
     // Recorremos todos los padres acumulando sus distancias hasta el top
     this.offsetTopUserPosts = 0
     let element = document.getElementById('userposts')
@@ -197,11 +197,11 @@ export default {
     this.startListeningToPosts({
       creatorId: this.$route.params.id,
       date: this.date,
-      type: this.type
+      type: this.type,
     })
   },
 
-  beforeDestroy: function() {
+  beforeDestroy() {
     this.stopListeningToUserToShow()
     this.stopListeningToPosts()
   },
@@ -210,7 +210,7 @@ export default {
     ...mapActions('user', ['unfollow', 'follow', 'showUser']),
     ...mapActions('userToShow', [
       'startListeningToUserToShow',
-      'stopListeningToUserToShow'
+      'stopListeningToUserToShow',
     ]),
     ...mapActions('posts', [
       'startListeningToPosts',
@@ -219,8 +219,8 @@ export default {
       'like',
       'dislike',
       'unlike',
-      'undislike'
-    ])
-  }
+      'undislike',
+    ]),
+  },
 }
 </script>

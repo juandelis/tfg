@@ -17,7 +17,7 @@
             <h3 align="left">
               DESCRIPCIÓN PERSONAL / AFICIONES: &nbsp;
             </h3>
-            <h4 align="left" style="max-width: 325px">
+            <h4 align="left" style="max-width: 325px;">
               {{ user.info }} &nbsp;
             </h4>
             <br />
@@ -43,7 +43,7 @@
               <input
                 ref="fileInput"
                 type="file"
-                style="display:none"
+                style="display: none;"
                 accept="image/*"
                 @change="onFileChange"
               />
@@ -67,21 +67,21 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { db, storage } from '~/services/fireinit'
 import { firestore } from 'firebase'
+import { db, storage } from '~/services/fireinit'
 
 export default {
   data() {
     return {
       followers: [],
-      following: []
+      following: [],
     }
   },
   middleware: 'autenticado',
   computed: {
-    ...mapState('user', ['user'])
+    ...mapState('user', ['user']),
   },
-  mounted: function() {},
+  mounted() {},
   methods: {
     ...mapActions('user', ['updateUserImage', 'showUser']),
 
@@ -93,19 +93,19 @@ export default {
         const docRef = db.collection('accounts').doc(userLogged.uid)
         docRef
           .get()
-          .then(function(doc) {
+          .then(function (doc) {
             if (doc.exists) {
               console.log('Updating document')
               // Actualizamos los valores del documento
               docRef.update({
-                email: 'test@hotmail.com'
+                email: 'test@hotmail.com',
                 // email: 'juanlis96@hotmail.com'
               })
             } else {
               console.log('No such document!')
             }
           })
-          .catch(function(error) {
+          .catch(function (error) {
             console.log('Error getting document:', error)
           })
       }
@@ -118,19 +118,19 @@ export default {
         const docRef = db.collection('accounts').doc(userLogged.uid)
         docRef
           .get()
-          .then(function(doc) {
+          .then(function (doc) {
             if (doc.exists) {
               console.log('Updating document')
               // Actualizamos los valores del documento
               docRef.update({
-                name: 'Juuuuuuuan'
+                name: 'Juuuuuuuan',
                 // name: 'Juan de Lis'
               })
             } else {
               console.log('No such document!')
             }
           })
-          .catch(function(error) {
+          .catch(function (error) {
             console.log('Error getting document:', error)
           })
       }
@@ -145,12 +145,12 @@ export default {
         docRef.update({
           following: firestore.FieldValue.arrayUnion(
             'Hw3uHVdZ5sRuAB4xvrF6XNag9S82'
-          )
+          ),
         })
         // Add userLogged to followers array of userToFollow
         const docRef2 = await db.doc('accounts/Hw3uHVdZ5sRuAB4xvrF6XNag9S82')
         docRef2.update({
-          followers: firestore.FieldValue.arrayUnion(userLogged.uid)
+          followers: firestore.FieldValue.arrayUnion(userLogged.uid),
         })
       }
     },
@@ -164,12 +164,12 @@ export default {
         docRef.update({
           following: firestore.FieldValue.arrayRemove(
             'Hw3uHVdZ5sRuAB4xvrF6XNag9S82'
-          )
+          ),
         })
         // Add userLogged to followers array of userToFollow
         const docRef2 = await db.doc('accounts/Hw3uHVdZ5sRuAB4xvrF6XNag9S82')
         docRef2.update({
-          followers: firestore.FieldValue.arrayRemove(userLogged.uid)
+          followers: firestore.FieldValue.arrayRemove(userLogged.uid),
         })
       }
     },
@@ -193,7 +193,7 @@ export default {
       const downloadURL = await snapshot.ref.getDownloadURL()
       console.log('File available at', downloadURL)
       this.updateUserImage(downloadURL)
-    }
-  }
+    },
+  },
 }
 </script>

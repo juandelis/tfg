@@ -35,10 +35,10 @@
         :style="{
           maxHeight:
             Math.max($vuetify.breakpoint.height - offsetTopMyPosts, 250) + 'px',
-          overflowY: 'scroll'
+          overflowY: 'scroll',
         }"
       >
-        <div v-for="(post, i) in posts" :key="i" style="padding: 10px">
+        <div v-for="(post, i) in posts" :key="i" style="padding: 10px;">
           <v-card color="#505050">
             <v-card-title>
               <v-btn flat round nuxt to="/account">
@@ -89,17 +89,17 @@ export default {
   data: () => ({
     text: '',
     date: '',
-    offsetTopMyPosts: 0
+    offsetTopMyPosts: 0,
   }),
 
   middleware: 'autenticado',
 
   computed: {
     ...mapState('user', ['user']),
-    ...mapState('myPosts', ['posts'])
+    ...mapState('myPosts', ['posts']),
   },
 
-  mounted: function() {
+  mounted() {
     // Recorremos todos los padres acumulando sus distancias hasta el top
     this.offsetTopMyPosts = 0
     let element = document.getElementById('myposts')
@@ -112,7 +112,7 @@ export default {
     this.startListeningToPosts({ text: this.text, date: this.date })
   },
 
-  beforeDestroy: function() {
+  beforeDestroy() {
     this.stopListeningToPosts()
   },
 
@@ -120,12 +120,12 @@ export default {
     ...mapActions('myPosts', [
       'startListeningToPosts',
       'stopListeningToPosts',
-      'searchPosts'
+      'searchPosts',
     ]),
 
     deletePostAux(idPostToDelete) {
       functions.deletePost(idPostToDelete)
-    }
-  }
+    },
+  },
 }
 </script>

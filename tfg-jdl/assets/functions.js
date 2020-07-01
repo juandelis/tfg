@@ -4,17 +4,17 @@ const functions = {
   createPost(creatorId, creatorName, body, date) {
     db.collection('posts')
       .add({
-        creatorId: creatorId,
-        creatorName: creatorName,
-        body: body,
-        date: date,
+        creatorId,
+        creatorName,
+        body,
+        date,
         dislikes: [],
-        likes: []
+        likes: [],
       })
-      .then(function() {
+      .then(function () {
         console.log('Post document successfully created!')
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.error('Error creating post document: ', error)
       })
   },
@@ -22,10 +22,10 @@ const functions = {
   deletePost(idPostToDelete) {
     db.doc('posts/' + idPostToDelete)
       .delete()
-      .then(function() {
+      .then(function () {
         console.log('Post document successfully deleted!')
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.error('Error removing post document: ', error)
       })
   },
@@ -33,13 +33,13 @@ const functions = {
   deleteUser(idUserToDelete) {
     db.doc('accounts/' + idUserToDelete)
       .delete()
-      .then(function() {
+      .then(function () {
         console.log('USER DOCUMENT SUCCESSFULLY DELETED!')
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.error('Error deleting user document: ', error)
       })
-  }
+  },
 }
 
 export default functions

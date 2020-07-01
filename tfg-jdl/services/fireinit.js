@@ -1,5 +1,5 @@
-import { FirebaseConfig } from '~/services/config'
 import * as firebase from 'firebase/app'
+import { FirebaseConfig } from '~/services/config'
 import 'firebase/auth'
 import 'firebase/firestore'
 import 'firebase/storage'
@@ -13,7 +13,7 @@ export const storage = firebase.storage()
 
 function getCurrentUserPromise(auth) {
   return new Promise((resolve, reject) => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
       unsubscribe()
       resolve(user)
     }, reject)

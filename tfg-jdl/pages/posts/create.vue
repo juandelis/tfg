@@ -33,7 +33,7 @@
                   : '60'
               "
               maxlength="333"
-              style="background-color:#505050; color:white; resize:none"
+              style="background-color: #505050; color: white; resize: none;"
               required
             />
           </p>
@@ -43,7 +43,7 @@
               id="button_post"
               ref="button_post"
               type="submit"
-              style="display:none"
+              style="display: none;"
             />
             <v-btn nuxt @click="click_submit()">
               PUBLICAR
@@ -65,11 +65,11 @@ import functions from '~/assets/functions'
 
 export default {
   data: () => ({
-    body: ''
+    body: '',
   }),
   middleware: 'autenticado',
   computed: {
-    ...mapState('user', ['user'])
+    ...mapState('user', ['user']),
   },
   methods: {
     click_submit() {
@@ -83,7 +83,7 @@ export default {
         firestore.Timestamp.now()
       )
       this.$router.push('/posts/myposts')
-    }
-  }
+    },
+  },
 }
 </script>

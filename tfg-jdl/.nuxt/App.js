@@ -1,15 +1,8 @@
 import Vue from 'vue'
 
-import {
-  getMatchedComponentsInstances,
-  getChildrenComponentInstancesUsingFetch,
-  promisify,
-  globalHandleError,
-  sanitizeComponent
-} from './utils'
+import { getMatchedComponentsInstances, getChildrenComponentInstancesUsingFetch, promisify, globalHandleError, urlJoin, sanitizeComponent } from './utils'
 
 import NuxtLoading from './components/nuxt-loading.vue'
-import NuxtBuildIndicator from './components/nuxt-build-indicator'
 
 import '..\\assets\\style\\app.styl'
 
@@ -50,7 +43,7 @@ export default {
       }
     }, [
       loadingEl,
-      h(NuxtBuildIndicator),
+
       transitionEl
     ])
   },
@@ -70,8 +63,8 @@ export default {
   created () {
     // Add this.$nuxt in child instances
     Vue.prototype.$nuxt = this
-    // add to window so we can listen when ready
     if (process.client) {
+      // add to window so we can listen when ready
       window.$nuxt = this
 
       this.refreshOnlineStatus()
@@ -85,9 +78,10 @@ export default {
     this.context = this.$options.context
   },
 
-  mounted () {
+  async mounted () {
     this.$loading = this.$refs.loading
   },
+
   watch: {
     'nuxt.err': 'errorChanged'
   },
@@ -97,9 +91,13 @@ export default {
       return !this.isOnline
     },
 
-      isFetching() {
+    isFetching () {
       return this.nbFetching > 0
-    }
+    },
+
+    isPreview () {
+      return Boolean(this.$options.previewData)
+    },
   },
 
   methods: {
@@ -175,10 +173,6 @@ export default {
     },
 
     setLayout (layout) {
-      if(layout && typeof layout !== 'string') {
-        throw new Error('[nuxt] Avoid using non-string value as layout property.')
-      }
-
       if (!layout || !layouts['_' + layout]) {
         layout = 'default'
       }
@@ -191,7 +185,7 @@ export default {
         layout = 'default'
       }
       return Promise.resolve(layouts['_' + layout])
-    }
+    },
   },
 
   components: {

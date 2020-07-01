@@ -2,11 +2,11 @@ import { db } from '~/services/fireinit'
 
 export const state = () => ({
   posts: [],
-  unsuscribe: null // guardará la funcion para dejar de escuchar (se invocará en beforeDestroy)
+  unsuscribe: null, // guardará la funcion para dejar de escuchar (se invocará en beforeDestroy)
 })
 
 export const getters = {
-  numPosts: (state, getters, rootState) => state.posts.length
+  numPosts: (state, getters, rootState) => state.posts.length,
 }
 
 export const mutations = {
@@ -14,28 +14,28 @@ export const mutations = {
     // const userLogged = rootState.user.user
     if (id) {
       state.posts.push({
-        id: id,
-        body: body,
-        date: date,
-        likes: likes,
+        id,
+        body,
+        date,
+        likes,
         num_likes: likes.length,
-        dislikes: dislikes,
-        num_dislikes: dislikes.length
+        dislikes,
+        num_dislikes: dislikes.length,
       })
     }
   },
   updatePost(state, { id, body, date, likes, dislikes }) {
-    const index = state.posts.findIndex(item => item.id === id)
+    const index = state.posts.findIndex((item) => item.id === id)
     if (state.posts[index]) {
       // Borramos el antiguo post e insertamos el nuevo en su lugar
       state.posts.splice(index, 1, {
-        id: id,
-        body: body,
-        date: date,
-        likes: likes,
+        id,
+        body,
+        date,
+        likes,
         num_likes: likes.length,
-        dislikes: dislikes,
-        num_dislikes: dislikes.length
+        dislikes,
+        num_dislikes: dislikes.length,
       })
     }
   },
@@ -50,7 +50,7 @@ export const mutations = {
       // Borramos todos los posts
       state.posts.splice(0, state.posts.length)
     }
-  }
+  },
 }
 
 export const actions = {
@@ -69,12 +69,12 @@ export const actions = {
       .where('creatorId', '==', rootState.user.user.uid)
       .orderBy('date', 'desc')
     // Nos ponemos en escucha de la colleccion de posts
-    state.unsubscribe = postsCollection.onSnapshot(postsSnapshot => {
+    state.unsubscribe = postsCollection.onSnapshot((postsSnapshot) => {
       // funcion que se ejecutará cuando se detecten cambios en postsCollection
       dispatch('updatePosts', {
-        postsSnapshot: postsSnapshot,
+        postsSnapshot,
         text: payload.text,
-        date: payload.date
+        date: payload.date,
       })
     })
   },
@@ -87,7 +87,7 @@ export const actions = {
 
   updatePosts({ state, commit, dispatch }, payload) {
     // Cargar los nuevos posts, modificar los cambiados y quitar los borrados
-    payload.postsSnapshot.docChanges().forEach(change => {
+    payload.postsSnapshot.docChanges().forEach((change) => {
       const postData = change.doc.data()
       // Posts añadidos
       if (change.type === 'added') {
@@ -95,17 +95,15 @@ export const actions = {
           postData.body.toUpperCase().includes(payload.text.toUpperCase()) &&
           (payload.date === ''
             ? true
-            : postData.date
-                .toDate()
-                .toISOString()
-                .split('T')[0] === payload.date)
+            : postData.date.toDate().toISOString().split('T')[0] ===
+              payload.date)
         ) {
           commit('pushPost', {
             id: change.doc.id,
             body: postData.body,
             date: postData.date.toDate().toLocaleDateString('es-ES'),
             likes: postData.likes,
-            dislikes: postData.dislikes
+            dislikes: postData.dislikes,
           })
         }
       }
@@ -116,13 +114,13 @@ export const actions = {
           body: postData.body,
           date: postData.date.toDate().toLocaleDateString('es-ES'),
           likes: postData.likes,
-          dislikes: postData.dislikes
+          dislikes: postData.dislikes,
         })
       }
       // Posts borrados
       if (change.type === 'removed') {
-        const index = state.posts.findIndex(item => item.id === change.doc.id)
-        commit('removePost', { index: index })
+        const index = state.posts.findIndex((item) => item.id === change.doc.id)
+        commit('removePost', { index })
       }
     })
   },
@@ -137,25 +135,22 @@ export const actions = {
       .orderBy('date', 'desc')
       .get()
 
-    postsCollection.forEach(postDoc => {
+    postsCollection.forEach((postDoc) => {
       const postData = postDoc.data()
       if (
         postData.body.toUpperCase().includes(payload.text.toUpperCase()) &&
         (payload.date === ''
           ? true
-          : postData.date
-              .toDate()
-              .toISOString()
-              .split('T')[0] === payload.date)
+          : postData.date.toDate().toISOString().split('T')[0] === payload.date)
       ) {
         commit('pushPost', {
           id: postDoc.id,
           body: postData.body,
           date: postData.date.toDate().toLocaleDateString('es-ES'),
           likes: postData.likes,
-          dislikes: postData.dislikes
+          dislikes: postData.dislikes,
         })
       }
     })
-  }
+  },
 }

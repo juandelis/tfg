@@ -1,7 +1,7 @@
+import { firestore } from 'firebase'
 import { auth, getCurrentUser, db, storage } from '~/services/fireinit'
 // import firebase from 'firebase'
 // import functions from '~/assets/functions'
-import { firestore } from 'firebase'
 
 /* function createUserDocument(user) {
   return firebase
@@ -21,17 +21,17 @@ export const state = () => ({
     email: '',
     image: '',
     followers: [],
-    following: []
+    following: [],
   },
   afterLogin: '/', // donde dirigirse una vez complete el login (por defecto el inicio)
   listeningAuth: false,
   unsubscribeUser: null, // guardará la funcion para dejar de escuchar cambios de User
   unsubscribeFollowers: null, // guardará la funcion para dejar de escuchar cambios en Followers
-  unsubscribeFollowing: null // guardará la funcion para dejar de escuchar cambios en Following
+  unsubscribeFollowing: null, // guardará la funcion para dejar de escuchar cambios en Following
 })
 
 export const getters = {
-  logged: (state, getters, rootState) => state.user.uid !== null
+  logged: (state, getters, rootState) => state.user.uid !== null,
 }
 
 export const mutations = {
@@ -91,7 +91,7 @@ export const mutations = {
   },
   setAfterLogin(state, path) {
     state.afterLogin = path
-  }
+  },
 }
 
 export const actions = {
@@ -106,9 +106,9 @@ export const actions = {
       db
         .collection('follows')
         .where('dest', '==', userId)
-        .onSnapshot(followersSnapshot => {
+        .onSnapshot((followersSnapshot) => {
           // este código se ejecutará cuando se detecten cambios en los followers
-          followersSnapshot.docChanges().forEach(change => {
+          followersSnapshot.docChanges().forEach((change) => {
             const followData = change.doc.data()
             // Follower añadido
             if (change.type === 'added') commit('addFollower', followData.ori)
@@ -134,9 +134,9 @@ export const actions = {
       db
         .collection('follows')
         .where('ori', '==', userId)
-        .onSnapshot(followingSnapshot => {
+        .onSnapshot((followingSnapshot) => {
           // este código se ejecutará cuando se detecten cambios en los following
-          followingSnapshot.docChanges().forEach(change => {
+          followingSnapshot.docChanges().forEach((change) => {
             const followData = change.doc.data()
             // Follower añadido
             if (change.type === 'added') commit('addFollowing', followData.dest)
@@ -159,7 +159,7 @@ export const actions = {
     // Nos ponemos en escucha del documento del usuario
     commit(
       'setUnsubscribeUser',
-      userDoc.onSnapshot(userDocSnapshot => {
+      userDoc.onSnapshot((userDocSnapshot) => {
         if (!userDocSnapshot.exists) {
           // El user logged ha sido borrado
           console.log('El doc del user logged ha sido borrado')
@@ -175,7 +175,7 @@ export const actions = {
             id: userDocSnapshot.id,
             name: userData.name,
             email: userData.email,
-            image: userData.image
+            image: userData.image,
           })
         }
       })
@@ -194,14 +194,14 @@ export const actions = {
   async initAuth({ state, commit, dispatch }) {
     if (!state.listeningAuth) {
       commit('setListeningAuth', true)
-      auth.onAuthStateChanged(user => {
+      auth.onAuthStateChanged((user) => {
         if (user) {
           console.log('Login de initAuth')
           // Login: buscamos el documento y empezamos a escuchar sus cambios
           const userDoc = db.doc('accounts/' + user.uid)
           userDoc
             .get()
-            .then(function(doc) {
+            .then(function (doc) {
               if (doc.exists) {
                 dispatch('startListeningToUser', userDoc)
                 dispatch('startListeningToFollowers', user.uid)
@@ -212,20 +212,20 @@ export const actions = {
                   .set({
                     email: user.email,
                     image: '/default-profile.png', // imagen por defecto, editable luego
-                    name: user.displayName || '????'
+                    name: user.displayName || '????',
                   })
-                  .then(function() {
+                  .then(function () {
                     // Con el usuario loggeado y su documento creado empezamos a escuchar
                     dispatch('startListeningToUser', userDoc)
                     dispatch('startListeningToFollowers', user.uid)
                     dispatch('startListeningToFollowing', user.uid)
                   })
-                  .catch(function(error) {
+                  .catch(function (error) {
                     console.log('Error creando el documento: ' + error)
                   })
               }
             })
-            .catch(function(error) {
+            .catch(function (error) {
               console.log('Error getting document: ', error)
             })
         } else {
@@ -251,7 +251,7 @@ export const actions = {
   login({ commit, dispatch }, payload) {
     auth
       .signInWithEmailAndPassword(payload.email, payload.password)
-      .catch(function(error) {
+      .catch(function (error) {
         // Handle Errors here.
         if (error.code === 'auth/wrong-password') {
           alert('CONTRASEÑA INCORRECTA')
@@ -274,19 +274,19 @@ export const actions = {
       storage
         .ref('profileImages/' + userLoggedId)
         .put(newImage)
-        .then(snapshot => {
+        .then((snapshot) => {
           snapshot.ref.getDownloadURL().then(
-            foundURL => {
+            (foundURL) => {
               db.collection('accounts')
                 .doc(userLoggedId)
                 .update({ image: foundURL })
             },
-            error => {
+            (error) => {
               console.log('Error getting DownloadURL. ', error)
             }
           )
         })
-        .catch(function(error) {
+        .catch(function (error) {
           return alert('Error insertando nueva imagen en storage. ', error)
         })
     }
@@ -303,13 +303,13 @@ export const actions = {
         storage
           .ref('profileImages/' + userLoggedId)
           .delete()
-          .then(function() {
+          .then(function () {
             // Volver a imagen por defecto
             db.collection('accounts')
               .doc(userLoggedId)
               .update({ image: '/default-profile.png' })
           })
-          .catch(function(error) {
+          .catch(function (error) {
             console.log('Error deleting image from storage. ', error)
           })
       }
@@ -322,7 +322,7 @@ export const actions = {
       db.collection('follows').add({
         date: firestore.Timestamp.now(),
         dest: idUserToFollow,
-        ori: userLoggedId
+        ori: userLoggedId,
       })
       /*
       // Add userToFollow to following array of userLogged
@@ -345,14 +345,14 @@ export const actions = {
         .where('ori', '==', userLoggedId)
         .where('dest', '==', idUserToUnfollow)
         .get()
-        .then(querySnapshot => {
-          querySnapshot.forEach(doc => {
-            doc.ref.delete().catch(function(error) {
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            doc.ref.delete().catch(function (error) {
               console.error('Error removing follow document: ', error)
             })
           })
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log('Error getting follow document: ', error)
         })
       /*
@@ -375,5 +375,5 @@ export const actions = {
     } else {
       this.$router.push('/users/' + idUserToShow)
     }
-  }
+  },
 }

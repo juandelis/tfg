@@ -21,7 +21,7 @@
               <input
                 ref="fileInput"
                 type="file"
-                style="display:none"
+                style="display: none;"
                 accept="image/*"
                 @change="onFileChange"
               />
@@ -87,7 +87,7 @@
                   ref="submit_passwordForm"
                   type="submit"
                   value=" ACEPTAR "
-                  style="display:none"
+                  style="display: none;"
                 />
                 <v-btn nuxt @click="click_submit()">
                   CAMBIAR CONTRASEÑA
@@ -96,7 +96,6 @@
             </form>
           </v-flex>
           <v-flex v-else-if="provider == 'google.com'" shrink>
-            <br /><br />
             No puede cambiar la contraseña pues ha iniciado sesión con Google
             <br /><br />
             Acceda a su cuenta de Google para cambiar su contraseña ahí
@@ -106,7 +105,6 @@
             </v-btn>
           </v-flex>
           <v-flex v-else shrink>
-            <br /><br />
             Proveedor de autenticación no detectado
             <br /><br />
           </v-flex>
@@ -120,22 +118,22 @@
 </template>
 
 <script>
-import firebase, { getCurrentUser } from '~/services/fireinit'
 import { mapState, mapActions } from 'vuex'
+import firebase, { getCurrentUser } from '~/services/fireinit'
 
 export default {
   data() {
     return {
       followers: [],
       following: [],
-      provider: ''
+      provider: '',
     }
   },
   middleware: 'autenticado',
   computed: {
-    ...mapState('user', ['user'])
+    ...mapState('user', ['user']),
   },
-  mounted: function() {
+  mounted() {
     this.getProvider()
   },
   methods: {
@@ -165,19 +163,19 @@ export default {
 
         user
           .reauthenticateAndRetrieveDataWithCredential(credential)
-          .then(function() {
+          .then(function () {
             // User re-authenticated.
             user
               .updatePassword(newPassword)
-              .then(function() {
+              .then(function () {
                 this.$router.push('/account')
                 return alert(' Contraseña actualizada correctamente ')
               })
-              .catch(function(error) {
+              .catch(function (error) {
                 return alert('Error updating passsword:', error)
               })
           })
-          .catch(function(error) {
+          .catch(function (error) {
             return alert('Antigua contraseña incorrecta. ', error)
           })
       } else {
@@ -201,7 +199,7 @@ export default {
           return this.updateUserImage(newFile)
         else alert('Invalid type file! ')
       }
-    }
-  }
+    },
+  },
 }
 </script>

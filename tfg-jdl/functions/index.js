@@ -26,7 +26,7 @@ exports.deletedUser = functions.firestore
     admin
       .auth()
       .deleteUser(userId)
-      .catch(error => {
+      .catch((error) => {
         console.log('Error deleting user. ', error)
       })
 
@@ -36,22 +36,22 @@ exports.deletedUser = functions.firestore
       .bucket()
       .file('profileImages/' + userId)
       .delete()
-      .catch(error => {
+      .catch((error) => {
         console.log('Error deleting profile image. ', error)
       })
 
     // Borrar Publicaciones suyas y borrar uid de likes/dislikes en el resto
     db.collection('posts')
       .get()
-      .then(snapshot => {
-        snapshot.forEach(doc => {
+      .then((snapshot) => {
+        snapshot.forEach((doc) => {
           const postData = doc.data()
           // Si el post es del user, lo borramos
           if (postData.creatorId === userId) {
             db.collection('posts')
               .doc(doc.id)
               .delete()
-              .catch(error => {
+              .catch((error) => {
                 console.error('Error removing post document. ', error)
               })
           }
@@ -61,43 +61,43 @@ exports.deletedUser = functions.firestore
               db.collection('posts')
                 .doc(doc.id)
                 .update({
-                  likes: firestore.FieldValue.arrayRemove(userId)
+                  likes: firestore.FieldValue.arrayRemove(userId),
                 })
             }
             if (postData.dislikes.includes(userId)) {
               db.collection('posts')
                 .doc(doc.id)
                 .update({
-                  dislikes: firestore.FieldValue.arrayRemove(userId)
+                  dislikes: firestore.FieldValue.arrayRemove(userId),
                 })
             }
           }
         })
         return null
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('Error getting posts documents. ', err)
       })
 
     // Borrar relaciones Follows del user
     db.collection('follows')
       .get()
-      .then(snapshot => {
-        snapshot.forEach(doc => {
+      .then((snapshot) => {
+        snapshot.forEach((doc) => {
           const followData = doc.data()
           // Borramos toda relacion que tenga al user como origen o destino
           if (followData.ori === userId || followData.dest === userId) {
             db.collection('follows')
               .doc(doc.id)
               .delete()
-              .catch(error => {
+              .catch((error) => {
                 console.error('Error removing follow document. ', error)
               })
           }
         })
         return null
       })
-      .catch(error => {
+      .catch((error) => {
         console.log('Error getting follows documents. ', error)
       })
 
