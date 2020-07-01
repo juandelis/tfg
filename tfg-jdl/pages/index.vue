@@ -1,6 +1,6 @@
 <template>
   <v-layout align-center justify-center>
-    <v-flex xs11 sm7 md7 lg8 xl8>
+    <v-flex xs12 sm10 md8 lg8 xl7>
       <v-card>
         <v-card-title class="headline justify-center">
           <v-avatar

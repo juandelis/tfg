@@ -1,6 +1,6 @@
 <template>
   <v-layout justify-center>
-    <v-flex text-xs-center xs12 sm9 md6>
+    <v-flex text-xs-center xs12 sm10 md8 lg7 xl6>
       <div class="pb-2" color="#404540">
         <v-card>
           <br />

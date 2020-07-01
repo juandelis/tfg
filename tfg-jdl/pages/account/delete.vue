@@ -1,6 +1,6 @@
 <template>
   <v-layout justify-center>
-    <v-flex text-xs-center xs10 sm7 md5>
+    <v-flex text-xs-center xs11 sm8 md7 lg6 xl5>
       <v-card>
         <br />
         <h1 align="center">ELIMINAR USUARIO</h1>

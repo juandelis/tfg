@@ -1,6 +1,6 @@
 <template>
   <v-layout justify-center>
-    <v-flex text-xs-center xs12 sm10 md8 lg6 xl5>
+    <v-flex text-xs-center xs12 sm10 md8 lg7 xl6>
       <v-card>
         <br />
         <h1 align="center">USUARIOS ({{ numUsers }})</h1>
