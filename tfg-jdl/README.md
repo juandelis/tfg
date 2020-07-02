@@ -32,5 +32,6 @@ $ cd ..
 
 # deploy
 $ firebase deploy
-$ firebase deploy --only functions
+$ firebase deploy --only hosting
+$ firebase deploy --except functions
 ```
