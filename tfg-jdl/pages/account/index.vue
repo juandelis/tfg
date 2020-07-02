@@ -191,7 +191,7 @@ export default {
       const newFile = files[0]
       if (newFile) {
         if (newFile.type.match('image.*')) return this.updateUserImage(newFile)
-        else alert('Invalid type file! ')
+        else alert('Tipo de archivo no válido, debes introducir una imágen. ')
       }
     },
   },
