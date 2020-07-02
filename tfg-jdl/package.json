@@ -1,7 +1,7 @@
 {
-  "name": "tfg-jdl",
+  "name": "GamersTalk",
   "version": "1.0.0",
-  "description": "Nuxt+Firebase app for degree final proyect",
+  "description": "Nuxt+Firebase web app for final degree proyect in Computer Science",
   "author": "Juan de Lis",
   "private": true,
   "scripts": {
