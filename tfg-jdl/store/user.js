@@ -231,17 +231,19 @@ export const actions = {
             .catch(function (error) {
               console.log('Error getting document: ', error)
             })
-        } else {
+        } else if (state.user.uid) {
+          // Si hay user en el state es que ha hecho logout
           console.log('Logout de initAuth')
-          // Logout: Dejamos de escuchar cambios y limpiamos store
+          // Dejamos de escuchar cambios
           dispatch('stopListeningToFollowing')
-          console.log('stopListeningToFollowing de initAuth')
           dispatch('stopListeningToFollowers')
-          console.log('stopListeningToFollowers de initAuth')
           dispatch('stopListeningToUser')
-          console.log('stopListeningToUser de initAuth')
+          // Limpiamos store
           commit('clearUnsubscribes')
           commit('clearUser')
+        } else {
+          // Si no hay user en el state es que acabamos de lanzar el initAuth
+          console.log('Primera ejecución de initAuth')
         }
       })
       const user = await getCurrentUser() // Obtiene el usuario si no se cerrá sesión
