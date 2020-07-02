@@ -222,6 +222,9 @@ export const actions = {
                   })
                   .catch(function (error) {
                     console.log('Error creando el documento: ' + error)
+                    user.delete().catch(function (error) {
+                      console.log('Error borrando el usuario: ' + error)
+                    })
                   })
               }
             })
