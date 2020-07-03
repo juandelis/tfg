@@ -124,8 +124,6 @@ import firebase, { getCurrentUser } from '~/services/fireinit'
 export default {
   data() {
     return {
-      followers: [],
-      following: [],
       provider: '',
     }
   },
