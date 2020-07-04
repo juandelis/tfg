@@ -152,7 +152,8 @@ export default {
   },
 
   methods: {
-    ...mapActions('user', ['follow', 'unfollow', 'showUser']),
+    ...mapActions('userToShow', ['showUser']),
+    ...mapActions('user', ['follow', 'unfollow']),
     ...mapActions('users', [
       'startListeningToUsers',
       'stopListeningToUsers',

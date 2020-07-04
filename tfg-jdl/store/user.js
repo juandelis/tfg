@@ -324,12 +324,4 @@ export const actions = {
         })
     }
   },
-
-  showUser({ state }, idUserToShow) {
-    if (idUserToShow === state.user.uid) {
-      this.$router.push('/account')
-    } else {
-      this.$router.push('/users/' + idUserToShow)
-    }
-  },
 }

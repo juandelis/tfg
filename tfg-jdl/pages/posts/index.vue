@@ -154,7 +154,7 @@ export default {
   },
 
   methods: {
-    ...mapActions('user', ['showUser']),
+    ...mapActions('userToShow', ['showUser']),
     ...mapActions('posts', [
       'startListeningToPosts',
       'stopListeningToPosts',

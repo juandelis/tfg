@@ -45,7 +45,7 @@ export const actions = {
     commit('clearUserToShow')
   },
 
-  startListeningToUserToShow({ state, commit, rootState }, idUserToShow) {
+  startListeningToUserToShow({ state, commit }, idUserToShow) {
     // Nos ponemos en escucha del documento del usuario
     commit(
       'setUnsubscribeUserToShow',
@@ -79,5 +79,13 @@ export const actions = {
     // Dejar de escuchar a cambios
     state.unsubscribeUserToShow()
     commit('clearUnsubscribeUserToShow')
+  },
+
+  showUser({ state, rootState }, idUserToShow) {
+    if (idUserToShow === rootState.user.user.uid) {
+      this.$router.push('/account')
+    } else {
+      this.$router.push('/users/' + idUserToShow)
+    }
   },
 }
