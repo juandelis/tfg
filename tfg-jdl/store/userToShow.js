@@ -7,10 +7,7 @@ export const state = () => ({
   userToShow: {
     id: null, // no null si está logueado
     name: '',
-    email: '',
     image: '',
-    followers: [],
-    following: [],
   },
   unsubscribeUserToShow: null, // guardará la funcion para dejar de escuchar (se invocará en beforeDestroy)
 })
@@ -18,22 +15,16 @@ export const state = () => ({
 export const getters = {}
 
 export const mutations = {
-  setUserToShow(state, { id, name, email, image, following, followers }) {
+  setUserToShow(state, { id, name, image }) {
     state.userToShow.id = id
     state.userToShow.name = name
-    state.userToShow.email = email
     state.userToShow.image = image
-    state.userToShow.followers = followers
-    state.userToShow.following = following
   },
 
   clearUserToShow(state) {
     state.userToShow.id = null
     state.userToShow.name = ''
-    state.userToShow.email = ''
     state.userToShow.image = ''
-    state.userToShow.followers = []
-    state.userToShow.following = []
   },
 
   setUnsubscribeUserToShow(state, unsubscribeUserToShow) {
@@ -72,10 +63,7 @@ export const actions = {
             commit('setUserToShow', {
               id: userToShowId,
               name: userToShowData.name,
-              email: userToShowData.email,
               image: userToShowData.image,
-              following: userToShowData.following,
-              followers: userToShowData.followers,
             })
           } else {
             console.log('No data found for user ' + userToShowId)
