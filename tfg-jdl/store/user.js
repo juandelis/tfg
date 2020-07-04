@@ -1,18 +1,5 @@
 import { firestore } from 'firebase'
 import { auth, getCurrentUser, db, storage } from '~/services/fireinit'
-// import firebase from 'firebase'
-// import functions from '~/assets/functions'
-
-/* function createUserDocument(user) {
-  return firebase
-    .database()
-    .ref(`accounts/${user.uid}`)
-    .set({
-      username: user.displayName || user.email.split('@')[0], // use part of the email as a username
-      email: user.email,
-      image: user.newImage || '/images/default-profile.png' // supply a default profile image for all users
-    })
-} */
 
 export const state = () => ({
   user: {
@@ -253,20 +240,6 @@ export const actions = {
     }
   },
 
-  login({ commit, dispatch }, payload) {
-    auth
-      .signInWithEmailAndPassword(payload.email, payload.password)
-      .catch(function (error) {
-        // Handle Errors here.
-        if (error.code === 'auth/wrong-password') {
-          alert('CONTRASEÑA INCORRECTA')
-        } else if (error.code === 'auth/user-not-found') {
-          alert('NO EXISTE EL USUARIO')
-        }
-        // ...
-      })
-  },
-
   async logout({ commit, dispatch }) {
     await auth.signOut()
     this.$router.push('/')
@@ -329,17 +302,6 @@ export const actions = {
         dest: idUserToFollow,
         ori: userLoggedId,
       })
-      /*
-      // Add userToFollow to following array of userLogged
-      const docRef = await db.collection('accounts').doc(userLogged.uid)
-      docRef.update({
-        following: firestore.FieldValue.arrayUnion(idUserToFollow)
-      })
-      // Add userLogged to followers array of userToFollow
-      const docRef2 = await db.collection('accounts').doc(idUserToFollow)
-      docRef2.update({
-        followers: firestore.FieldValue.arrayUnion(userLogged.uid)
-      }) */
     }
   },
 
@@ -360,17 +322,6 @@ export const actions = {
         .catch(function (error) {
           console.log('Error getting follow document: ', error)
         })
-      /*
-      // Remove idUserToUnfollow from following array of userLogged
-      const docRef = await db.collection('accounts').doc(userLogged.uid)
-      docRef.update({
-        following: firestore.FieldValue.arrayRemove(idUserToUnfollow)
-      })
-      // Remove userLogged from followers array of idUserToUnfollow
-      const docRef2 = await db.collection('accounts').doc(idUserToUnfollow)
-      docRef2.update({
-        followers: firestore.FieldValue.arrayRemove(userLogged.uid)
-      }) */
     }
   },
 
