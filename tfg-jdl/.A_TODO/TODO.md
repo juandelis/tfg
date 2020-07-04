@@ -6,10 +6,12 @@ GENERAL
   --Storage rules para modificar solo tu imagen de perfil
   --Version móvil - PWA Nuxt
   *Normas memoria*
+  *numeracion figuras*
+  *usar vuetify para img, forms, etc.*
+  *Verificar email al registrarse*
   --Idioma del Authentication FirebaseUI
   --Cambiar icono, nombre y page de inicio
   --Tamaño img y card en %, no en px
-  *usar vuetify para img, forms, etc.*
   Hacer nombre de usuario unico o sin espacios
   Posibilidad de cuentas privadas que no muestran sus posts hasta que haces follow y acepta
   Documento de usuarios con email/username como id (nombre del documento), hacer email algo único al registrarse, no emails repetidos
