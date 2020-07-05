@@ -133,23 +133,28 @@ export const actions = {
       .where('creatorId', '==', rootState.user.user.uid)
       .orderBy('date', 'desc')
       .get()
-      .forEach((postDoc) => {
-        const postData = postDoc.data()
-        if (
-          postData.body.toUpperCase().includes(payload.text.toUpperCase()) &&
-          (payload.date === ''
-            ? true
-            : postData.date.toDate().toISOString().split('T')[0] ===
-              payload.date)
-        ) {
-          commit('pushPost', {
-            id: postDoc.id,
-            body: postData.body,
-            date: postData.date.toDate().toLocaleDateString('es-ES'),
-            likes: postData.likes,
-            dislikes: postData.dislikes,
-          })
-        }
+      .then(function (querySnapshot) {
+        querySnapshot.forEach((postDoc) => {
+          const postData = postDoc.data()
+          if (
+            postData.body.toUpperCase().includes(payload.text.toUpperCase()) &&
+            (payload.date === ''
+              ? true
+              : postData.date.toDate().toISOString().split('T')[0] ===
+                payload.date)
+          ) {
+            commit('pushPost', {
+              id: postDoc.id,
+              body: postData.body,
+              date: postData.date.toDate().toLocaleDateString('es-ES'),
+              likes: postData.likes,
+              dislikes: postData.dislikes,
+            })
+          }
+        })
+      })
+      .catch(function (error) {
+        console.log('Error getting documents: ', error)
       })
   },
 }
