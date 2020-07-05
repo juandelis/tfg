@@ -119,7 +119,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import firebase, { getCurrentUser } from '~/services/fireinit'
+import { getCurrentUser } from '~/services/fireinit'
 
 export default {
   data() {
@@ -135,7 +135,11 @@ export default {
     this.getProvider()
   },
   methods: {
-    ...mapActions('user', ['updateUserImage', 'deleteUserImage']),
+    ...mapActions('user', [
+      'updatePassword',
+      'updateUserImage',
+      'deleteUserImage',
+    ]),
 
     async getProvider() {
       const user = await getCurrentUser()
@@ -146,39 +150,13 @@ export default {
       this.$refs.submit_passwordForm.click()
     },
 
-    async update_password() {
+    update_password() {
       const newPassword = this.$refs.password.value
       const newPassword2 = this.$refs.password2.value
       const oldPassword = this.$refs.oldPassword.value
-
-      if (newPassword === newPassword2) {
-        const user = await getCurrentUser()
-        const email = user.email
-        const credential = firebase.auth.EmailAuthProvider.credential(
-          email,
-          oldPassword
-        )
-
-        user
-          .reauthenticateAndRetrieveDataWithCredential(credential)
-          .then(function () {
-            // User re-authenticated.
-            user
-              .updatePassword(newPassword)
-              .then(function () {
-                this.$router.push('/account')
-                return alert(' Contraseña actualizada correctamente ')
-              })
-              .catch(function (error) {
-                return alert('Error updating passsword:', error)
-              })
-          })
-          .catch(function (error) {
-            return alert('Antigua contraseña incorrecta. ', error)
-          })
-      } else {
-        return alert(' Repite correctamente la nueva contraseña ')
-      }
+      if (newPassword === newPassword2)
+        this.updatePassword({ oldPassword, newPassword })
+      else return alert(' Repite correctamente la nueva contraseña ')
     },
 
     click_fileInput() {

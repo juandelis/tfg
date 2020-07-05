@@ -1,5 +1,10 @@
 import { firestore } from 'firebase'
-import { auth, getCurrentUser, db, storage } from '~/services/fireinit'
+import firebase, {
+  auth,
+  getCurrentUser,
+  db,
+  storage,
+} from '~/services/fireinit'
 
 export const state = () => ({
   user: {
@@ -292,6 +297,31 @@ export const actions = {
           })
       }
     }
+  },
+
+  async updatePassword({ state }, payload) {
+    const user = await getCurrentUser()
+    const credential = firebase.auth.EmailAuthProvider.credential(
+      user.email,
+      payload.oldPassword
+    )
+    user
+      .reauthenticateWithCredential(credential)
+      .then(function () {
+        // User re-authenticated.
+        user
+          .updatePassword(payload.newPassword)
+          .then(function () {
+            this.$router.push('/account')
+            return alert(' Contraseña actualizada correctamente ')
+          })
+          .catch(function (error) {
+            return alert('Error updating passsword:', error)
+          })
+      })
+      .catch(function (error) {
+        return alert('Antigua contraseña incorrecta. ', error)
+      })
   },
 
   follow({ state, commit, dispatch }, idUserToFollow) {
