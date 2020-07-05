@@ -2,7 +2,7 @@ import { db } from '~/services/fireinit'
 
 export const state = () => ({
   posts: [],
-  unsuscribe: null, // guardará la funcion para dejar de escuchar (se invocará en beforeDestroy)
+  unsubscribeMyPosts: null, // guardará la funcion para dejar de escuchar (se invocará en beforeDestroy)
 })
 
 export const getters = {
@@ -51,6 +51,9 @@ export const mutations = {
       state.posts.splice(0, state.posts.length)
     }
   },
+  setUnsubscribeMyPosts(state, unsubscribeMyPosts) {
+    state.unsubscribeMyPosts = unsubscribeMyPosts
+  },
 }
 
 export const actions = {
@@ -62,35 +65,76 @@ export const actions = {
     commit('clearPosts')
   },
 
-  async startListeningToPosts({ state, rootState, dispatch }, payload) {
-    // TODO: aplicar filtro en la query
-    const postsCollection = await db
-      .collection('posts')
-      .where('creatorId', '==', rootState.user.user.uid)
-      .orderBy('date', 'desc')
+  startListeningToPosts({ state, rootState, commit }, payload) {
     // Nos ponemos en escucha de la colleccion de posts
-    state.unsubscribe = postsCollection.onSnapshot((postsSnapshot) => {
-      // funcion que se ejecutará cuando se detecten cambios en postsCollection
-      dispatch('updatePosts', {
-        postsSnapshot,
-        text: payload.text,
-        date: payload.date,
-      })
-    })
+    commit(
+      'setUnsubscribeMyPosts',
+      db
+        .collection('posts')
+        .where('creatorId', '==', rootState.user.user.uid)
+        .orderBy('date', 'desc')
+        .onSnapshot((postsSnapshot) => {
+          // Cargar los nuevos posts, modificar los cambiados y quitar los borrados
+          postsSnapshot.docChanges().forEach((change) => {
+            const postData = change.doc.data()
+            // Posts añadidos
+            if (change.type === 'added') {
+              if (
+                postData.body
+                  .toUpperCase()
+                  .includes(payload.text.toUpperCase()) &&
+                (payload.date === ''
+                  ? true
+                  : postData.date.toDate().toISOString().split('T')[0] ===
+                    payload.date)
+              ) {
+                commit('pushPost', {
+                  id: change.doc.id,
+                  body: postData.body,
+                  date: postData.date.toDate().toLocaleDateString('es-ES'),
+                  likes: postData.likes,
+                  dislikes: postData.dislikes,
+                })
+              }
+            }
+            // Posts modificados
+            if (change.type === 'modified') {
+              commit('updatePost', {
+                id: change.doc.id,
+                body: postData.body,
+                date: postData.date.toDate().toLocaleDateString('es-ES'),
+                likes: postData.likes,
+                dislikes: postData.dislikes,
+              })
+            }
+            // Posts borrados
+            if (change.type === 'removed') {
+              const index = state.posts.findIndex(
+                (item) => item.id === change.doc.id
+              )
+              commit('removePost', { index })
+            }
+          })
+        })
+    )
   },
 
   stopListeningToPosts({ state, commit, dispatch }) {
     commit('clearPosts')
     // Dejar de escuchar a cambios
-    state.unsubscribe()
+    state.unsubscribeMyPosts()
   },
 
-  updatePosts({ state, commit, dispatch }, payload) {
-    // Cargar los nuevos posts, modificar los cambiados y quitar los borrados
-    payload.postsSnapshot.docChanges().forEach((change) => {
-      const postData = change.doc.data()
-      // Posts añadidos
-      if (change.type === 'added') {
+  searchPosts({ state, rootState, commit, dispatch }, payload) {
+    // Limpiar array de posts
+    commit('clearPosts')
+
+    db.collection('posts')
+      .where('creatorId', '==', rootState.user.user.uid)
+      .orderBy('date', 'desc')
+      .get()
+      .forEach((postDoc) => {
+        const postData = postDoc.data()
         if (
           postData.body.toUpperCase().includes(payload.text.toUpperCase()) &&
           (payload.date === ''
@@ -99,58 +143,13 @@ export const actions = {
               payload.date)
         ) {
           commit('pushPost', {
-            id: change.doc.id,
+            id: postDoc.id,
             body: postData.body,
             date: postData.date.toDate().toLocaleDateString('es-ES'),
             likes: postData.likes,
             dislikes: postData.dislikes,
           })
         }
-      }
-      // Posts modificados
-      if (change.type === 'modified') {
-        commit('updatePost', {
-          id: change.doc.id,
-          body: postData.body,
-          date: postData.date.toDate().toLocaleDateString('es-ES'),
-          likes: postData.likes,
-          dislikes: postData.dislikes,
-        })
-      }
-      // Posts borrados
-      if (change.type === 'removed') {
-        const index = state.posts.findIndex((item) => item.id === change.doc.id)
-        commit('removePost', { index })
-      }
-    })
-  },
-
-  async searchPosts({ state, rootState, commit, dispatch }, payload) {
-    // Limpiar array de posts
-    commit('clearPosts')
-
-    const postsCollection = await db
-      .collection('posts')
-      .where('creatorId', '==', rootState.user.user.uid)
-      .orderBy('date', 'desc')
-      .get()
-
-    postsCollection.forEach((postDoc) => {
-      const postData = postDoc.data()
-      if (
-        postData.body.toUpperCase().includes(payload.text.toUpperCase()) &&
-        (payload.date === ''
-          ? true
-          : postData.date.toDate().toISOString().split('T')[0] === payload.date)
-      ) {
-        commit('pushPost', {
-          id: postDoc.id,
-          body: postData.body,
-          date: postData.date.toDate().toLocaleDateString('es-ES'),
-          likes: postData.likes,
-          dislikes: postData.dislikes,
-        })
-      }
-    })
+      })
   },
 }
