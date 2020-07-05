@@ -21,13 +21,7 @@ import firebase, { auth } from '~/services/fireinit'
 
 export default {
   // middleware: 'autenticado', // poner en todas las páginas que requieran autenticacion, menos esta!
-  data: () => ({
-    email_log: '',
-    password_log: '',
-    email: '',
-    password: '',
-    name: '',
-  }),
+  data: () => ({}),
   computed: {
     ...mapGetters('user', ['logged']),
     ...mapState('user', ['afterLogin']),
@@ -72,57 +66,3 @@ export default {
 </script>
 
 <style src="~/node_modules/firebaseui/dist/firebaseui.css"></style>
-
-<style>
-input,
-select {
-  color: black;
-  background-color: white;
-  margin: 4px 4px 4px 3px;
-  border-radius: 5px;
-  padding: 2px;
-  padding-left: 5px;
-}
-
-input[type='submit'] {
-  background-color: #cacaca;
-  color: black;
-  padding: 7px 10px;
-}
-
-.labelForm {
-  font-weight: bold;
-}
-</style>
-
-<!--
-<script>
-const registerForm = new Vue({
-  el: '#registerForm',
-  data: {
-    errors: [],
-    nombre: null,
-    edad: null,
-    movie: null
-  },
-  methods: {
-    checkForm: function(e) {
-      if (this.nombre && this.edad) {
-        return true
-      }
-
-      this.errors = []
-
-      if (!this.nombre) {
-        this.errors.push('Nombre requerido.')
-      }
-      if (!this.edad) {
-        this.errors.push('Edad requerida.')
-      }
-
-      e.preventDefault()
-    }
-  }
-})
-</script>
--->

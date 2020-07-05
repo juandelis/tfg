@@ -121,3 +121,25 @@ export default {
   },
 }
 </script>
+
+<style>
+input,
+select {
+  color: black;
+  background-color: white;
+  margin: 4px 4px 4px 3px;
+  border-radius: 5px;
+  padding: 2px;
+  padding-left: 5px;
+}
+
+input[type='submit'] {
+  background-color: #cacaca;
+  color: black;
+  padding: 7px 10px;
+}
+
+.labelForm {
+  font-weight: bold;
+}
+</style>
