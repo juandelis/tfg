@@ -1,4 +1,4 @@
-import { db } from '~/services/fireinit'
+import { db, getCurrentUser } from '~/services/fireinit'
 
 const functions = {
   createPost(creatorId, creatorName, body, date) {
@@ -30,8 +30,9 @@ const functions = {
       })
   },
 
-  deleteUser(idUserToDelete) {
-    db.doc('accounts/' + idUserToDelete)
+  async deleteUser() {
+    const user = await getCurrentUser()
+    db.doc('accounts/' + user.uid)
       .delete()
       .then(function () {
         console.log('USER DOCUMENT SUCCESSFULLY DELETED!')

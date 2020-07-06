@@ -28,22 +28,15 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
 import functions from '~/assets/functions'
 
 export default {
-  data: () => ({
-    password: '',
-  }),
+  data: () => ({}),
   middleware: 'autenticado',
-  computed: {
-    ...mapState('user', ['user']),
-  },
+  computed: {},
   methods: {
-    ...mapActions('user', ['updateAccount', 'updateUserImage']),
-
     delete_user() {
-      functions.deleteUser(this.user.uid)
+      functions.deleteUser()
     },
   },
 }
