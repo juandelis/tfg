@@ -23,15 +23,15 @@
           </v-avatar>
           &nbsp;&nbsp;&nbsp;
           <h3 v-if="$vuetify.breakpoint.xs">
-            GamersTalk
+            GamersVoice
           </h3>
           <h2 v-else-if="$vuetify.breakpoint.md || $vuetify.breakpoint.sm">
-            GamersTalk
+            GamersVoice
           </h2>
           <h1 v-else-if="$vuetify.breakpoint.lg || $vuetify.breakpoint.xl">
-            GamersTalk
+            GamersVoice
           </h1>
-          <h1 v-else>GamersTalk</h1>
+          <h1 v-else>GamersVoice</h1>
           &nbsp;&nbsp;&nbsp;
           <v-avatar
             tile
@@ -73,7 +73,7 @@
       <v-card>
         <v-card-text>
           La aplicación ha sido desarrollada por Juan de Lis como TFG de
-          ingeniería informática para la Universidad Autónoma de Madrid.
+          Ingeniería Informática para la Universidad Autónoma de Madrid.
           Cualquier duda o consulta contactar con:<br />
           · &nbsp;juandelis96@gmail.com<br />
           · &nbsp;juan.lis@estudiante.uam.es

@@ -10,7 +10,7 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
-    "site": "gamerstalk",
+    "site": "gamersvoice",
     "public": "dist",
     "ignore": [
       "firebase.json",
