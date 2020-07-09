@@ -7,6 +7,7 @@ GENERAL
   --Version móvil - PWA Nuxt
   *Normas memoria*
   *numeracion figuras*
+  *Cloud function para actualizar creatorName de posts si cambia el name del user (ahora mismo no se puede cambiar el username)*
   *usar vuetify para img, forms, etc.*
   *Verificar email al registrarse*
   --Idioma del Authentication FirebaseUI
