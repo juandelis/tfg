@@ -13,13 +13,13 @@ export const getters = {
 }
 
 export const mutations = {
-  pushPost(
+  addPost(
     state,
     { uid, id, creatorName, creatorId, body, date, likes, dislikes }
   ) {
     // const userLogged = rootState.user.user
     if (id) {
-      state.posts.push({
+      state.posts.unshift({
         id,
         creatorName,
         creatorId,
@@ -81,13 +81,13 @@ export const actions = {
     let postsCollection = null
     // Obtenemos todos los posts o los del usuario indicado
     if (payload.creatorId === undefined) {
-      postsCollection = await db.collection('posts').orderBy('date', 'desc')
+      postsCollection = await db.collection('posts').orderBy('date', 'asc')
     } else {
       commit('setCreatorId', payload.creatorId)
       postsCollection = await db
         .collection('posts')
         .where('creatorId', '==', payload.creatorId)
-        .orderBy('date', 'desc')
+        .orderBy('date', 'asc')
     }
     // Nos ponemos en escucha de la colleccion de posts
     commit(
@@ -120,7 +120,7 @@ export const actions = {
           ) {
             // Posts añadidos
             if (change.type === 'added') {
-              commit('pushPost', {
+              commit('addPost', {
                 id: change.doc.id,
                 creatorName: postData.creatorName,
                 creatorId: postData.creatorId,
@@ -202,8 +202,7 @@ export const actions = {
             !postData.likes.includes(userLogged.uid) &&
             !postData.dislikes.includes(userLogged.uid)))
       ) {
-        // Ignoramos posts del usuario loggeado
-        commit('pushPost', {
+        commit('addPost', {
           id: postDoc.id,
           creatorName: postData.creatorName,
           creatorId: postData.creatorId,
