@@ -10,10 +10,10 @@ export const getters = {
 }
 
 export const mutations = {
-  pushPost(state, { id, body, date, likes, dislikes }) {
+  addPost(state, { id, body, date, likes, dislikes }) {
     // const userLogged = rootState.user.user
     if (id) {
-      state.posts.push({
+      state.posts.unshift({
         id,
         body,
         date,
@@ -72,7 +72,7 @@ export const actions = {
       db
         .collection('posts')
         .where('creatorId', '==', rootState.user.user.uid)
-        .orderBy('date', 'desc')
+        .orderBy('date', 'asc')
         .onSnapshot((postsSnapshot) => {
           // Cargar los nuevos posts, modificar los cambiados y quitar los borrados
           postsSnapshot.docChanges().forEach((change) => {
@@ -88,7 +88,7 @@ export const actions = {
                   : postData.date.toDate().toISOString().split('T')[0] ===
                     payload.date)
               ) {
-                commit('pushPost', {
+                commit('addPost', {
                   id: change.doc.id,
                   body: postData.body,
                   date: postData.date.toDate().toLocaleDateString('es-ES'),
@@ -131,7 +131,7 @@ export const actions = {
 
     db.collection('posts')
       .where('creatorId', '==', rootState.user.user.uid)
-      .orderBy('date', 'desc')
+      .orderBy('date', 'asc')
       .get()
       .then(function (querySnapshot) {
         querySnapshot.forEach((postDoc) => {
@@ -143,7 +143,7 @@ export const actions = {
               : postData.date.toDate().toISOString().split('T')[0] ===
                 payload.date)
           ) {
-            commit('pushPost', {
+            commit('addPost', {
               id: postDoc.id,
               body: postData.body,
               date: postData.date.toDate().toLocaleDateString('es-ES'),
