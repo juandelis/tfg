@@ -1,7 +1,7 @@
 {
   "name": "GamersVoice",
   "version": "1.0.0",
-  "description": "Nuxt+Firebase web app for final degree proyect in Computer Science",
+  "description": "Social network for gamers developed as a Nuxt+Firebase progressive web app for final degree proyect in Computer Science",
   "author": "Juan de Lis",
   "private": true,
   "scripts": {
